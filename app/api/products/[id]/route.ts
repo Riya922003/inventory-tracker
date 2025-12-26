@@ -8,9 +8,10 @@ import { getCurrentUser } from "@/lib/auth";
 // GET single product
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
 
     const currentUser = await getCurrentUser();
@@ -27,7 +28,7 @@ export async function GET(
     }
 
     const product = await Product.findOne({
-      _id: params.id,
+      _id: id,
       companyId: user.companyId,
     }).populate("category", "name agingConcern");
 
@@ -54,9 +55,10 @@ export async function GET(
 // UPDATE product
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const { name, sku, category, unitPrice, unitType, isFragile, hasExpiryDate, reorderLevel } = body;
 
@@ -77,7 +79,7 @@ export async function PUT(
 
     // Check if product exists and belongs to user's company
     const product = await Product.findOne({
-      _id: params.id,
+      _id: id,
       companyId: user.companyId,
     });
 
@@ -90,7 +92,7 @@ export async function PUT(
 
     // If SKU is being changed, check if new SKU already exists
     if (sku && sku !== product.sku) {
-      const existingProduct = await Product.findOne({ sku, _id: { $ne: params.id } });
+      const existingProduct = await Product.findOne({ sku, _id: { $ne: id } });
       if (existingProduct) {
         return NextResponse.json(
           { error: "A product with this SKU already exists" },
@@ -112,7 +114,7 @@ export async function PUT(
 
     // Update product
     const updatedProduct = await Product.findByIdAndUpdate(
-      params.id,
+      id,
       {
         ...(name && { name }),
         ...(sku && { sku }),
@@ -149,9 +151,10 @@ export async function PUT(
 // DELETE (Archive) product
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
 
     const currentUser = await getCurrentUser();
@@ -169,7 +172,7 @@ export async function DELETE(
 
     // Check if product exists and belongs to user's company
     const product = await Product.findOne({
-      _id: params.id,
+      _id: id,
       companyId: user.companyId,
     });
 
@@ -181,7 +184,7 @@ export async function DELETE(
     }
 
     // Soft delete - set isActive to false
-    await Product.findByIdAndUpdate(params.id, { isActive: false });
+    await Product.findByIdAndUpdate(id, { isActive: false });
 
     return NextResponse.json(
       {

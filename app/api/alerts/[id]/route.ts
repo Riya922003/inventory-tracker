@@ -7,7 +7,7 @@ import { getCurrentUser } from "@/lib/auth";
 // GET single alert
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -25,8 +25,10 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
+
     const alert = await Alert.findOne({
-      _id: params.id,
+      _id: id,
       companyId: user.companyId,
     })
       .populate("productId", "name sku unitPrice")
@@ -55,7 +57,7 @@ export async function GET(
 // PATCH - Update alert status (acknowledge, resolve, dismiss)
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await req.json();
@@ -83,8 +85,10 @@ export async function PATCH(
       );
     }
 
+    const { id } = await params;
+
     const alert = await Alert.findOne({
-      _id: params.id,
+      _id: id,
       companyId: user.companyId,
     });
 
@@ -111,7 +115,7 @@ export async function PATCH(
     }
 
     const updatedAlert = await Alert.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: updateData },
       { new: true }
     )
