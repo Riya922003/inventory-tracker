@@ -6,6 +6,7 @@ import { Stock } from "@/models/Stock";
 import { ProductCategory } from "@/models/ProductCategory";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -45,6 +46,21 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
+    // Get authenticated user
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get user data to get companyId
+    const user = await User.findById(currentUser.userId);
+    if (!user || !user.companyId) {
+      return NextResponse.json(
+        { error: "Please complete onboarding first" },
+        { status: 400 }
+      );
+    }
+
     // Check if SKU already exists
     const existingProduct = await Product.findOne({ sku });
     if (existingProduct) {
@@ -74,23 +90,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Get the first super_admin user (created during onboarding)
-    const admin = await User.findOne({ role: "super_admin" });
-    if (!admin) {
-      return NextResponse.json(
-        { error: "No admin user found. Please complete onboarding first." },
-        { status: 400 }
-      );
-    }
-
-    // Check if admin has completed onboarding
-    if (!admin.companyId) {
-      return NextResponse.json(
-        { error: "Please complete onboarding first." },
-        { status: 400 }
-      );
-    }
-
     // Start transaction
     session = await mongoose.startSession();
     session.startTransaction();
@@ -100,7 +99,7 @@ export async function POST(req: NextRequest) {
       const [newProduct] = await Product.create(
         [
           {
-            companyId: admin.companyId,
+            companyId: user.companyId,
             name,
             sku,
             category,
@@ -130,7 +129,7 @@ export async function POST(req: NextRequest) {
           ? [
               {
                 url: entryPhoto,
-                uploadedBy: admin._id,
+                uploadedBy: user._id,
                 timestamp: new Date(),
               },
             ]
@@ -139,10 +138,10 @@ export async function POST(req: NextRequest) {
         [stockEntry] = await Stock.create(
           [
             {
-              companyId: admin.companyId,
+              companyId: user.companyId,
               productId: newProduct._id,
               warehouseId,
-              createdBy: admin._id,
+              createdBy: user._id,
               batchId,
               quantityReceived: quantity,
               quantityAvailable: quantity,

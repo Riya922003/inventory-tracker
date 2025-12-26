@@ -6,9 +6,10 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
+    // Get all active categories
     const categories = await ProductCategory.find({ isActive: true })
-      .select("_id name agingConcern isFragile requiresPhotoVerification")
-      .sort({ name: 1 });
+      .sort({ name: 1 })
+      .lean();
 
     return NextResponse.json(
       {
