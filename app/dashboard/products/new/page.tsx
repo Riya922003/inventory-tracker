@@ -31,7 +31,19 @@ const step2Schema = z.object({
   quantity: z.number().positive("Quantity must be greater than 0").optional(),
   receivedDate: z.string().optional(),
   entryPhoto: z.string().optional(),
-});
+}).refine(
+  (data) => {
+    // If hasStock is true, warehouseId and quantity must be provided
+    if (data.hasStock) {
+      return !!data.warehouseId && !!data.quantity && data.quantity > 0;
+    }
+    return true;
+  },
+  {
+    message: "Warehouse and quantity are required when adding stock",
+    path: ["warehouseId"], // Show error on warehouse field
+  }
+);
 
 type Step1FormData = z.infer<typeof step1Schema>;
 type Step2FormData = z.infer<typeof step2Schema>;
@@ -160,15 +172,19 @@ export default function AddFirstProduct() {
         ...stockData,
       };
 
+      console.log("Submitting product data:", fullData);
+
       const response = await fetch("/api/products/create-with-stock", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(fullData),
       });
 
       const result = await response.json();
+      console.log("API response:", result);
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to create product");
@@ -526,7 +542,7 @@ export default function AddFirstProduct() {
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-2xl">Add Your First Product</CardTitle>
+              <CardTitle className="text-2xl">Add Product</CardTitle>
               <p className="text-sm text-gray-500 mt-1">
                 {currentStep === 1 ? "Basic information" : "Add initial stock"}
               </p>

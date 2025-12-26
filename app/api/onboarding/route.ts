@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
         const [newWarehouse] = await Warehouse.create(
           [
             {
+              companyId: systemConfig._id,
               name: warehouse.name,
               address: {
                 street: warehouse.location?.street || "",

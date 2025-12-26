@@ -263,6 +263,7 @@ export default function SetupWizard() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // Ensure cookies are included
         body: JSON.stringify(payload),
       });
 
@@ -301,13 +302,9 @@ export default function SetupWizard() {
         concerns: data.concerns,
       });
 
-      // Show success screen
+      // Show success screen - let user choose next step
       setShowSuccess(true);
-      toast.success("Onboarding complete — redirecting to add product...");
-      // Give user a moment to see success, then take them to add-first-product page
-      setTimeout(() => {
-        router.push("/dashboard/products/new");
-      }, 800);
+      toast.success("Onboarding complete! 🎉");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to complete setup");
     } finally {
@@ -911,7 +908,7 @@ export default function SetupWizard() {
                 Setup Complete! One Last Step...
               </h1>
               <p className="text-gray-600 text-lg leading-relaxed max-w-xl mx-auto">
-                To help you get the most out of InsydTracker, let's add your first product. 
+                To help you get the most out of InsydTracker, let's add a product. 
                 This will take just 2 minutes.
               </p>
             </div>
@@ -953,16 +950,16 @@ export default function SetupWizard() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
               <Button
                 variant="outline"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => window.location.href = "/dashboard"}
                 className="px-8 text-gray-600 hover:text-gray-800"
               >
                 Skip for now
               </Button>
               <Button
-                onClick={() => router.push("/dashboard/products/new")}
+                onClick={() => window.location.href = "/dashboard/products/new"}
                 className="px-8 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
               >
-                Add First Product →
+                Add Product →
               </Button>
             </div>
 

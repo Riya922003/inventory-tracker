@@ -26,6 +26,7 @@ export default function AuthPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // Ensure cookies are included
         body: JSON.stringify({
           email: loginEmail,
           password: loginPassword,
@@ -33,20 +34,27 @@ export default function AuthPage() {
       });
 
       const data = await response.json();
+      console.log("Login response:", response.status, data);
+      console.log("Response headers:", response.headers);
 
       if (response.ok) {
-        // Redirect based on onboarding status
+        console.log("Login successful, response data:", data);
+        
+        // Force a hard reload to the dashboard
         if (data.needsOnboarding) {
-          router.push("/onboarding");
+          console.log("Redirecting to onboarding...");
+          window.location.replace("/onboarding");
         } else {
-          router.push("/dashboard");
+          console.log("Redirecting to dashboard...");
+          window.location.replace("/dashboard");
         }
       } else {
         setError(data.error || "Login failed. Please try again.");
+        setLoading(false);
       }
     } catch (error) {
+      console.error("Login error:", error);
       setError("An error occurred. Please try again.");
-    } finally {
       setLoading(false);
     }
   };

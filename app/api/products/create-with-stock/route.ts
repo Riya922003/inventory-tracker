@@ -83,6 +83,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Check if admin has completed onboarding
+    if (!admin.companyId) {
+      return NextResponse.json(
+        { error: "Please complete onboarding first." },
+        { status: 400 }
+      );
+    }
+
     // Start transaction
     session = await mongoose.startSession();
     session.startTransaction();
@@ -92,6 +100,7 @@ export async function POST(req: NextRequest) {
       const [newProduct] = await Product.create(
         [
           {
+            companyId: admin.companyId,
             name,
             sku,
             category,
@@ -130,6 +139,7 @@ export async function POST(req: NextRequest) {
         [stockEntry] = await Stock.create(
           [
             {
+              companyId: admin.companyId,
               productId: newProduct._id,
               warehouseId,
               createdBy: admin._id,

@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password: string;
   role: "super_admin" | "warehouse_manager" | "auditor";
   phone?: string;
+  companyId?: mongoose.Types.ObjectId;
   assignedWarehouses: string[];
   isActive: boolean;
   lastLogin?: Date;
@@ -24,6 +25,7 @@ const UserSchema = new Schema<IUser>(
       required: true,
     },
     phone: { type: String },
+    companyId: { type: Schema.Types.ObjectId, ref: "SystemConfig" },
     assignedWarehouses: { type: [String], default: [] },
     isActive: { type: Boolean, default: true },
     lastLogin: { type: Date },

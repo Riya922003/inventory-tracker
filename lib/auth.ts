@@ -1,22 +1,44 @@
 // Utility functions for JWT authentication
 import jwt from "jsonwebtoken";
+import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+
+console.log("[Auth] JWT_SECRET loaded:", JWT_SECRET ? `${JWT_SECRET.substring(0, 10)}...` : "NOT SET");
 
 export interface JWTPayload {
   userId: string;
   email: string;
 }
 
+// Sign token using jsonwebtoken (for Node.js runtime - API routes)
 export function signToken(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
 
+// Verify token using jsonwebtoken (for Node.js runtime)
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+    return decoded;
   } catch (error) {
+    console.error("[verifyToken] Failed to verify token:", error instanceof Error ? error.message : error);
+    return null;
+  }
+}
+
+// Verify token using jose (for Edge runtime - middleware)
+export async function verifyTokenEdge(token: string): Promise<JWTPayload | null> {
+  try {
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return {
+      userId: payload.userId as string,
+      email: payload.email as string,
+    };
+  } catch (error) {
+    console.error("[verifyTokenEdge] Failed to verify token:", error instanceof Error ? error.message : error);
     return null;
   }
 }

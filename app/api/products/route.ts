@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Product } from "@/models/Product";
 import { ProductCategory } from "@/models/ProductCategory";
+import { User } from "@/models/User";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +19,24 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
+
+    // Get authenticated user
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Get user data to get companyId
+    const user = await User.findById(currentUser.userId);
+    if (!user || !user.companyId) {
+      return NextResponse.json(
+        { error: "Please complete onboarding first" },
+        { status: 400 }
+      );
+    }
 
     // Check if SKU already exists
     const existingProduct = await Product.findOne({ sku });
@@ -38,6 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Create the product
     const newProduct = await Product.create({
+      companyId: user.companyId,
       name,
       sku,
       category,

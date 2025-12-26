@@ -57,13 +57,25 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch("/api/dashboard");
+        const response = await fetch("/api/dashboard", {
+          credentials: "include",
+        });
+        
+        if (response.status === 401) {
+          // Not authenticated, redirect to login
+          console.log("Dashboard - Not authenticated, redirecting to login");
+          window.location.href = "/";
+          return;
+        }
+        
         if (response.ok) {
           const data = await response.json();
           setStats(data.stats);
           setWarehouses(data.warehouses || []);
           setAlerts(data.alerts || []);
           setActivities(data.activities || []);
+        } else {
+          console.error("Dashboard API error:", response.status);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
