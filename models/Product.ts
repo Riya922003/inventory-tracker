@@ -19,9 +19,9 @@ export interface IProduct extends Document {
 
 const ProductSchema = new Schema<IProduct>(
   {
-    companyId: { type: Schema.Types.ObjectId, ref: "SystemConfig", required: true },
-    sku: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
+    companyId: { type: Schema.Types.ObjectId, ref: "SystemConfig", required: true, index: true },
+    sku: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true, index: "text" },
     category: { type: Schema.Types.ObjectId, ref: "ProductCategory", required: true },
     subCategory: { type: String },
     unitPrice: { type: Number, required: true },
@@ -39,9 +39,5 @@ const ProductSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 );
-
-ProductSchema.index({ companyId: 1 });
-ProductSchema.index({ sku: 1 }, { unique: true });
-ProductSchema.index({ name: "text" });
 
 export const Product = mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);

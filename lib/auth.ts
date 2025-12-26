@@ -5,8 +5,6 @@ import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
-console.log("[Auth] JWT_SECRET loaded:", JWT_SECRET ? `${JWT_SECRET.substring(0, 10)}...` : "NOT SET");
-
 export interface JWTPayload {
   userId: string;
   email: string;
@@ -23,7 +21,6 @@ export function verifyToken(token: string): JWTPayload | null {
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
     return decoded;
   } catch (error) {
-    console.error("[verifyToken] Failed to verify token:", error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -38,7 +35,6 @@ export async function verifyTokenEdge(token: string): Promise<JWTPayload | null>
       email: payload.email as string,
     };
   } catch (error) {
-    console.error("[verifyTokenEdge] Failed to verify token:", error instanceof Error ? error.message : error);
     return null;
   }
 }

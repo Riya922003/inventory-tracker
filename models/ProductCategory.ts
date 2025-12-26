@@ -13,7 +13,7 @@ export interface IProductCategory extends Document {
 
 const ProductCategorySchema = new Schema<IProductCategory>(
   {
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: true, index: true },
     agingConcern: {
       type: String,
       enum: ["slow", "moderate", "fast", "expiry"],
@@ -26,8 +26,6 @@ const ProductCategorySchema = new Schema<IProductCategory>(
   },
   { timestamps: true }
 );
-
-ProductCategorySchema.index({ name: 1 }, { unique: true });
 
 export const ProductCategory =
   mongoose.models.ProductCategory ||

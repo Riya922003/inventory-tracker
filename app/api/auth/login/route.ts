@@ -69,18 +69,6 @@ export async function POST(req: NextRequest) {
       path: "/",
     });
 
-    console.log("=== LOGIN API ===");
-    console.log("User:", user.email);
-    console.log("Needs onboarding:", needsOnboarding);
-    console.log("Token (first 20 chars):", token.substring(0, 20));
-    console.log("Cookie settings:", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-    });
-    console.log("=================");
-
     return res;
   } catch (error) {
     console.error("Login error:", error);
