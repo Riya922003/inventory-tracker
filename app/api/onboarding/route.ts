@@ -127,12 +127,33 @@ export async function POST(req: NextRequest) {
       const createdWarehouses = [];
       const warehouseIds = [];
 
-      for (const warehouse of warehouses) {
+      // Get the starting warehouse code number
+      // Only look at warehouses with valid warehouseCode to avoid issues with old data
+      const existingWarehouses = await Warehouse.find({ 
+        warehouseCode: { $exists: true, $nin: [null, ""] } 
+      })
+        .sort({ warehouseCode: -1 })
+        .limit(1);
+      
+      let startNumber = 1;
+      if (existingWarehouses.length > 0 && existingWarehouses[0].warehouseCode) {
+        const lastCode = existingWarehouses[0].warehouseCode;
+        const match = lastCode.match(/WH(\d+)/);
+        if (match) {
+          startNumber = parseInt(match[1]) + 1;
+        }
+      }
+
+      for (let i = 0; i < warehouses.length; i++) {
+        const warehouse = warehouses[i];
+        const warehouseCode = `WH${String(startNumber + i).padStart(3, "0")}`;
+
         const [newWarehouse] = await Warehouse.create(
           [
             {
               companyId: systemConfig._id,
               name: warehouse.name,
+              warehouseCode,
               address: {
                 street: warehouse.location?.street || "",
                 city: warehouse.location?.city || "",

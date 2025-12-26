@@ -169,10 +169,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate unique warehouse code
-    const warehouseCount = await Warehouse.countDocuments({
+    // Only look at warehouses with valid warehouseCode to avoid issues with old data
+    const existingWarehouses = await Warehouse.find({ 
       companyId: user.companyId,
-    });
-    const warehouseCode = `WH${String(warehouseCount + 1).padStart(3, "0")}`;
+      warehouseCode: { $exists: true, $nin: [null, ""] }
+    })
+      .sort({ warehouseCode: -1 })
+      .limit(1);
+    
+    let nextNumber = 1;
+    if (existingWarehouses.length > 0 && existingWarehouses[0].warehouseCode) {
+      const lastCode = existingWarehouses[0].warehouseCode;
+      const match = lastCode.match(/WH(\d+)/);
+      if (match) {
+        nextNumber = parseInt(match[1]) + 1;
+      }
+    }
+    const warehouseCode = `WH${String(nextNumber).padStart(3, "0")}`;
 
     // If manager is provided, verify they exist and belong to the company
     if (manager) {
