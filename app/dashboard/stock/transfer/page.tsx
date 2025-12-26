@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -38,7 +38,7 @@ interface Warehouse {
   capacity: number;
 }
 
-export default function StockTransferPage() {
+function StockTransferContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sourceWarehouseId = searchParams.get("warehouseId");
@@ -729,5 +729,20 @@ export default function StockTransferPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Wrap in Suspense boundary for useSearchParams
+export default function StockTransferPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-8">
+        <div className="text-center py-12">
+          <p className="text-gray-600">Loading transfer form...</p>
+        </div>
+      </div>
+    }>
+      <StockTransferContent />
+    </Suspense>
   );
 }
