@@ -98,14 +98,78 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const products = await Product.find({ isActive: true })
-      .populate("category", "name")
+    // Get authenticated user
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Get user data to get companyId
+    const user = await User.findById(currentUser.userId);
+    if (!user || !user.companyId) {
+      return NextResponse.json(
+        { error: "Please complete onboarding first" },
+        { status: 400 }
+      );
+    }
+
+    // Get query parameters for filtering
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get("search") || "";
+    const category = searchParams.get("category") || "";
+    const warehouse = searchParams.get("warehouse") || "";
+    const status = searchParams.get("status") || "active";
+
+    // Build query
+    const query: any = { companyId: user.companyId };
+    
+    // Filter by status
+    if (status === "active") {
+      query.isActive = true;
+    } else if (status === "archived") {
+      query.isActive = false;
+    }
+
+    // Search by name or SKU
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { sku: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // Filter by category
+    if (category) {
+      query.category = category;
+    }
+
+    const products = await Product.find(query)
+      .populate("category", "name agingConcern")
       .sort({ createdAt: -1 });
+
+    // If warehouse filter is provided, we need to check stock
+    let filteredProducts = products;
+    if (warehouse) {
+      const { Stock } = await import("@/models/Stock");
+      const productIds = products.map(p => p._id);
+      const stocks = await Stock.find({
+        productId: { $in: productIds },
+        warehouseId: warehouse,
+      }).distinct("productId");
+      
+      filteredProducts = products.filter(p => 
+        stocks.some(stockProdId => stockProdId.toString() === p._id.toString())
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        products,
+        products: filteredProducts,
+        total: filteredProducts.length,
       },
       { status: 200 }
     );

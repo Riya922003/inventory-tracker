@@ -19,191 +19,208 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    // Get user data to find their warehouses
+    // Get user data
     const user = await User.findById(currentUser.userId).lean();
-    if (!user || !user.assignedWarehouses || user.assignedWarehouses.length === 0) {
-      // User has no warehouses yet (probably hasn't completed onboarding)
-      return NextResponse.json({
-        stats: {
-          totalProducts: 0,
-          totalValue: 0,
-          deadStock: { count: 0, value: 0 },
-          atRisk: { count: 0, value: 0 },
-          weeklyChange: 0,
-          valueAdded: 0,
-        },
-        warehouses: [],
-        alerts: [],
-        activities: [],
-      });
+    if (!user || !user.companyId) {
+      return NextResponse.json(
+        { error: "Please complete onboarding first" },
+        { status: 400 }
+      );
     }
 
-    // Get only user's warehouses
-    const warehouses = await Warehouse.find({
-      _id: { $in: user.assignedWarehouses },
+    // Get all products for the company
+    const products = await Product.find({
+      companyId: user.companyId,
       isActive: true,
     }).lean();
 
-    // Fetch stocks only from user's warehouses
+    // Get all stock entries for the company
     const stocks = await Stock.find({
-      warehouseId: { $in: user.assignedWarehouses },
+      companyId: user.companyId,
     })
-      .populate("warehouseId", "name")
+      .populate("productId", "name sku unitPrice unitType")
+      .populate("warehouseId", "name address")
+      .populate("createdBy", "name")
       .lean();
 
-    // Get product IDs from stocks
-    const productIds = [...new Set(stocks.map((s) => s.productId.toString()))];
+    // Calculate total products
+    const totalProducts = products.length;
 
-    // Fetch only products that are in user's warehouses
-    const products = await Product.find({
-      _id: { $in: productIds },
+    // Calculate total value and categorize stock
+    let totalValue = 0;
+    let deadStockValue = 0;
+    let atRiskValue = 0;
+    let deadStockCount = 0;
+    let atRiskCount = 0;
+
+    const deadStockProducts: any[] = [];
+    const atRiskProducts: any[] = [];
+
+    stocks.forEach((stock: any) => {
+      const stockValue = stock.quantityAvailable * stock.productId.unitPrice;
+      totalValue += stockValue;
+
+      if (stock.status === "dead") {
+        deadStockValue += stockValue;
+        deadStockCount++;
+        deadStockProducts.push({
+          _id: stock._id,
+          productName: stock.productId.name,
+          sku: stock.productId.sku,
+          batchId: stock.batchId,
+          quantity: stock.quantityAvailable,
+          value: stockValue,
+          ageInDays: stock.ageInDays,
+          warehouse: stock.warehouseId.name,
+        });
+      } else if (stock.status === "at_risk") {
+        atRiskValue += stockValue;
+        atRiskCount++;
+        atRiskProducts.push({
+          _id: stock._id,
+          productName: stock.productId.name,
+          sku: stock.productId.sku,
+          batchId: stock.batchId,
+          quantity: stock.quantityAvailable,
+          value: stockValue,
+          ageInDays: stock.ageInDays,
+          warehouse: stock.warehouseId.name,
+        });
+      }
+    });
+
+    // Calculate weekly change
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const recentProducts = products.filter(
+      (p: any) => new Date(p.createdAt) >= oneWeekAgo
+    );
+    const weeklyChange = recentProducts.length;
+
+    // Calculate value added this week
+    const recentStocks = stocks.filter(
+      (s: any) => new Date(s.entryDate) >= oneWeekAgo
+    );
+    const valueAdded = recentStocks.reduce(
+      (sum: number, stock: any) =>
+        sum + stock.quantityReceived * stock.productId.unitPrice,
+      0
+    );
+
+    // Get warehouse breakdown
+    const warehouses = await Warehouse.find({
+      companyId: user.companyId,
       isActive: true,
     }).lean();
 
-    // Calculate stats
-    const totalProducts = products.length;
-    let totalValue = 0;
-    let deadStockCount = 0;
-    let deadStockValue = 0;
-    let atRiskCount = 0;
-    let atRiskValue = 0;
+    const warehouseStats = await Promise.all(
+      warehouses.map(async (warehouse: any) => {
+        const warehouseStocks = stocks.filter(
+          (s: any) => s.warehouseId._id.toString() === warehouse._id.toString()
+        );
 
-    // Calculate stock-based metrics
-    stocks.forEach((stock) => {
-      const product = products.find((p) => p._id.toString() === stock.productId.toString());
-      if (product) {
-        const stockValue = product.unitPrice * stock.quantityAvailable;
-        totalValue += stockValue;
+        const warehouseProducts = new Set(
+          warehouseStocks.map((s: any) => s.productId._id.toString())
+        ).size;
 
-        if (stock.status === "dead") {
-          deadStockCount++;
-          deadStockValue += stockValue;
-        } else if (stock.status === "at_risk") {
-          atRiskCount++;
-          atRiskValue += stockValue;
-        }
-      }
-    });
+        const warehouseValue = warehouseStocks.reduce(
+          (sum: number, stock: any) =>
+            sum + stock.quantityAvailable * stock.productId.unitPrice,
+          0
+        );
 
-    // Prepare warehouse data
-    const warehouseData = warehouses.map((wh) => {
-      const warehouseStocks = stocks.filter(
-        (s) => s.warehouseId && (s.warehouseId as any)._id.toString() === wh._id.toString()
-      );
+        const warehouseDeadCount = warehouseStocks.filter(
+          (s: any) => s.status === "dead"
+        ).length;
 
-      const productsCount = new Set(warehouseStocks.map((s) => s.productId.toString())).size;
+        const warehouseAtRiskCount = warehouseStocks.filter(
+          (s: any) => s.status === "at_risk"
+        ).length;
 
-      let whTotalValue = 0;
-      let whAtRiskCount = 0;
-      let whDeadStockCount = 0;
+        // Calculate capacity used
+        const totalQuantity = warehouseStocks.reduce(
+          (sum: number, stock: any) => sum + stock.quantityAvailable,
+          0
+        );
+        const capacityUsed = warehouse.capacity
+          ? Math.min(Math.round((totalQuantity / warehouse.capacity) * 100), 100)
+          : 0;
 
-      warehouseStocks.forEach((stock) => {
-        const product = products.find((p) => p._id.toString() === stock.productId.toString());
-        if (product) {
-          whTotalValue += product.unitPrice * stock.quantityAvailable;
-        }
-
-        if (stock.status === "at_risk") whAtRiskCount++;
-        if (stock.status === "dead") whDeadStockCount++;
-      });
-
-      // Calculate capacity used (mock calculation based on products)
-      const capacityUsed = Math.min(95, productsCount * 15 + Math.floor(Math.random() * 20));
-
-      return {
-        _id: wh._id.toString(),
-        name: wh.name,
-        productsCount,
-        totalValue: whTotalValue,
-        capacityUsed,
-        atRiskCount: whAtRiskCount,
-        deadStockCount: whDeadStockCount,
-      };
-    });
-
-    // Generate mock alerts based on real data
-    const alerts: any[] = [];
-    const deadStocks = stocks.filter((s) => s.status === "dead").slice(0, 2);
-    const atRiskStocks = stocks.filter((s) => s.status === "at_risk").slice(0, 2);
-
-    deadStocks.forEach((stock) => {
-      const product = products.find((p) => p._id.toString() === stock.productId.toString());
-      if (product) {
-        const stockValue = product.unitPrice * stock.quantityAvailable;
-        alerts.push({
-          _id: stock._id.toString(),
-          type: "dead_inventory",
-          productName: product.name,
-          productSku: product.sku,
-          details: `Idle for ${stock.ageInDays} days • ₹${(stockValue / 100000).toFixed(1)}L locked • ${
-            (stock.warehouseId as any)?.name || "Unknown"
-          }`,
-          recommendation: "Liquidate at 40% discount",
-          severity: "critical",
-        });
-      }
-    });
-
-    atRiskStocks.forEach((stock) => {
-      const product = products.find((p) => p._id.toString() === stock.productId.toString());
-      if (product) {
-        alerts.push({
-          _id: stock._id.toString(),
-          type: "aging",
-          productName: product.name,
-          productSku: product.sku,
-          details: `Aging for ${stock.ageInDays} days • ${stock.quantityAvailable} units • ${
-            (stock.warehouseId as any)?.name || "Unknown"
-          }`,
-          recommendation: "Consider promotional pricing",
-          severity: "warning",
-        });
-      }
-    });
-
-    // Generate mock activities based on recent stocks
-    const activities = stocks.slice(-5).map((stock, index) => {
-      const product = products.find((p) => p._id.toString() === stock.productId.toString());
-      const daysAgo = index === 0 ? "2 hours ago" : index === 1 ? "5 hours ago" : `${index} days ago`;
-
-      return {
-        _id: stock._id.toString(),
-        type: "stock_in",
-        description: `📦 Stock Added: ${product?.name || "Product"} (${stock.quantityReceived} units)`,
-        timestamp: daysAgo,
-        location: (stock.warehouseId as any)?.name || "Unknown",
-        user: "Admin",
-      };
-    });
-
-    // Stats object
-    const stats = {
-      totalProducts,
-      totalValue,
-      deadStock: {
-        count: deadStockCount,
-        value: deadStockValue,
-      },
-      atRisk: {
-        count: atRiskCount,
-        value: atRiskValue,
-      },
-      weeklyChange: Math.floor(totalProducts * 0.3), // Mock: 30% added this week
-      valueAdded: Math.floor(totalValue * 0.25), // Mock: 25% value added
-    };
-
-    return NextResponse.json(
-      {
-        success: true,
-        stats,
-        warehouses: warehouseData,
-        alerts,
-        activities,
-      },
-      { status: 200 }
+        return {
+          _id: warehouse._id,
+          name: warehouse.name,
+          productsCount: warehouseProducts,
+          totalValue: warehouseValue,
+          capacityUsed,
+          atRiskCount: warehouseAtRiskCount,
+          deadStockCount: warehouseDeadCount,
+        };
+      })
     );
+
+    // Generate alerts
+    const alerts = [
+      ...deadStockProducts.slice(0, 3).map((item) => ({
+        _id: item._id,
+        type: "dead_inventory" as const,
+        productName: item.productName,
+        productSku: item.sku,
+        details: `${item.quantity} units have been in stock for ${item.ageInDays} days`,
+        recommendation: "Consider discount sale or liquidation",
+        severity: "critical" as const,
+      })),
+      ...atRiskProducts.slice(0, 2).map((item) => ({
+        _id: item._id,
+        type: "aging" as const,
+        productName: item.productName,
+        productSku: item.sku,
+        details: `${item.quantity} units aging for ${item.ageInDays} days`,
+        recommendation: "Promote or bundle with fast-moving items",
+        severity: "warning" as const,
+      })),
+    ];
+
+    // Generate recent activities
+    const recentActivities = stocks
+      .sort((a: any, b: any) => new Date(b.entryDate).getTime() - new Date(a.entryDate).getTime())
+      .slice(0, 10)
+      .map((stock: any) => ({
+        _id: stock._id,
+        type: "stock_in" as const,
+        description: `${stock.quantityReceived} ${stock.productId.unitType}s of ${stock.productId.name} received`,
+        timestamp: new Date(stock.entryDate).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+        location: stock.warehouseId.name,
+        user: stock.createdBy?.name || "System",
+      }));
+
+    return NextResponse.json({
+      stats: {
+        totalProducts,
+        totalValue,
+        deadStock: {
+          count: deadStockCount,
+          value: deadStockValue,
+          products: deadStockProducts,
+        },
+        atRisk: {
+          count: atRiskCount,
+          value: atRiskValue,
+          products: atRiskProducts,
+        },
+        weeklyChange,
+        valueAdded,
+      },
+      warehouses: warehouseStats,
+      alerts,
+      activities: recentActivities,
+    });
   } catch (error) {
-    console.error("Error fetching dashboard data:", error);
+    console.error("Dashboard error:", error);
     return NextResponse.json(
       {
         error: "Failed to fetch dashboard data",

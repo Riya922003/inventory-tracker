@@ -23,6 +23,7 @@ interface SidebarLayoutProps {
 const menuItems = [
   { name: "Dashboard", icon: FaHome, path: "/dashboard" },
   { name: "Inventory", icon: MdInventory, path: "/dashboard/inventory" },
+  { name: "Stock", icon: FaBox, path: "/dashboard/stock" },
   { name: "Warehouses", icon: FaWarehouse, path: "/dashboard/warehouses" },
   { name: "Alerts", icon: FaBell, path: "/dashboard/alerts" },
   { name: "Reports", icon: FaChartBar, path: "/dashboard/reports" },

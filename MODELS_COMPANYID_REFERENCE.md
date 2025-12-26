@@ -21,6 +21,11 @@ These models MUST include `companyId` when creating records:
 - **Reference**: SystemConfig
 - **When creating**: Always pass `companyId` from authenticated user
 
+### ✅ Alert
+- **Field**: `companyId: mongoose.Types.ObjectId` (required)
+- **Reference**: SystemConfig
+- **When creating**: Always pass `companyId` from stock/user data
+
 ## Models NOT Requiring CompanyId
 
 These models are global or don't need company association:
