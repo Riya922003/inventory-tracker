@@ -20,7 +20,7 @@ export interface IProduct extends Document {
 const ProductSchema = new Schema<IProduct>(
   {
     companyId: { type: Schema.Types.ObjectId, ref: "SystemConfig", required: true, index: true },
-    sku: { type: String, required: true, unique: true, index: true },
+    sku: { type: String, required: true },
     name: { type: String, required: true, index: "text" },
     category: { type: Schema.Types.ObjectId, ref: "ProductCategory", required: true },
     subCategory: { type: String },
@@ -39,5 +39,8 @@ const ProductSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 );
+
+// Compound index: SKU must be unique within each company
+ProductSchema.index({ companyId: 1, sku: 1 }, { unique: true });
 
 export const Product = mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);

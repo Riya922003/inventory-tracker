@@ -61,11 +61,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if SKU already exists
-    const existingProduct = await Product.findOne({ sku });
+    // Check if SKU already exists for this company
+    const existingProduct = await Product.findOne({ 
+      sku,
+      companyId: user.companyId 
+    });
     if (existingProduct) {
       return NextResponse.json(
-        { error: "A product with this SKU already exists" },
+        { error: "A product with this SKU already exists in your company" },
         { status: 400 }
       );
     }

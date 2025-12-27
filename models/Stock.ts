@@ -56,7 +56,6 @@ const StockSchema = new Schema<IStock>(
     batchId: {
       type: String,
       required: true,
-      unique: true,
     },
     quantityReceived: {
       type: Number,
@@ -106,6 +105,9 @@ StockSchema.index({ companyId: 1 });
 StockSchema.index({ productId: 1, warehouseId: 1 });
 StockSchema.index({ ageInDays: -1 });
 StockSchema.index({ status: 1 });
+StockSchema.index({ warehouseId: 1, status: 1 });
+// Compound unique index: batchId must be unique within each company
+StockSchema.index({ companyId: 1, batchId: 1 }, { unique: true });
 
 // Pre-save middleware to compute ageInDays
 StockSchema.pre("save", function () {

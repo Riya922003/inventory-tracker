@@ -10,7 +10,15 @@ export async function POST(req: NextRequest) {
   try {
     // Verify cron secret for security
     const authHeader = req.headers.get("authorization");
-    const cronSecret = process.env.CRON_SECRET || "your-secret-key";
+    const cronSecret = process.env.CRON_SECRET;
+    
+    if (!cronSecret) {
+      console.error("CRON_SECRET not configured");
+      return NextResponse.json(
+        { error: "Cron job not configured" },
+        { status: 500 }
+      );
+    }
 
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -156,7 +164,14 @@ async function generateAlert(
 // GET endpoint for manual trigger (development/testing)
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET || "your-secret-key";
+  const cronSecret = process.env.CRON_SECRET;
+  
+  if (!cronSecret) {
+    return NextResponse.json(
+      { error: "Cron job not configured" },
+      { status: 500 }
+    );
+  }
 
   if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json(
