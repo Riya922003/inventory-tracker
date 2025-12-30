@@ -8,6 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-producti
 export interface JWTPayload {
   userId: string;
   email: string;
+  role?: string;
+  companyId?: string;
 }
 
 // Sign token using jsonwebtoken (for Node.js runtime - API routes)
@@ -33,6 +35,8 @@ export async function verifyTokenEdge(token: string): Promise<JWTPayload | null>
     return {
       userId: payload.userId as string,
       email: payload.email as string,
+      role: payload.role as string | undefined,
+      companyId: payload.companyId as string | undefined,
     };
   } catch (error) {
     return null;

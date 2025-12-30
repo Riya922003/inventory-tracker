@@ -65,6 +65,7 @@ export default function StockPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
   
   // Filters
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -74,11 +75,31 @@ export default function StockPage() {
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
+  // Fetch user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserRole(data.user.role);
+        }
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
+
   useEffect(() => {
     fetchStocks();
     fetchProducts();
-    fetchWarehouses();
-  }, [selectedProduct, selectedWarehouse]);
+    if (userRole === "super_admin") {
+      fetchWarehouses();
+    }
+  }, [selectedProduct, selectedWarehouse, userRole]);
 
   const fetchStocks = async () => {
     try {
@@ -204,7 +225,7 @@ export default function StockPage() {
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className={`grid grid-cols-1 ${userRole === "super_admin" ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4`}>
             {/* Product Filter */}
             <div>
               <Label htmlFor="product">Filter by Product</Label>
@@ -223,23 +244,25 @@ export default function StockPage() {
               </select>
             </div>
 
-            {/* Warehouse Filter */}
-            <div>
-              <Label htmlFor="warehouse">Filter by Warehouse</Label>
-              <select
-                id="warehouse"
-                value={selectedWarehouse}
-                onChange={(e) => setSelectedWarehouse(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">All Warehouses</option>
-                {warehouses.map((warehouse) => (
-                  <option key={warehouse._id} value={warehouse._id}>
-                    {warehouse.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Warehouse Filter - Only for Super Admin */}
+            {userRole === "super_admin" && (
+              <div>
+                <Label htmlFor="warehouse">Filter by Warehouse</Label>
+                <select
+                  id="warehouse"
+                  value={selectedWarehouse}
+                  onChange={(e) => setSelectedWarehouse(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">All Warehouses</option>
+                  {warehouses.map((warehouse) => (
+                    <option key={warehouse._id} value={warehouse._id}>
+                      {warehouse.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Clear Filters */}
             <div className="flex items-end">

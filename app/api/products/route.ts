@@ -149,9 +149,12 @@ export async function GET(req: NextRequest) {
       query.category = category;
     }
 
+    // const limit = parseInt(searchParams.get("limit") || "2");
+
     const products = await Product.find(query)
       .populate("category", "name agingConcern")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      // .limit(limit);
 
     // If warehouse filter is provided, we need to check stock
     let filteredProducts = products;

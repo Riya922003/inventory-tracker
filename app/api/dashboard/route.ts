@@ -5,43 +5,60 @@ import { Stock } from "@/models/Stock";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
+import { CommonErrors, jsonSuccess } from "@/lib/api-response";
 
 export async function GET(req: NextRequest) {
   try {
     // Get authenticated user
     const currentUser = await getCurrentUser();
+    
     if (!currentUser) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return CommonErrors.unauthorized();
     }
 
     await connectDB();
 
     // Get user data
     const user = await User.findById(currentUser.userId).lean();
-    if (!user || !user.companyId) {
-      return NextResponse.json(
-        { error: "Please complete onboarding first" },
-        { status: 400 }
+    
+    if (!user) {
+      return CommonErrors.notFound("User");
+    }
+
+    // Use companyId
+    const companyId = user.companyId;
+    
+    if (!companyId) {
+      return CommonErrors.badRequest(
+        "Please complete onboarding first",
+        "User account is missing company information"
       );
     }
 
     // Get all products for the company
     const products = await Product.find({
-      companyId: user.companyId,
+      companyId: companyId,
       isActive: true,
     }).lean();
 
     // Get all stock entries for the company
     const stocks = await Stock.find({
-      companyId: user.companyId,
+      companyId: companyId,
     })
       .populate("productId", "name sku unitPrice unitType")
-      .populate("warehouseId", "name address")
+      .populate("warehouseId", "name address warehouseCode")
       .populate("createdBy", "name")
       .lean();
+
+    // Filter by assigned warehouses if user is warehouse_manager
+    let filteredStocks = stocks;
+    if (user.role === "warehouse_manager" && user.assignedWarehouses && user.assignedWarehouses.length > 0) {
+      filteredStocks = stocks.filter((stock: any) => 
+        user.assignedWarehouses.some((whId: any) => 
+          stock.warehouseId?._id?.toString() === whId.toString()
+        )
+      );
+    }
 
     // Calculate total products
     const totalProducts = products.length;
@@ -56,7 +73,7 @@ export async function GET(req: NextRequest) {
     const deadStockProducts: any[] = [];
     const atRiskProducts: any[] = [];
 
-    stocks.forEach((stock: any) => {
+    filteredStocks.forEach((stock: any) => {
       const stockValue = stock.quantityAvailable * stock.productId.unitPrice;
       totalValue += stockValue;
 
@@ -99,7 +116,7 @@ export async function GET(req: NextRequest) {
     const weeklyChange = recentProducts.length;
 
     // Calculate value added this week
-    const recentStocks = stocks.filter(
+    const recentStocks = filteredStocks.filter(
       (s: any) => new Date(s.entryDate) >= oneWeekAgo
     );
     const valueAdded = recentStocks.reduce(
@@ -110,13 +127,23 @@ export async function GET(req: NextRequest) {
 
     // Get warehouse breakdown
     const warehouses = await Warehouse.find({
-      companyId: user.companyId,
+      companyId: companyId,
       isActive: true,
     }).lean();
 
+    // Filter warehouses for warehouse_manager
+    let filteredWarehouses = warehouses;
+    if (user.role === "warehouse_manager" && user.assignedWarehouses && user.assignedWarehouses.length > 0) {
+      filteredWarehouses = warehouses.filter((wh: any) => 
+        user.assignedWarehouses.some((whId: any) => 
+          wh._id.toString() === whId.toString()
+        )
+      );
+    }
+
     const warehouseStats = await Promise.all(
-      warehouses.map(async (warehouse: any) => {
-        const warehouseStocks = stocks.filter(
+      filteredWarehouses.map(async (warehouse: any) => {
+        const warehouseStocks = filteredStocks.filter(
           (s: any) => s.warehouseId._id.toString() === warehouse._id.toString()
         );
 
@@ -182,7 +209,7 @@ export async function GET(req: NextRequest) {
     ];
 
     // Generate recent activities
-    const recentActivities = stocks
+    const recentActivities = filteredStocks
       .sort((a: any, b: any) => new Date(b.entryDate).getTime() - new Date(a.entryDate).getTime())
       .slice(0, 10)
       .map((stock: any) => ({
@@ -198,7 +225,7 @@ export async function GET(req: NextRequest) {
         user: stock.createdBy?.name || "System",
       }));
 
-    return NextResponse.json({
+    return jsonSuccess({
       stats: {
         totalProducts,
         totalValue,
@@ -221,12 +248,9 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error("Dashboard error:", error);
-    return NextResponse.json(
-      {
-        error: "Failed to fetch dashboard data",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 }
+    return CommonErrors.serverError(
+      "Failed to fetch dashboard data",
+      error instanceof Error ? error.message : "Unknown error"
     );
   }
 }

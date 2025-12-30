@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IProductCategory extends Document {
+  companyId: mongoose.Types.ObjectId;
   name: string;
   agingConcern: "slow" | "moderate" | "fast" | "expiry";
   agingDays?: number; // 180, 90, 60, or null for expiry
@@ -13,7 +14,8 @@ export interface IProductCategory extends Document {
 
 const ProductCategorySchema = new Schema<IProductCategory>(
   {
-    name: { type: String, required: true, unique: true, index: true },
+    companyId: { type: Schema.Types.ObjectId, ref: "SystemConfig", required: true, index: true },
+    name: { type: String, required: true, index: true },
     agingConcern: {
       type: String,
       enum: ["slow", "moderate", "fast", "expiry"],
@@ -26,6 +28,9 @@ const ProductCategorySchema = new Schema<IProductCategory>(
   },
   { timestamps: true }
 );
+
+// Compound index to ensure unique category names per company
+ProductCategorySchema.index({ companyId: 1, name: 1 }, { unique: true });
 
 export const ProductCategory =
   mongoose.models.ProductCategory ||

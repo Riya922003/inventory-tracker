@@ -169,23 +169,54 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate unique warehouse code
-    // Only look at warehouses with valid warehouseCode to avoid issues with old data
-    const existingWarehouses = await Warehouse.find({ 
-      companyId: user.companyId,
-      warehouseCode: { $exists: true, $nin: [null, ""] }
+    // Find ALL warehouses (not just for this company) to ensure global uniqueness
+    const allWarehouses = await Warehouse.find({ 
+      warehouseCode: { $exists: true, $ne: null }
     })
-      .sort({ warehouseCode: -1 })
-      .limit(1);
+      .select("warehouseCode companyId")
+      .lean();
     
     let nextNumber = 1;
-    if (existingWarehouses.length > 0 && existingWarehouses[0].warehouseCode) {
-      const lastCode = existingWarehouses[0].warehouseCode;
-      const match = lastCode.match(/WH(\d+)/);
-      if (match) {
-        nextNumber = parseInt(match[1]) + 1;
+    if (allWarehouses.length > 0) {
+      // Extract all numbers from existing codes and find the max
+      const numbers = allWarehouses
+        .map(w => {
+          const match = w.warehouseCode?.match(/WH(\d+)/);
+          return match ? parseInt(match[1]) : 0;
+        })
+        .filter(n => n > 0);
+      
+      if (numbers.length > 0) {
+        nextNumber = Math.max(...numbers) + 1;
       }
     }
+    
     const warehouseCode = `WH${String(nextNumber).padStart(3, "0")}`;
+
+    // Double-check that this code doesn't exist globally
+    const codeExists = await Warehouse.findOne({
+      warehouseCode: warehouseCode
+    });
+
+    if (codeExists) {
+      console.error("Code conflict detected for:", warehouseCode);
+      // Generate a timestamp-based unique code
+      const timestamp = Date.now().toString().slice(-4);
+      const fallbackCode = `WH${timestamp}`;
+      
+      return NextResponse.json(
+        { 
+          error: "Warehouse code conflict detected. Please try again.",
+          suggestedCode: fallbackCode,
+          debug: {
+            attemptedCode: warehouseCode,
+            existingCompany: codeExists.companyId,
+            yourCompany: user.companyId
+          }
+        },
+        { status: 409 }
+      );
+    }
 
     // If manager is provided, verify they exist and belong to the company
     if (manager) {

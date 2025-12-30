@@ -51,6 +51,7 @@ export default function InventoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string | null>(null);
   
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,12 +64,32 @@ export default function InventoryPage() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Fetch user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserRole(data.user.role);
+        }
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
+
   // Fetch data
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-    fetchWarehouses();
-  }, [searchQuery, selectedCategory, selectedWarehouse, statusFilter]);
+    if (userRole === "super_admin") {
+      fetchWarehouses();
+    }
+  }, [searchQuery, selectedCategory, selectedWarehouse, statusFilter, userRole]);
 
   const fetchProducts = async () => {
     try {
@@ -182,7 +203,7 @@ export default function InventoryPage() {
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className={`grid grid-cols-1 ${userRole === "super_admin" ? "md:grid-cols-4" : "md:grid-cols-3"} gap-4`}>
             {/* Search */}
             <div className="md:col-span-2">
               <Label htmlFor="search">Search</Label>
@@ -216,23 +237,25 @@ export default function InventoryPage() {
               </select>
             </div>
 
-            {/* Warehouse Filter */}
-            <div>
-              <Label htmlFor="warehouse">Warehouse</Label>
-              <select
-                id="warehouse"
-                value={selectedWarehouse}
-                onChange={(e) => setSelectedWarehouse(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              >
-                <option value="">All Warehouses</option>
-                {warehouses.map((wh) => (
-                  <option key={wh._id} value={wh._id}>
-                    {wh.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Warehouse Filter - Only for Super Admin */}
+            {userRole === "super_admin" && (
+              <div>
+                <Label htmlFor="warehouse">Warehouse</Label>
+                <select
+                  id="warehouse"
+                  value={selectedWarehouse}
+                  onChange={(e) => setSelectedWarehouse(e.target.value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">All Warehouses</option>
+                  {warehouses.map((wh) => (
+                    <option key={wh._id} value={wh._id}>
+                      {wh.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Status Filter & Clear */}
@@ -373,16 +396,18 @@ export default function InventoryPage() {
                           >
                             <FaEdit className="text-blue-600" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setProductToDelete(product);
-                              setDeleteModalOpen(true);
-                            }}
-                          >
-                            <FaTrash className="text-red-600" />
-                          </Button>
+                          {userRole === "super_admin" && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setProductToDelete(product);
+                                setDeleteModalOpen(true);
+                              }}
+                            >
+                              <FaTrash className="text-red-600" />
+                            </Button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -75,7 +75,7 @@ export function validateEnv(): EnvConfig {
 
   // Success message
   if (missing.length === 0 && warnings.length === 0) {
-    console.log('✅ All environment variables validated successfully');
+    // Environment variables validated successfully
   }
 
   return {

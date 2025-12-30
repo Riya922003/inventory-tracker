@@ -180,6 +180,7 @@ export async function POST(req: NextRequest) {
           const [newCategory] = await ProductCategory.create(
             [
               {
+                companyId: systemConfig._id,
                 name: category.name,
                 agingConcern: category.agingConcern,
                 agingDays: category.agingDays,

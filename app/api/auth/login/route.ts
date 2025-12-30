@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/auth";
+import { CommonErrors, jsonSuccess } from "@/lib/api-response";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,9 +11,9 @@ export async function POST(req: NextRequest) {
 
     // Validate input
     if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required" },
-        { status: 400 }
+      return CommonErrors.badRequest(
+        "Email and password are required",
+        "Both email and password fields must be provided"
       );
     }
 
@@ -22,37 +23,37 @@ export async function POST(req: NextRequest) {
     const user = await User.findOne({ email: email.toLowerCase() }).lean();
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 }
-      );
+      return CommonErrors.unauthorized("Invalid email or password");
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 }
-      );
+      return CommonErrors.unauthorized("Invalid email or password");
     }
 
-    // Generate JWT token
+    // Generate JWT token with role and companyId
     const token = signToken({
       userId: user._id.toString(),
       email: user.email,
+      role: user.role,
+      companyId: user.companyId?.toString(),
     });
 
     // Build response and set cookie explicitly so browser receives it
+    // Check if user needs onboarding
     const needsOnboarding = !user.companyId;
-    const res = NextResponse.json(
+    
+    const res = jsonSuccess(
       {
         success: true,
         user: {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          role: user.role,
+          companyId: user.companyId?.toString(),
         },
         needsOnboarding,
       }
@@ -72,9 +73,9 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (error) {
     console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "An error occurred during login" },
-      { status: 500 }
+    return CommonErrors.serverError(
+      "An error occurred during login",
+      error instanceof Error ? error.message : undefined
     );
   }
 }

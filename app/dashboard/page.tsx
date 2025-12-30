@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FaBox, FaWarehouse, FaRupeeSign, FaExclamationTriangle, FaExclamationCircle } from "react-icons/fa";
 import { MdPlayCircleOutline } from "react-icons/md";
 import { HiTrendingUp } from "react-icons/hi";
+import { fetchWithErrorHandling, handleApiResponse } from "@/lib/api-client";
+
+// Force dynamic rendering to prevent prerendering issues with useSearchParams
+export const dynamic = 'force-dynamic';
 
 interface DashboardStats {
   totalProducts: number;
@@ -46,39 +50,66 @@ interface Activity {
   user?: string;
 }
 
-export default function DashboardPage() {
+interface DashboardData {
+  stats: DashboardStats;
+  warehouses: Warehouse[];
+  alerts: Alert[];
+  activities: Activity[];
+}
+
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for error parameter
+    const errorParam = searchParams.get("error");
+    if (errorParam === "unauthorized") {
+      setError("You don't have permission to access that page");
+      // Clear the error parameter from URL
+      router.replace("/dashboard");
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch("/api/dashboard", {
-          credentials: "include",
+        const response = await fetchWithErrorHandling<DashboardData>("/api/dashboard");
+        
+        const data = handleApiResponse(response, {
+          onUnauthorized: () => {
+            console.log("Dashboard - Not authenticated, redirecting to login");
+            window.location.href = "/";
+          },
+          onForbidden: (errorMsg) => {
+            setError(errorMsg);
+            setLoading(false);
+          },
+          onServerError: (errorMsg) => {
+            setError(`Server error: ${errorMsg}`);
+            setLoading(false);
+          },
+          onNetworkError: (errorMsg) => {
+            setError(`Connection error: ${errorMsg}`);
+            setLoading(false);
+          },
         });
-        
-        if (response.status === 401) {
-          // Not authenticated, redirect to login
-          console.log("Dashboard - Not authenticated, redirecting to login");
-          window.location.href = "/";
-          return;
-        }
-        
-        if (response.ok) {
-          const data = await response.json();
+
+        if (data) {
           setStats(data.stats);
           setWarehouses(data.warehouses || []);
           setAlerts(data.alerts || []);
           setActivities(data.activities || []);
-        } else {
-          console.error("Dashboard API error:", response.status);
         }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        setError("An unexpected error occurred while loading the dashboard");
       } finally {
         setLoading(false);
       }
@@ -91,6 +122,30 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-gray-600">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  // Show error state if there's an error
+  if (error && !stats) {
+    return (
+      <div className="p-8">
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+          <div className="flex items-center gap-2">
+            <FaExclamationCircle className="text-red-600" />
+            <div>
+              <p className="text-sm font-medium text-red-800">{error}</p>
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
+                size="sm"
+                className="mt-2"
+              >
+                Retry
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -180,6 +235,16 @@ export default function DashboardPage() {
   // Dashboard with Data
   return (
     <div className="p-8">
+      {/* Error Banner */}
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+          <div className="flex items-center gap-2">
+            <FaExclamationCircle className="text-red-600" />
+            <span className="text-sm font-medium text-red-800">{error}</span>
+          </div>
+        </div>
+      )}
+
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -386,3 +451,14 @@ export default function DashboardPage() {
   );
 }
 
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-600">Loading dashboard...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
+  );
+}

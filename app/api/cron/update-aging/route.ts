@@ -35,8 +35,6 @@ export async function POST(req: NextRequest) {
       .populate("productId", "name sku unitPrice")
       .populate("warehouseId", "name");
 
-    console.log(`[Aging Update] Processing ${stocks.length} stock entries...`);
-
     for (const stock of stocks) {
       // Calculate age in days
       const entryDate = new Date(stock.entryDate);
@@ -79,10 +77,6 @@ export async function POST(req: NextRequest) {
         }
       }
     }
-
-    console.log(
-      `[Aging Update] Updated ${updatedCount} stocks, generated ${alertsGenerated} alerts`
-    );
 
     return NextResponse.json({
       success: true,
@@ -155,7 +149,6 @@ async function generateAlert(
     };
 
     await Alert.create(alertData);
-    console.log(`[Alert Generated] ${alertData.title} - ${warehouse.name}`);
   } catch (error) {
     console.error("Error generating alert:", error);
   }
