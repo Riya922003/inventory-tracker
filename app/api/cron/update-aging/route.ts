@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       
       // Get aging thresholds (you can make these configurable per category)
       const atRiskThreshold = 60; // 60 days
-      const deadThreshold = 90; // 90 days
+      const deadThreshold =90; // 90 days
 
       if (ageInDays >= deadThreshold) {
         newStatus = "dead";

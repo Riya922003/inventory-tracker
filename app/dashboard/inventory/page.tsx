@@ -7,15 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  FaSearch,
-  FaFilter,
-  FaPlus,
-  FaEdit,
-  FaTrash,
-  FaBox,
-  FaArchive,
-} from "react-icons/fa";
+import {FaSearch,FaFilter,FaPlus,FaEdit,FaTrash,FaBox,FaArchive,} from "react-icons/fa";
 
 interface Product {
   _id: string;
@@ -198,6 +190,7 @@ export default function InventoryPage() {
           <FaPlus className="mr-2" />
           Add Product
         </Button>
+
       </div>
 
       {/* Filters */}
@@ -256,6 +249,7 @@ export default function InventoryPage() {
                 </select>
               </div>
             )}
+
           </div>
 
           {/* Status Filter & Clear */}
@@ -268,6 +262,8 @@ export default function InventoryPage() {
               >
                 Active
               </Button>
+              
+              
               <Button
                 variant={statusFilter === "archived" ? "default" : "outline"}
                 size="sm"

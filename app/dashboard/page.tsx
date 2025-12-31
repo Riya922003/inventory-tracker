@@ -413,7 +413,7 @@ function DashboardContent() {
                       <Button variant="outline" size="sm" className="text-xs">
                         Dismiss
                       </Button>
-                      <Button size="sm" variant="outline" className="text-xs">
+                      <Button size="sm" variant="outline" className="text-xs" >
                         View Details
                       </Button>
                     </div>

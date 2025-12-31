@@ -2,17 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
-import { 
-  FaHome, 
-  FaBox, 
-  FaWarehouse, 
-  FaBell, 
-  FaChartBar, 
-  FaPlus,
-  FaFileImport,
-  FaUsers,
-  FaSignOutAlt
-} from "react-icons/fa";
+import { FaHome, FaBox, FaWarehouse, FaBell, FaChartBar, FaPlus,FaFileImport,FaUsers,FaSignOutAlt} from "react-icons/fa";
 import { MdInventory, MdLogout } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 
@@ -191,10 +181,11 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">
                 {user?.name || "User"}
-              </p>
+              </p>  
               <p className="text-xs text-indigo-300 truncate">
                 {user ? getRoleDisplayName(user.role) : "Loading..."}
               </p>
+
               {user?.role === "warehouse_manager" && user.assignedWarehouses && (
                 <p className="text-xs text-indigo-400 truncate mt-0.5">
                   {user.assignedWarehouses.length} warehouse(s)

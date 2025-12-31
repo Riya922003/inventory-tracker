@@ -4,6 +4,7 @@ import { Product } from "@/models/Product";
 import { ProductCategory } from "@/models/ProductCategory";
 import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
+// import { SearchParams } from "next/dist/server/request/search-params";
 
 export async function POST(req: NextRequest) {
   try {

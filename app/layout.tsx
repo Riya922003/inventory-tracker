@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 // Using system fonts as fallback to avoid Google Fonts connection issues during build
 const geistSans = {
@@ -28,6 +29,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );

@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {
-  FaWarehouse,
-  FaPlus,
-  FaEdit,
-  FaExchangeAlt,
-  FaChartBar,
-  FaExclamationTriangle,
-  FaCheckCircle,
-} from "react-icons/fa";
+import {FaWarehouse,FaPlus,FaEdit,FaExchangeAlt,FaChartBar,FaExclamationTriangle,FaCheckCircle,} from "react-icons/fa";
 
 interface Warehouse {
   _id: string;
