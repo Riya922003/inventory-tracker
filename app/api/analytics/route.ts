@@ -2,13 +2,11 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    const token = process.env.VERCEL_ANALYTICS_TOKEN;
-    const teamId = process.env.VERCEL_TEAM_ID;
-    const projectId = process.env.VERCEL_PROJECT_ID;
+    const projectId = process.env.VERCEL_PROJECT_ID || process.env.NEXT_PUBLIC_VERCEL_PROJECT_ID;
 
-    if (!token || !teamId || !projectId) {
+    if (!projectId) {
       return NextResponse.json(
-        { error: 'Missing Vercel Analytics configuration' },
+        { error: 'Missing VERCEL_PROJECT_ID environment variable' },
         { status: 500 }
       );
     }
@@ -18,25 +16,26 @@ export async function GET() {
     startDate.setDate(startDate.getDate() - 7);
 
     const queries = [
-      { dimension: 'country', metric: 'visitors' },
-      { dimension: 'region', metric: 'visitors' },
-      { dimension: 'city', metric: 'visitors' },
-      { dimension: 'os', metric: 'visitors' },
-      { dimension: 'browser', metric: 'visitors' },
+      { dimension: 'country' },
+      { dimension: 'region' },
+      { dimension: 'city' },
+      { dimension: 'os' },
+      { dimension: 'browser' },
     ];
 
     const results = await Promise.all(
-      queries.map(async ({ dimension, metric }) => {
-        const url = `https://vercel.com/api/web/insights/stats?teamId=${teamId}&projectId=${projectId}&from=${startDate.getTime()}&to=${endDate.getTime()}&dimension=${dimension}&metric=${metric}`;
+      queries.map(async ({ dimension }) => {
+        const url = `https://va.vercel-scripts.com/v1/projects/${projectId}/stats?dimension=${dimension}&start=${startDate.getTime()}&end=${endDate.getTime()}`;
         
         const response = await fetch(url, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to fetch ${dimension} data`);
+          console.error(`Failed to fetch ${dimension}:`, response.status, response.statusText);
+          return { dimension, data: [] };
         }
 
         const data = await response.json();
