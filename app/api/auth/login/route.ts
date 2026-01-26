@@ -29,10 +29,11 @@ export async function POST(req: NextRequest) {
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
+    if (!isPasswordValid) {  
       return CommonErrors.unauthorized("Invalid email or password");
     }
 
+    
     // Generate JWT token with role and companyId
     const token = signToken({
       userId: user._id.toString(),
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
       companyId: user.companyId?.toString(),
     });
 
+  
     // Build response and set cookie explicitly so browser receives it
     // Check if user needs onboarding
     const needsOnboarding = !user.companyId;

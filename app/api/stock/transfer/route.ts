@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Update source stock (reduce quantity)
+    // Update source stock (reduce quantity)    transaction in mongodb 
     stock.quantityAvailable -= quantity;
     await stock.save();
 

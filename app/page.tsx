@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,7 +68,7 @@ export default function AuthPage() {
           <div className="flex items-center justify-center gap-3 mb-3">
             <FaBox className="text-4xl text-purple-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              InsydTracker
+              Inventory Tracker
             </h1>
           </div>
           <p className="text-gray-600">Smart Inventory Management System</p>
@@ -136,20 +137,40 @@ export default function AuthPage() {
               </Button>
             </form>
 
+            <div className="mt-4 text-center">
+              <Link 
+                href="/forgot-password"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <div className="flex items-start gap-2">
+              <div className="flex items-start gap-2 mb-3">
                 <FaLightbulb className="text-yellow-500 text-lg flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-gray-700 font-medium mb-1">Demo Account</p>
                   <p className="text-xs text-gray-600">Log in to access your inventory dashboard and manage your warehouses and products.</p>
                 </div>
               </div>
+              <Button
+                type="button"
+                onClick={() => {
+                  setLoginEmail("test12@gmail.com");
+                  setLoginPassword("test12@2003");
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                variant="outline"
+              >
+                Use Demo Credentials
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         <div className="text-center mt-6 text-sm text-gray-600">
-          <p>© 2025 InsydTracker. Smart inventory management for modern businesses.</p>
+          <p>© 2025 Inventory Tracker. Smart inventory management for modern businesses.</p>
         </div>
       </div>
     </div>

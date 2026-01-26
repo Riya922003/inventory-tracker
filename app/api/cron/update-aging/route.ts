@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
     for (const stock of stocks) {
       // Calculate age in days
       const entryDate = new Date(stock.entryDate);
+     
       const ageInDays = Math.floor(
         (today.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
       );
