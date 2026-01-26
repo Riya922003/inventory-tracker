@@ -18,6 +18,8 @@ export interface IUser extends Document {
   emailVerified: boolean;
   invitationToken?: string;
   invitationExpiry?: Date;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
   
   // Preferences
   preferences: {
@@ -60,6 +62,8 @@ const UserSchema = new Schema<IUser>(
     emailVerified: { type: Boolean, default: false },
     invitationToken: { type: String },
     invitationExpiry: { type: Date },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
     
     // Preferences
     preferences: {
