@@ -12,6 +12,7 @@ export interface IStock extends Document {
   warehouseId: Types.ObjectId;
   createdBy: Types.ObjectId;
   batchId: string;
+  parentBatchId: string | null;
   quantityReceived: number;
   quantityAvailable: number;
   quantityDamaged: number;
@@ -57,6 +58,12 @@ const StockSchema = new Schema<IStock>(
       type: String,
       required: true,
     },
+    // null = original batch from supplier
+    // "SANDSTONE-001" = this document was created by a transfer
+    parentBatchId: {
+      type: String,
+      default: null,
+    },
     quantityReceived: {
       type: Number,
       required: true,
@@ -84,6 +91,7 @@ const StockSchema = new Schema<IStock>(
     ageInDays: {
       type: Number,
       default: 0,
+      min: 0,
     },
     status: {
       type: String,
@@ -95,27 +103,80 @@ const StockSchema = new Schema<IStock>(
       default: [],
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Indexes for performance
-StockSchema.index({ companyId: 1 });
-StockSchema.index({ productId: 1, warehouseId: 1 });
-StockSchema.index({ ageInDays: -1 });
-StockSchema.index({ status: 1 });
-StockSchema.index({ warehouseId: 1, status: 1 });
-// Compound unique index: batchId must be unique within each company
-StockSchema.index({ companyId: 1, batchId: 1 }, { unique: true });
+// ---- INDEXES ----
 
-// Pre-save middleware to compute ageInDays
+// Most common dashboard query - fetch all stock for a company
+StockSchema.index({ companyId: 1 });
+
+// Warehouse page - fetch stock for specific warehouse
+StockSchema.index({ companyId: 1, warehouseId: 1 });
+
+// Dashboard status filters - dead stock, at risk counts
+StockSchema.index({ companyId: 1, status: 1 });
+
+// Cron job - finds all stocks needing age update
+StockSchema.index({ ageInDays: -1 });
+
+// Warehouse status breakdown
+StockSchema.index({ warehouseId: 1, status: 1 });
+
+// Transfer chain tracing - find all documents from same original batch
+StockSchema.index({ parentBatchId: 1 });
+
+// Product level queries
+StockSchema.index({ productId: 1, warehouseId: 1 });
+
+// FIXED unique constraint
+// Same batch CAN exist in multiple warehouses (transfers)
+// Same batch CANNOT exist twice in the same warehouse
+StockSchema.index(
+  { companyId: 1, batchId: 1, warehouseId: 1 },
+  { unique: true }
+);
+
+// ---- MIDDLEWARE ----
+
+// Fires on new document creation and .save()
 StockSchema.pre("save", function () {
   const now = new Date();
   const entryDate = new Date(this.entryDate);
   const diffTime = Math.abs(now.getTime() - entryDate.getTime());
   this.ageInDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 });
+
+// pre("save") does NOT fire on findByIdAndUpdate
+// Use this static method in your cron job instead
+StockSchema.statics.updateAgeForAllCompanies = async function () {
+  const now = new Date();
+  const stocks = await this.find({}).select("_id entryDate");
+
+  const bulkOps = stocks.map((stock: any) => {
+    const diffTime = Math.abs(
+      now.getTime() - new Date(stock.entryDate).getTime()
+    );
+    const ageInDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    let status = "healthy";
+    if (ageInDays >= 180) status = "dead";
+    else if (ageInDays >= 120) status = "at_risk";
+
+    return {
+      updateOne: {
+        filter: { _id: stock._id },
+        update: { $set: { ageInDays, status } },
+      },
+    };
+  });
+
+  if (bulkOps.length > 0) {
+    await this.bulkWrite(bulkOps);
+  }
+
+  return bulkOps.length;
+};
 
 export const Stock =
   mongoose.models.Stock || mongoose.model<IStock>("Stock", StockSchema);
