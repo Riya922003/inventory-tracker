@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { HiLightBulb } from "react-icons/hi";
 import { FaCamera } from "react-icons/fa";
+import { useUpload } from "@/hooks/useUpload";
 
 // Schema for Step 1 - Basic Product Info
 const step1Schema = z.object({
@@ -72,7 +73,7 @@ export default function AddFirstProduct() {
   const [loadingWarehouses, setLoadingWarehouses] = useState(true);
   const [step1Data, setStep1Data] = useState<Step1FormData | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const { uploadPhoto, uploading: uploadingPhoto, error: uploadError } = useUpload();
 
   const step1Form = useForm<Step1FormData>({
     resolver: zodResolver(step1Schema),
@@ -138,21 +139,14 @@ export default function AddFirstProduct() {
       return;
     }
 
-    setUploadingPhoto(true);
+    const result = await uploadPhoto(file, "entry");
 
-    try {
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-        step2Form.setValue("entryPhoto", reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-      toast.error("Failed to upload photo");
-    } finally {
-      setUploadingPhoto(false);
+    if (result) {
+      setPhotoPreview(result.url);
+      step2Form.setValue("entryPhoto", result.url);
+      toast.success("Photo uploaded successfully");
+    } else if (uploadError) {
+      toast.error(uploadError);
     }
   };
 
@@ -247,9 +241,8 @@ export default function AddFirstProduct() {
           id="category"
           {...step1Form.register("category")}
           disabled={loadingCategories}
-          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-            step1Form.formState.errors.category ? "border-red-500" : ""
-          }`}
+          className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${step1Form.formState.errors.category ? "border-red-500" : ""
+            }`}
         >
           <option value="">
             {loadingCategories ? "Loading categories..." : "Select a category"}
@@ -425,9 +418,8 @@ export default function AddFirstProduct() {
               id="warehouseId"
               {...step2Form.register("warehouseId")}
               disabled={loadingWarehouses}
-              className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
-                step2Form.formState.errors.warehouseId ? "border-red-500" : ""
-              }`}
+              className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${step2Form.formState.errors.warehouseId ? "border-red-500" : ""
+                }`}
             >
               <option value="">
                 {loadingWarehouses ? "Loading warehouses..." : "Select a warehouse"}

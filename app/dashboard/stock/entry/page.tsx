@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FaArrowLeft, FaCamera, FaCheck, FaBox } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
+import { useUpload } from "@/hooks/useUpload";
 
 const stockEntrySchema = z.object({
   productId: z.string().min(1, "Please select a product"),
@@ -50,7 +51,7 @@ export default function StockEntryPage() {
   const [loadingWarehouses, setLoadingWarehouses] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const { uploadPhoto, uploading: uploadingPhoto, error: uploadError } = useUpload();
 
   const form = useForm<StockEntryFormData>({
     resolver: zodResolver(stockEntrySchema),
@@ -124,23 +125,14 @@ export default function StockEntryPage() {
       return;
     }
 
-    setUploadingPhoto(true);
+    const result = await uploadPhoto(file, "entry");
 
-    try {
-      // Create a compressed preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPhotoPreview(base64String);
-        form.setValue("entryPhoto", base64String);
-        toast.success("Photo uploaded successfully");
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-      toast.error("Failed to upload photo");
-    } finally {
-      setUploadingPhoto(false);
+    if (result) {
+      setPhotoPreview(result.url);
+      form.setValue("entryPhoto", result.url);
+      toast.success("Photo uploaded successfully");
+    } else if (uploadError) {
+      toast.error(uploadError);
     }
   };
 
@@ -225,9 +217,8 @@ export default function StockEntryPage() {
                 id="productId"
                 {...form.register("productId")}
                 disabled={loadingProducts}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
-                  form.formState.errors.productId ? "border-red-500" : ""
-                }`}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.productId ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">
                   {loadingProducts ? "Loading products..." : "Select a product"}
@@ -257,9 +248,8 @@ export default function StockEntryPage() {
                 id="warehouseId"
                 {...form.register("warehouseId")}
                 disabled={loadingWarehouses}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
-                  form.formState.errors.warehouseId ? "border-red-500" : ""
-                }`}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.warehouseId ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">
                   {loadingWarehouses ? "Loading warehouses..." : "Select a warehouse"}
@@ -288,9 +278,8 @@ export default function StockEntryPage() {
                   min="1"
                   placeholder="Enter quantity"
                   {...form.register("quantity", { valueAsNumber: true })}
-                  className={`flex-1 ${
-                    form.formState.errors.quantity ? "border-red-500" : ""
-                  }`}
+                  className={`flex-1 ${form.formState.errors.quantity ? "border-red-500" : ""
+                    }`}
                 />
                 {selectedProduct && (
                   <span className="text-sm text-gray-500 capitalize">

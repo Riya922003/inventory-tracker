@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FaArrowLeft, FaCamera, FaCheck, FaExclamationTriangle } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
+import { useUpload } from "@/hooks/useUpload";
 
 const stockExitSchema = z.object({
   productId: z.string().min(1, "Please select a product"),
@@ -60,7 +61,7 @@ export default function StockExitPage() {
   const [loadingBatches, setLoadingBatches] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const { uploadPhoto, uploading: uploadingPhoto, error: uploadError } = useUpload();
 
   const form = useForm<StockExitFormData>({
     resolver: zodResolver(stockExitSchema),
@@ -176,22 +177,14 @@ export default function StockExitPage() {
       return;
     }
 
-    setUploadingPhoto(true);
+    const result = await uploadPhoto(file, "exit");
 
-    try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPhotoPreview(base64String);
-        form.setValue("exitPhoto", base64String);
-        toast.success("Photo uploaded successfully");
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-      toast.error("Failed to upload photo");
-    } finally {
-      setUploadingPhoto(false);
+    if (result) {
+      setPhotoPreview(result.url);
+      form.setValue("exitPhoto", result.url);
+      toast.success("Photo uploaded successfully");
+    } else if (uploadError) {
+      toast.error(uploadError);
     }
   };
 
@@ -284,9 +277,8 @@ export default function StockExitPage() {
                 id="productId"
                 {...form.register("productId")}
                 disabled={loadingProducts}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
-                  form.formState.errors.productId ? "border-red-500" : ""
-                }`}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.productId ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">
                   {loadingProducts ? "Loading products..." : "Select a product"}
@@ -311,9 +303,8 @@ export default function StockExitPage() {
                 id="warehouseId"
                 {...form.register("warehouseId")}
                 disabled={loadingWarehouses}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
-                  form.formState.errors.warehouseId ? "border-red-500" : ""
-                }`}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.warehouseId ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">
                   {loadingWarehouses ? "Loading warehouses..." : "Select a warehouse"}
@@ -338,18 +329,17 @@ export default function StockExitPage() {
                 id="stockId"
                 {...form.register("stockId")}
                 disabled={loadingBatches || !selectedProductId || !selectedWarehouseId}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${
-                  form.formState.errors.stockId ? "border-red-500" : ""
-                }`}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.stockId ? "border-red-500" : ""
+                  }`}
               >
                 <option value="">
                   {loadingBatches
                     ? "Loading batches..."
                     : !selectedProductId || !selectedWarehouseId
-                    ? "Select product and warehouse first"
-                    : stockBatches.length === 0
-                    ? "No stock available"
-                    : "Select a batch"}
+                      ? "Select product and warehouse first"
+                      : stockBatches.length === 0
+                        ? "No stock available"
+                        : "Select a batch"}
                 </option>
                 {stockBatches.map((batch) => (
                   <option key={batch._id} value={batch._id}>
@@ -370,8 +360,8 @@ export default function StockExitPage() {
                       selectedBatch.status === "dead"
                         ? "text-red-600"
                         : selectedBatch.status === "at_risk"
-                        ? "text-orange-600"
-                        : "text-green-600"
+                          ? "text-orange-600"
+                          : "text-green-600"
                     }
                   />
                   <span className="text-gray-700">
@@ -394,9 +384,8 @@ export default function StockExitPage() {
                   max={selectedBatch?.quantityAvailable || undefined}
                   placeholder="Enter quantity"
                   {...form.register("quantity", { valueAsNumber: true })}
-                  className={`flex-1 ${
-                    form.formState.errors.quantity ? "border-red-500" : ""
-                  }`}
+                  className={`flex-1 ${form.formState.errors.quantity ? "border-red-500" : ""
+                    }`}
                 />
                 {selectedProduct && (
                   <span className="text-sm text-gray-500 capitalize">
