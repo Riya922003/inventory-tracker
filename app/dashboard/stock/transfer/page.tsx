@@ -17,6 +17,7 @@ import {
   FaCamera,
   FaExchangeAlt,
 } from "react-icons/fa";
+import { useUpload } from "@/hooks/useUpload";
 
 interface Stock {
   _id: string;
@@ -69,6 +70,7 @@ function StockTransferContent() {
   // Step 3: Photo Verification
   const [exitPhoto, setExitPhoto] = useState("");
   const [entryPhoto, setEntryPhoto] = useState("");
+  const { uploadPhoto, uploading: uploadingPhoto, error: uploadError } = useUpload();
 
   useEffect(() => {
     fetchData();
@@ -93,8 +95,8 @@ function StockTransferContent() {
         fetch("/api/warehouses", { credentials: "include" }),
         sourceWarehouseId
           ? fetch(`/api/stock/entry?warehouseId=${sourceWarehouseId}`, {
-              credentials: "include",
-            })
+            credentials: "include",
+          })
           : Promise.resolve({ ok: true, json: async () => ({ stocks: [] }) }),
       ]);
 
@@ -116,7 +118,7 @@ function StockTransferContent() {
     }
   };
 
-  const handleImageUpload = (
+  const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "exit" | "entry"
   ) => {
@@ -128,16 +130,18 @@ function StockTransferContent() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
+    const result = await uploadPhoto(file, type);
+
+    if (result) {
       if (type === "exit") {
-        setExitPhoto(base64);
+        setExitPhoto(result.url);
       } else {
-        setEntryPhoto(base64);
+        setEntryPhoto(result.url);
       }
-    };
-    reader.readAsDataURL(file);
+      toast.success("Photo uploaded successfully");
+    } else if (uploadError) {
+      toast.error(uploadError);
+    }
   };
 
   const handleSubmit = async () => {
@@ -254,43 +258,38 @@ function StockTransferContent() {
           </div>
           <div className="flex items-center gap-2">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                step >= 1
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-gray-600"
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1
+                ? "bg-purple-600 text-white"
+                : "bg-gray-200 text-gray-600"
+                }`}
             >
               1
             </div>
             <div className="w-12 h-1 bg-gray-200">
               <div
-                className={`h-full ${
-                  step >= 2 ? "bg-purple-600" : "bg-gray-200"
-                }`}
+                className={`h-full ${step >= 2 ? "bg-purple-600" : "bg-gray-200"
+                  }`}
               />
             </div>
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                step >= 2
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-gray-600"
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2
+                ? "bg-purple-600 text-white"
+                : "bg-gray-200 text-gray-600"
+                }`}
             >
               2
             </div>
             <div className="w-12 h-1 bg-gray-200">
               <div
-                className={`h-full ${
-                  step >= 3 ? "bg-purple-600" : "bg-gray-200"
-                }`}
+                className={`h-full ${step >= 3 ? "bg-purple-600" : "bg-gray-200"
+                  }`}
               />
             </div>
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                step >= 3
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 text-gray-600"
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3
+                ? "bg-purple-600 text-white"
+                : "bg-gray-200 text-gray-600"
+                }`}
             >
               3
             </div>
@@ -338,11 +337,10 @@ function StockTransferContent() {
                       <div
                         key={stock._id}
                         onClick={() => setSelectedStock(stock)}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                          selectedStock?._id === stock._id
-                            ? "border-purple-600 bg-purple-50"
-                            : "border-gray-200 hover:border-purple-300"
-                        }`}
+                        className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedStock?._id === stock._id
+                          ? "border-purple-600 bg-purple-50"
+                          : "border-gray-200 hover:border-purple-300"
+                          }`}
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex items-start gap-3">
@@ -363,7 +361,7 @@ function StockTransferContent() {
                                 Available: {stock.quantityAvailable} units •{" "}
                                 {formatValue(
                                   stock.quantityAvailable *
-                                    stock.productId.unitPrice
+                                  stock.productId.unitPrice
                                 )}{" "}
                                 value
                               </p>
@@ -378,15 +376,15 @@ function StockTransferContent() {
                                       stock.status === "healthy"
                                         ? "text-green-600"
                                         : stock.status === "at_risk"
-                                        ? "text-orange-600"
-                                        : "text-red-600"
+                                          ? "text-orange-600"
+                                          : "text-red-600"
                                     }
                                   >
                                     {stock.status === "healthy"
                                       ? "Healthy"
                                       : stock.status === "at_risk"
-                                      ? "At Risk"
-                                      : "Dead"}
+                                        ? "At Risk"
+                                        : "Dead"}
                                   </span>
                                 </span>
                               </div>
@@ -704,7 +702,7 @@ function StockTransferContent() {
                     <span className="font-bold text-gray-900">
                       {formatValue(
                         parseInt(quantity || "0") *
-                          selectedStock.productId.unitPrice
+                        selectedStock.productId.unitPrice
                       )}
                     </span>
                   </div>
