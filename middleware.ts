@@ -25,14 +25,14 @@ const rolePermissions = {
 
 function hasAccess(role: string, pathname: string): boolean {
   const permissions = rolePermissions[role as keyof typeof rolePermissions];
-  
+
   if (!permissions) return false;
-  
+
   // Super admin has access to everything
   if (permissions.includes("*")) return true;
-  
+
   // Check if the pathname matches any allowed permission
-  return permissions.some((permission) => 
+  return permissions.some((permission) =>
     pathname === permission || pathname.startsWith(permission + "/")
   );
 }
@@ -47,6 +47,7 @@ export async function middleware(request: NextRequest) {
   // Public routes that don't require authentication
   const publicRoutes = [
     "/",
+    "/login",
     "/api/auth/login",
     "/api/auth/signup",
     "/onboarding",
@@ -70,13 +71,13 @@ export async function middleware(request: NextRequest) {
       );
     }
     // Redirect to login for page routes
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // If has token, verify it and check permissions
   if (token) {
     const payload = await verifyTokenEdge(token);
-    
+
     // Invalid token
     if (!payload) {
       if (isApiRoute) {
@@ -89,13 +90,13 @@ export async function middleware(request: NextRequest) {
         return response;
       }
       // Redirect to login for page routes and clear cookie
-      const response = NextResponse.redirect(new URL("/", request.url));
+      const response = NextResponse.redirect(new URL("/login", request.url));
       response.cookies.delete("auth-token");
       return response;
     }
 
-    // If logged in and trying to access login page, redirect to dashboard
-    if (pathname === "/") {
+    // If logged in and trying to access login page or home page, redirect to dashboard
+    if (pathname === "/" || pathname === "/login") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
@@ -103,7 +104,7 @@ export async function middleware(request: NextRequest) {
     if (!isPublicRoute) {
       // Get user role from token - default to warehouse_manager if not present
       const userRole = (payload as any).role || "warehouse_manager";
-      
+
       // Only check access if role exists in our system
       if (userRole === "super_admin" || userRole === "warehouse_manager") {
         // Check if user has access to this route
@@ -127,7 +128,7 @@ export async function middleware(request: NextRequest) {
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set("x-user-id", payload.userId);
     requestHeaders.set("x-user-email", payload.email);
-    
+
     // Add role and companyId if available in token
     if ((payload as any).role) {
       requestHeaders.set("x-user-role", (payload as any).role);
