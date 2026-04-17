@@ -255,7 +255,7 @@ export default function LandingPage() {
               {/* Profile Image */}
               <div className="flex-shrink-0">
                 <img
-                  src="/images/my-image.png"
+                  src="/images/my-image-1.jpeg"
                   alt="Riya Gupta"
                   className="w-32 h-32 rounded-full object-cover border-4 border-purple-100"
                 />
