@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import connectDB from "@/lib/db";
-import User from "@/models/User";
+import { connectDB } from "@/lib/db";
+import { User } from "@/models/User";
 import SidebarLayout from "@/components/layout/SidebarLayout";
 
 export default async function DashboardLayout({
