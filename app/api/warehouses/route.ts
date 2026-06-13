@@ -6,7 +6,8 @@ import { Stock } from "@/models/Stock";
 import { StockMovement } from "@/models/StockMovement";
 import { Product } from "@/models/Product";
 import { getCurrentUser } from "@/lib/auth";
-import { canAccessWarehouse, isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
+import { isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
+import { getUserWarehouseIds } from "@/lib/pg-permissions";
 
 // GET all warehouses with metrics
 export async function GET(req: NextRequest) {
@@ -29,9 +30,9 @@ export async function GET(req: NextRequest) {
     // Fetch all company warehouses with manager info
     let warehouseQuery: any = { companyId: user.companyId, isActive: true };
 
-    // Warehouse managers only see their assigned warehouses
+    // Warehouse managers only see their assigned warehouses (PostgreSQL check)
     if (user.role === "warehouse_manager") {
-      const assignedIds = user.assignedWarehouses?.map((id: any) => id.toString()) ?? [];
+      const assignedIds = await getUserWarehouseIds(user._id.toString());
       warehouseQuery._id = { $in: assignedIds };
     }
 

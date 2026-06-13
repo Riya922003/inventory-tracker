@@ -5,6 +5,7 @@ import { User } from "@/models/User";
 import { Stock } from "@/models/Stock";
 import { getCurrentUser } from "@/lib/auth";
 import { canAccessWarehouse, isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
+import { hasWarehouseAccess, revokeAllWarehousePermissions } from "@/lib/pg-permissions";
 
 // GET single warehouse with details
 export async function GET(
@@ -40,9 +41,10 @@ export async function GET(
       );
     }
 
-    // Warehouse managers can only view their assigned warehouses
-    if (!canAccessWarehouse(user, id)) {
-      return forbiddenResponse("You do not have access to this warehouse");
+    // Warehouse managers can only view their assigned warehouses (PostgreSQL check)
+    if (user.role === "warehouse_manager") {
+      const hasAccess = await hasWarehouseAccess(user._id.toString(), id);
+      if (!hasAccess) return forbiddenResponse("You do not have access to this warehouse");
     }
 
     return NextResponse.json({ success: true, warehouse }, { status: 200 });
@@ -224,6 +226,9 @@ export async function DELETE(
 
     // Soft delete - set isActive to false
     await Warehouse.findByIdAndUpdate(id, { isActive: false });
+
+    // Cascade: remove all manager permissions for this warehouse from PostgreSQL
+    await revokeAllWarehousePermissions(id);
 
     return NextResponse.json(
       {

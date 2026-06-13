@@ -5,6 +5,7 @@ import { Invitation } from "@/models/Invitation";
 import { AuditLog } from "@/models/AuditLog";
 import { sendEmail } from "@/lib/email";
 import { signToken } from "@/lib/auth";
+import { seedUserPermissions } from "@/lib/pg-permissions";
 import bcrypt from "bcryptjs";
 
 // GET - Verify invitation token and get details
@@ -139,7 +140,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3. Mark invitation as accepted
+    // 3. Seed warehouse permissions into PostgreSQL permission store
+    if (user.role === "warehouse_manager" && invitation.assignedWarehouses?.length > 0) {
+      await seedUserPermissions(
+        user._id.toString(),
+        invitation.assignedWarehouses.map((id: any) => id.toString()),
+        "warehouse_manager",
+        invitation.companyId.toString()
+      );
+    }
+
+    // 4. Mark invitation as accepted
     await Invitation.updateOne(
       { _id: invitation._id },
       {
@@ -148,7 +159,7 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    // 4. Create audit log
+    // 5. Create audit log
     await AuditLog.create({
       action: "user_joined",
       userId: user._id,
@@ -164,7 +175,7 @@ export async function POST(req: NextRequest) {
       userAgent: req.headers.get("user-agent") || "unknown",
     });
 
-    // 5. Notify super admin
+    // 6. Notify super admin
     try {
       const superAdmin = await User.findById(invitation.invitedBy);
       if (superAdmin) {
@@ -211,7 +222,7 @@ export async function POST(req: NextRequest) {
       console.error("Failed to send notification email:", emailError);
     }
 
-    // 6. Generate JWT token
+    // 7. Generate JWT token
     const jwtToken = signToken({
       userId: user._id.toString(),
       email: user.email,

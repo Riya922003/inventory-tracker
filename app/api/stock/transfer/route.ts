@@ -6,7 +6,8 @@ import { StockMovement } from "@/models/StockMovement";
 import { User } from "@/models/User";
 import { Warehouse } from "@/models/Warehouse";
 import { getCurrentUser } from "@/lib/auth";
-import { canAccessWarehouse, forbiddenResponse } from "@/lib/permissions";
+import { forbiddenResponse } from "@/lib/permissions";
+import { hasWarehouseAccess } from "@/lib/pg-permissions";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -99,12 +100,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Warehouse managers can only transfer between their assigned warehouses
-    if (!canAccessWarehouse(user, fromWarehouseId)) {
-      return forbiddenResponse("You do not have access to the source warehouse");
-    }
-    if (!canAccessWarehouse(user, toWarehouseId)) {
-      return forbiddenResponse("You do not have access to the destination warehouse");
+    // Warehouse managers can only transfer between their assigned warehouses (PostgreSQL check)
+    if (user.role === "warehouse_manager") {
+      const [canFrom, canTo] = await Promise.all([
+        hasWarehouseAccess(user._id.toString(), fromWarehouseId),
+        hasWarehouseAccess(user._id.toString(), toWarehouseId),
+      ]);
+      if (!canFrom) return forbiddenResponse("You do not have access to the source warehouse");
+      if (!canTo) return forbiddenResponse("You do not have access to the destination warehouse");
     }
 
     // Check destination capacity

@@ -6,7 +6,8 @@ import { Product } from "@/models/Product";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
-import { canAccessWarehouse, forbiddenResponse } from "@/lib/permissions";
+import { forbiddenResponse } from "@/lib/permissions";
+import { hasWarehouseAccess, getUserWarehouseIds } from "@/lib/pg-permissions";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -77,9 +78,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Warehouse managers can only add stock to their assigned warehouses
-    if (!canAccessWarehouse(user, warehouseId)) {
-      return forbiddenResponse("You do not have access to this warehouse");
+    // Warehouse managers can only add stock to their assigned warehouses (PostgreSQL check)
+    if (user.role === "warehouse_manager") {
+      const hasAccess = await hasWarehouseAccess(user._id.toString(), warehouseId);
+      if (!hasAccess) return forbiddenResponse("You do not have access to this warehouse");
     }
 
     // Start transaction
@@ -198,9 +200,9 @@ export async function GET(req: NextRequest) {
     const query: any = { companyId: user.companyId };
     if (productId) query.productId = productId;
 
-    // Warehouse managers can only see stock in their assigned warehouses
+    // Warehouse managers can only see stock in their assigned warehouses (PostgreSQL check)
     if (user.role === "warehouse_manager") {
-      const assignedIds = user.assignedWarehouses?.map((id: any) => id.toString()) ?? [];
+      const assignedIds = await getUserWarehouseIds(user._id.toString());
       query.warehouseId = warehouseId
         ? assignedIds.includes(warehouseId) ? warehouseId : "__none__"
         : { $in: assignedIds };
