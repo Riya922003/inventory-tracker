@@ -7,6 +7,7 @@ import { Product } from "@/models/Product";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
+import { canAccessWarehouse, forbiddenResponse } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -88,6 +89,11 @@ export async function POST(req: NextRequest) {
         { error: "Product or warehouse mismatch" },
         { status: 400 }
       );
+    }
+
+    // Warehouse managers can only record exits from their assigned warehouses
+    if (!canAccessWarehouse(user, warehouseId)) {
+      return forbiddenResponse("You do not have access to this warehouse");
     }
 
     // Start transaction
@@ -207,7 +213,16 @@ export async function GET(req: NextRequest) {
     // Build query - need to get stocks first to filter by company
     const stockQuery: any = { companyId: user.companyId };
     if (productId) stockQuery.productId = productId;
-    if (warehouseId) stockQuery.warehouseId = warehouseId;
+
+    // Warehouse managers can only see movements from their assigned warehouses
+    if (user.role === "warehouse_manager") {
+      const assignedIds = user.assignedWarehouses?.map((id: any) => id.toString()) ?? [];
+      stockQuery.warehouseId = warehouseId
+        ? assignedIds.includes(warehouseId) ? warehouseId : "__none__"
+        : { $in: assignedIds };
+    } else if (warehouseId) {
+      stockQuery.warehouseId = warehouseId;
+    }
 
     const stocks = await Stock.find(stockQuery).select("_id");
     const stockIds = stocks.map((s) => s._id);

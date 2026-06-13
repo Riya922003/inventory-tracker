@@ -6,6 +6,7 @@ import { Product } from "@/models/Product";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
+import { canAccessWarehouse, forbiddenResponse } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -74,6 +75,11 @@ export async function POST(req: NextRequest) {
         { error: "Warehouse not found or inactive" },
         { status: 404 }
       );
+    }
+
+    // Warehouse managers can only add stock to their assigned warehouses
+    if (!canAccessWarehouse(user, warehouseId)) {
+      return forbiddenResponse("You do not have access to this warehouse");
     }
 
     // Start transaction
@@ -191,7 +197,16 @@ export async function GET(req: NextRequest) {
     // Build query
     const query: any = { companyId: user.companyId };
     if (productId) query.productId = productId;
-    if (warehouseId) query.warehouseId = warehouseId;
+
+    // Warehouse managers can only see stock in their assigned warehouses
+    if (user.role === "warehouse_manager") {
+      const assignedIds = user.assignedWarehouses?.map((id: any) => id.toString()) ?? [];
+      query.warehouseId = warehouseId
+        ? assignedIds.includes(warehouseId) ? warehouseId : "__none__"
+        : { $in: assignedIds };
+    } else if (warehouseId) {
+      query.warehouseId = warehouseId;
+    }
 
     const stockEntries = await Stock.find(query)
       .populate("productId", "name sku unitType")

@@ -6,6 +6,7 @@ import { StockMovement } from "@/models/StockMovement";
 import { User } from "@/models/User";
 import { Warehouse } from "@/models/Warehouse";
 import { getCurrentUser } from "@/lib/auth";
+import { canAccessWarehouse, forbiddenResponse } from "@/lib/permissions";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -96,6 +97,14 @@ export async function POST(req: NextRequest) {
         { error: "Invalid warehouse selection" },
         { status: 400 }
       );
+    }
+
+    // Warehouse managers can only transfer between their assigned warehouses
+    if (!canAccessWarehouse(user, fromWarehouseId)) {
+      return forbiddenResponse("You do not have access to the source warehouse");
+    }
+    if (!canAccessWarehouse(user, toWarehouseId)) {
+      return forbiddenResponse("You do not have access to the destination warehouse");
     }
 
     // Check destination capacity

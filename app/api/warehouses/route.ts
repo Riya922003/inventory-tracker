@@ -6,6 +6,7 @@ import { Stock } from "@/models/Stock";
 import { StockMovement } from "@/models/StockMovement";
 import { Product } from "@/models/Product";
 import { getCurrentUser } from "@/lib/auth";
+import { canAccessWarehouse, isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
 
 // GET all warehouses with metrics
 export async function GET(req: NextRequest) {
@@ -26,10 +27,15 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch all company warehouses with manager info
-    const warehouses = await Warehouse.find({
-      companyId: user.companyId,
-      isActive: true,
-    })
+    let warehouseQuery: any = { companyId: user.companyId, isActive: true };
+
+    // Warehouse managers only see their assigned warehouses
+    if (user.role === "warehouse_manager") {
+      const assignedIds = user.assignedWarehouses?.map((id: any) => id.toString()) ?? [];
+      warehouseQuery._id = { $in: assignedIds };
+    }
+
+    const warehouses = await Warehouse.find(warehouseQuery)
       .populate("manager", "name email")
       .sort({ name: 1 })
       .lean();
@@ -141,6 +147,11 @@ export async function POST(req: NextRequest) {
         { error: "Please complete onboarding first" },
         { status: 400 }
       );
+    }
+
+    // Only super admins can create warehouses
+    if (!isSuperAdmin(user)) {
+      return forbiddenResponse("Only admins can create warehouses");
     }
 
     const body = await req.json();

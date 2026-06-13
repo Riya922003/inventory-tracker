@@ -4,6 +4,7 @@ import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
 import { Stock } from "@/models/Stock";
 import { getCurrentUser } from "@/lib/auth";
+import { canAccessWarehouse, isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
 
 // GET single warehouse with details
 export async function GET(
@@ -37,6 +38,11 @@ export async function GET(
         { error: "Warehouse not found" },
         { status: 404 }
       );
+    }
+
+    // Warehouse managers can only view their assigned warehouses
+    if (!canAccessWarehouse(user, id)) {
+      return forbiddenResponse("You do not have access to this warehouse");
     }
 
     return NextResponse.json({ success: true, warehouse }, { status: 200 });
@@ -75,6 +81,11 @@ export async function PUT(
         { error: "Please complete onboarding first" },
         { status: 400 }
       );
+    }
+
+    // Only super admins can edit warehouses
+    if (!isSuperAdmin(user)) {
+      return forbiddenResponse("Only admins can edit warehouses");
     }
 
     // Check if warehouse exists and belongs to user's company
@@ -175,6 +186,11 @@ export async function DELETE(
         { error: "Please complete onboarding first" },
         { status: 400 }
       );
+    }
+
+    // Only super admins can delete warehouses
+    if (!isSuperAdmin(user)) {
+      return forbiddenResponse("Only admins can delete warehouses");
     }
 
     // Check if warehouse exists and belongs to user's company
