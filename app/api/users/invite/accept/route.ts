@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
       if (superAdmin) {
         await sendEmail({
           to: superAdmin.email,
-          subject: "New team member joined InsydTracker",
+          subject: "New team member joined Inventory Tracker",
           html: `
             <!DOCTYPE html>
             <html>
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
                 </div>
                 <div class="content">
                   <p>Hi ${superAdmin.name},</p>
-                  <p><strong>${name}</strong> has accepted your invitation and joined InsydTracker.</p>
+                  <p><strong>${name}</strong> has accepted your invitation and joined Inventory Tracker.</p>
                   
                   <div class="info-box">
                     <p><strong>Email:</strong> ${user.email}</p>

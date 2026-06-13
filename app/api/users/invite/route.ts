@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
 
     await sendEmail({
       to: email,
-      subject: "You're invited to join InsydTracker",
+      subject: "You're invited to join Inventory Tracker",
       html: `
         <!DOCTYPE html>
         <html>
@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
             </div>
             <div class="content">
               <p>Hi ${name},</p>
-              <p><strong>${inviter.name}</strong> has invited you to join their organization on <strong>InsydTracker</strong>.</p>
+              <p><strong>${inviter.name}</strong> has invited you to join their organization on <strong>Inventory Tracker</strong>.</p>
               
               <div class="info-box">
                 <p><strong>Your Role:</strong> ${roleDisplayNames[role] || role}</p>

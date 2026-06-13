@@ -12,7 +12,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function sendEmail({ to, subject, html }: SendEmailParams) {
   try {
     const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || "InsydTracker <onboarding@resend.dev>",
+      from: process.env.EMAIL_FROM || "Inventory Tracker <onboarding@resend.dev>",
       to,
       subject,
       html,

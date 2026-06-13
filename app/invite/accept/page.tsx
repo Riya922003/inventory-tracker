@@ -151,7 +151,7 @@ function AcceptInvitationContent() {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">✅</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to InsydTracker!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Inventory Tracker!</h2>
             <p className="text-gray-600 mb-4">
               Your account has been created successfully.
             </p>
@@ -173,7 +173,7 @@ function AcceptInvitationContent() {
             Accept Your Invitation
           </CardTitle>
           <p className="text-center text-gray-600 text-sm">
-            You've been invited to join <strong>InsydTracker</strong>
+            You've been invited to join <strong>Inventory Tracker</strong>
           </p>
         </CardHeader>
         <CardContent>

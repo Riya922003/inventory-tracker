@@ -909,7 +909,7 @@ export default function SetupWizard() {
                 Setup Complete! One Last Step...
               </h1>
               <p className="text-gray-600 text-lg leading-relaxed max-w-xl mx-auto">
-                To help you get the most out of InsydTracker, let's add a product. 
+                To help you get the most out of Inventory Tracker, let's add a product. 
                 This will take just 2 minutes.
               </p>
             </div>
@@ -980,7 +980,7 @@ export default function SetupWizard() {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to InsydTracker</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Inventory Tracker</h1>
           <p className="text-gray-600">Let's set up your inventory management system</p>
           <p className="text-sm text-gray-500 mt-3">
             Already have an account?{" "}

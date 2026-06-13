@@ -37,32 +37,37 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch current user info from API
     const fetchUser = async () => {
       try {
-        const response = await fetch('/api/auth/me');
-        
+        const response = await fetch('/api/auth/me', { cache: 'no-store' });
+
         if (response.ok) {
           const data = await response.json();
           setUser(data.user);
         } else if (response.status === 401) {
           // Not authenticated, redirect to login
-          router.push('/');
+          router.push('/login');
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchUser();
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Filter menu items based on user role
-  const menuItems = allMenuItems.filter(item => 
-    user?.role && item.roles.includes(user.role)
-  );
+  // While loading show items visible to both roles so sidebar never appears blank.
+  // Once loaded, filter to the exact role.
+  const menuItems = isLoading
+    ? allMenuItems.filter(item => item.roles.includes("warehouse_manager"))
+    : allMenuItems.filter(item => user?.role && item.roles.includes(user.role));
 
   // Role-based permissions for quick actions
   const canInviteUsers = user?.role === "super_admin";
@@ -122,7 +127,7 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
       <aside className="w-64 bg-gradient-to-b from-indigo-900 via-indigo-800 to-indigo-900 text-white flex flex-col">
         {/* Logo */}
         <div className="p-6 border-b border-indigo-700">
-          <h1 className="text-2xl font-bold tracking-wide">InsydTracker</h1>
+          <h1 className="text-2xl font-bold tracking-wide">Inventory Tracker</h1>
         </div>
 
         {/* Navigation */}
@@ -175,21 +180,29 @@ export default function SidebarLayout({ children }: SidebarLayoutProps) {
         {/* User Section - Role-based */}
         <div className="px-3 py-4 border-t border-indigo-700">
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-800">
-            <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-semibold text-sm">
-              {user ? getUserInitials(user.name) : "U"}
+            <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0">
+              {user ? getUserInitials(user.name) : ""}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {user?.name || "User"}
-              </p>  
-              <p className="text-xs text-indigo-300 truncate">
-                {user ? getRoleDisplayName(user.role) : "Loading..."}
-              </p>
-
-              {user?.role === "warehouse_manager" && user.assignedWarehouses && (
-                <p className="text-xs text-indigo-400 truncate mt-0.5">
-                  {user.assignedWarehouses.length} warehouse(s)
-                </p>
+              {isLoading ? (
+                <div className="space-y-1.5">
+                  <div className="h-3 bg-indigo-700 rounded animate-pulse w-24" />
+                  <div className="h-2.5 bg-indigo-700 rounded animate-pulse w-16" />
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm font-medium text-white truncate">
+                    {user?.name || ""}
+                  </p>
+                  <p className="text-xs text-indigo-300 truncate">
+                    {user ? getRoleDisplayName(user.role) : ""}
+                  </p>
+                  {user?.role === "warehouse_manager" && user.assignedWarehouses && (
+                    <p className="text-xs text-indigo-400 truncate mt-0.5">
+                      {user.assignedWarehouses.length} warehouse(s)
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </div>
