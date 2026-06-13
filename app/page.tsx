@@ -76,7 +76,7 @@ export default function LandingPage() {
                   Sign up free
                 </Button>
                 <Button
-                  onClick={() => router.push("/onboarding")}
+                  onClick={() => router.push("/login")}
                   className="px-8 py-6 text-lg bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
                 >
                   Try the demo
@@ -304,7 +304,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
-              onClick={() => router.push("/onboarding")}
+              onClick={() => router.push("/login")}
               className="px-10 py-6 text-lg bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
             >
               Try the demo

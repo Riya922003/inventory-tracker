@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -981,6 +982,12 @@ export default function SetupWizard() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to InsydTracker</h1>
           <p className="text-gray-600">Let's set up your inventory management system</p>
+          <p className="text-sm text-gray-500 mt-3">
+            Already have an account?{" "}
+            <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
+              Sign in
+            </Link>
+          </p>
         </div>
 
         {/* Progress Bar */}
@@ -1051,7 +1058,7 @@ export default function SetupWizard() {
 
         {/* Footer */}
         <div className="text-center mt-6 text-sm text-gray-500">
-          <p>Need help? Contact support@insydtracker.com</p>
+          <p>Need help? Contact riya98012.workx@gmail.com</p>
         </div>
       </div>
     </div>
