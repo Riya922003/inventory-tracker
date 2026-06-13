@@ -247,52 +247,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Developer Intro Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 md:p-12">
-            <div className="flex flex-col md:flex-row gap-8 items-start">
-              {/* Profile Image */}
-              <div className="flex-shrink-0">
-                <img
-                  src="/images/my-image-1.jpeg"
-                  alt="Riya Gupta"
-                  className="w-32 h-32 rounded-full object-cover border-4 border-purple-100"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Riya Gupta</h3>
-                  <p className="text-emerald-600 font-medium">Built by a developer, for developers</p>
-                </div>
-
-                <p className="text-gray-700 leading-relaxed">
-                  Hey devs! I'm Riya Gupta, a CS grad from VIT Bhopal. Been working on something cool — <span className="font-semibold">Inventory Tracker</span>. It's an intelligent inventory health & monitoring tool that keeps things simple (no bulky ERP headaches). You get clean dashboards, full visibility, and secure access control — all in one place.
-                </p>
-
-                <p className="text-gray-700">
-                  Would genuinely love your thoughts/feedback 💙
-                </p>
-
-                <div className="pt-4">
-                  <a
-                    href="mailto:riya98012@gmail.com"
-                    className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    riya98012@gmail.com
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Final CTA Section */}
       <section id="demo" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-50 to-blue-50">
         <div className="max-w-4xl mx-auto text-center">
