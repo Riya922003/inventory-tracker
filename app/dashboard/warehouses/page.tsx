@@ -17,11 +17,11 @@ interface Warehouse {
     pin?: string;
     country: string;
   };
-  manager?: {
+  managers: {
     _id: string;
     name: string;
     email: string;
-  };
+  }[];
   capacity: number;
   metrics: {
     productCount: number;
@@ -195,7 +195,7 @@ export default function WarehousesPage() {
                             <div>
                               <p className="text-sm text-gray-500">Manager</p>
                               <p className="text-lg font-semibold text-gray-900">
-                                {warehouse.manager?.name || "Not assigned"}
+                                {warehouse.managers?.[0]?.name || "Not assigned"}
                               </p>
                             </div>
                           </div>
@@ -306,7 +306,7 @@ export default function WarehousesPage() {
                             }
                           >
                             <FaExchangeAlt className="mr-2" />
-                            {warehouse.manager ? "Transfer Stock" : "Assign Manager"}
+                            {warehouse.managers?.length > 0 ? "Transfer Stock" : "Assign Manager"}
                           </Button>
                         </div>
                       </div>

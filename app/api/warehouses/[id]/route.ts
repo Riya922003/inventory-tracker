@@ -32,7 +32,7 @@ export async function GET(
     const warehouse = await Warehouse.findOne({
       _id: id,
       companyId: user.companyId,
-    }).populate("manager", "name email");
+    }).populate("managers", "name email");
 
     if (!warehouse) {
       return NextResponse.json(
@@ -69,6 +69,15 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const { name, address, manager, capacity, contactPhone, contactEmail, notes } = body;
+    // Accept either a single managerId string or an array; normalise to array
+    // undefined means "don't touch managers"; empty string / empty array means "remove all"
+    const managerIds: string[] | undefined = manager === undefined
+      ? undefined
+      : Array.isArray(manager)
+        ? manager
+        : manager === "" || manager === null
+          ? []
+          : [manager];
 
     const currentUser = await getCurrentUser();
     if (!currentUser) {
@@ -119,15 +128,24 @@ export async function PUT(
       }
     }
 
-    // If manager is being changed, verify they exist
-    if (manager) {
-      const managerUser = await User.findOne({
-        _id: manager,
+    // If managers are being changed, verify each exists, belongs to the company, and is a warehouse_manager
+    if (managerIds !== undefined && managerIds.length > 0) {
+      const managerUsers = await User.find({
+        _id: { $in: managerIds },
         companyId: user.companyId,
-      });
-      if (!managerUser) {
+      }).select("_id role");
+
+      if (managerUsers.length !== managerIds.length) {
         return NextResponse.json(
-          { error: "Invalid manager selected" },
+          { error: "One or more selected managers are invalid" },
+          { status: 400 }
+        );
+      }
+
+      const nonManager = managerUsers.find((u) => u.role !== "warehouse_manager");
+      if (nonManager) {
+        return NextResponse.json(
+          { error: "Only users with the Warehouse Manager role can be assigned as managers" },
           { status: 400 }
         );
       }
@@ -139,14 +157,14 @@ export async function PUT(
       {
         ...(name && { name }),
         ...(address && { address }),
-        ...(manager !== undefined && { manager: manager || null }),
+        ...(managerIds !== undefined && { managers: managerIds }),
         ...(capacity !== undefined && { capacity }),
         ...(contactPhone !== undefined && { contactPhone }),
         ...(contactEmail !== undefined && { contactEmail }),
         ...(notes !== undefined && { notes }),
       },
       { new: true, runValidators: true }
-    ).populate("manager", "name email");
+    ).populate("managers", "name email");
 
     return NextResponse.json(
       {

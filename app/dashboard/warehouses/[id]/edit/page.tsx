@@ -84,7 +84,8 @@ export default function EditWarehousePage() {
           state: warehouse.address.state,
           pin: warehouse.address.pin || "",
           country: warehouse.address.country,
-          manager: warehouse.manager?._id || "",
+          // Pre-fill with first manager (single-select UI still works with managers array)
+          manager: warehouse.managers?.[0]?._id || "",
           capacity: warehouse.capacity || 1000,
           contactPhone: warehouse.contactPhone || "",
           contactEmail: warehouse.contactEmail || "",
@@ -104,7 +105,8 @@ export default function EditWarehousePage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      // Only load warehouse managers — super_admin cannot be assigned as a warehouse manager
+      const response = await fetch("/api/users?role=warehouse_manager", {
         credentials: "include",
       });
       if (response.ok) {
@@ -134,7 +136,8 @@ export default function EditWarehousePage() {
             pin: data.pin,
             country: data.country,
           },
-          manager: data.manager || null,
+          // Send as array — warehouse supports multiple managers
+          managers: data.manager ? [data.manager] : [],
           capacity: data.capacity,
           contactPhone: data.contactPhone,
           contactEmail: data.contactEmail,

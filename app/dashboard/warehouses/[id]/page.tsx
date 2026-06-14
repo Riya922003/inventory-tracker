@@ -36,11 +36,11 @@ interface Warehouse {
     pin?: string;
     country: string;
   };
-  manager?: {
+  managers: {
     _id: string;
     name: string;
     email: string;
-  };
+  }[];
   capacity: number;
   createdAt: string;
   updatedAt: string;
@@ -430,16 +430,14 @@ export default function WarehouseDetailPage() {
               <span>Warehouse Manager</span>
             </div>
             <div className="ml-6 text-gray-600">
-              {warehouse.manager ? (
-                <>
-                  <p className="font-medium text-gray-900">
-                    {warehouse.manager.name} ({warehouse.manager.email})
-                  </p>
-                  <p className="text-sm flex items-center gap-2 mt-1">
-                    <FaPhone className="text-gray-400" />
-                    <span>+91 98765 43210</span>
-                  </p>
-                </>
+              {warehouse.managers && warehouse.managers.length > 0 ? (
+                <div className="space-y-2">
+                  {warehouse.managers.map((mgr: any) => (
+                    <p key={mgr._id} className="font-medium text-gray-900">
+                      {mgr.name} ({mgr.email})
+                    </p>
+                  ))}
+                </div>
               ) : (
                 <p className="text-gray-500 italic">No manager assigned</p>
               )}

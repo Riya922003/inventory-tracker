@@ -21,11 +21,16 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Fetch all users in the same company
-    const users = await User.find({
-      companyId: user.companyId,
-    })
-      .select("_id name email")
+    // Optional role filter — e.g. /api/users?role=warehouse_manager
+    const { searchParams } = new URL(req.url);
+    const roleFilter = searchParams.get("role");
+
+    const query: any = { companyId: user.companyId };
+    if (roleFilter) query.role = roleFilter;
+
+    // Fetch users in the same company (optionally filtered by role)
+    const users = await User.find(query)
+      .select("_id name email role")
       .sort({ name: 1 })
       .lean();
 

@@ -73,7 +73,8 @@ export default function NewWarehousePage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/users", {
+      // Only load warehouse managers — super_admin cannot be assigned as a warehouse manager
+      const response = await fetch("/api/users?role=warehouse_manager", {
         credentials: "include",
       });
       if (response.ok) {
@@ -103,7 +104,8 @@ export default function NewWarehousePage() {
             pin: data.pin,
             country: data.country,
           },
-          manager: data.manager || null,
+          // Send as array — warehouse supports multiple managers
+          managers: data.manager ? [data.manager] : [],
           capacity: data.capacity,
           contactPhone: data.contactPhone,
           contactEmail: data.contactEmail,

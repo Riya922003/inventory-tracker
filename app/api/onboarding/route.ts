@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
                 pin: warehouse.location?.pin || "",
                 country: warehouse.location?.country || "India",
               },
-              manager: warehouse.manager ? warehouse.manager : existingUser._id,
+              managers: warehouse.manager ? [warehouse.manager] : [existingUser._id],
               capacity: warehouse.capacity || undefined,
               isActive: true,
             },

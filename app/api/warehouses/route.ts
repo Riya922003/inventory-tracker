@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     }
 
     const warehouses = await Warehouse.find(warehouseQuery)
-      .populate("manager", "name email")
+      .populate("managers", "name email")
       .sort({ name: 1 })
       .lean();
 
@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
           _id: warehouse._id,
           name: warehouse.name,
           address: warehouse.address,
-          manager: warehouse.manager,
+          managers: warehouse.managers,
           capacity: warehouse.capacity,
           metrics: {
             productCount: uniqueProducts,
@@ -156,7 +156,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+    // Accept either a single managerId string or an array; normalise to array
     const { name, address, manager, capacity, contactPhone, contactEmail, notes } = body;
+    const managerIds: string[] = manager
+      ? Array.isArray(manager) ? manager : [manager]
+      : [];
 
     // Validate required fields
     if (!name || !address?.street || !address?.city || !address?.state || !address?.pin) {
@@ -230,15 +234,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // If manager is provided, verify they exist and belong to the company
-    if (manager) {
-      const managerUser = await User.findOne({
-        _id: manager,
+    // If managers are provided, verify each exists, belongs to the company, and is a warehouse_manager
+    if (managerIds.length > 0) {
+      const managerUsers = await User.find({
+        _id: { $in: managerIds },
         companyId: user.companyId,
-      });
-      if (!managerUser) {
+      }).select("_id role");
+
+      if (managerUsers.length !== managerIds.length) {
         return NextResponse.json(
-          { error: "Invalid manager selected" },
+          { error: "One or more selected managers are invalid" },
+          { status: 400 }
+        );
+      }
+
+      const nonManager = managerUsers.find((u) => u.role !== "warehouse_manager");
+      if (nonManager) {
+        return NextResponse.json(
+          { error: "Only users with the Warehouse Manager role can be assigned as managers" },
           { status: 400 }
         );
       }
@@ -256,7 +269,7 @@ export async function POST(req: NextRequest) {
         pin: address.pin,
         country: address.country || "India",
       },
-      manager: manager || null,
+      managers: managerIds,
       capacity: capacity || 1000,
       contactPhone: contactPhone || "",
       contactEmail: contactEmail || "",

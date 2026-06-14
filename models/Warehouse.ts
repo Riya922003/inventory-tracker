@@ -14,7 +14,7 @@ export interface IWarehouse extends Document {
   name: string;
   warehouseCode: string;
   address: IAddress;
-  manager?: mongoose.Types.ObjectId;
+  managers: mongoose.Types.ObjectId[];
   capacity?: number;
   contactPhone?: string;
   contactEmail?: string;
@@ -50,10 +50,9 @@ const WarehouseSchema = new Schema<IWarehouse>(
       pin: { type: String, required: true },
       country: { type: String, required: true, default: "India" },
     },
-    manager: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
+    managers: {
+      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
+      default: [],
     },
     capacity: {
       type: Number,
@@ -79,7 +78,7 @@ const WarehouseSchema = new Schema<IWarehouse>(
 WarehouseSchema.index({ companyId: 1, isActive: 1 });
 
 // Manager assignment - find warehouses belonging to a manager
-WarehouseSchema.index({ manager: 1 });
+WarehouseSchema.index({ managers: 1 });
 
 // ADDED - warehouse name unique per company but only for active warehouses
 // partialFilterExpression means:
