@@ -99,7 +99,7 @@ export default function AddFirstProduct() {
       try {
         const [categoriesRes, warehousesRes] = await Promise.all([
           fetch("/api/categories"),
-          fetch("/api/warehouses"),
+          fetch("/api/warehouses?minimal=true"),
         ]);
 
         if (categoriesRes.ok) {

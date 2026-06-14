@@ -58,7 +58,8 @@ export default function NewWarehousePage() {
 
   const generateWarehouseCode = async () => {
     try {
-      const response = await fetch("/api/warehouses", {
+      // minimal=true is enough — we only need the count, not metrics
+      const response = await fetch("/api/warehouses?minimal=true", {
         credentials: "include",
       });
       if (response.ok) {

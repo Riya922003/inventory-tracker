@@ -129,7 +129,8 @@ export default function InventoryPage() {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await fetch("/api/warehouses", {
+      // ?minimal=true returns only {_id, name} from cache — no metrics calculation
+      const response = await fetch("/api/warehouses?minimal=true", {
         credentials: "include",
       });
       if (response.ok) {

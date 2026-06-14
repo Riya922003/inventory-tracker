@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDB } from "@/lib/db";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
@@ -6,6 +7,7 @@ import { Stock } from "@/models/Stock";
 import { getCurrentUser } from "@/lib/auth";
 import { canAccessWarehouse, isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
 import { hasWarehouseAccess, revokeAllWarehousePermissions } from "@/lib/pg-permissions";
+import { CACHE_TAGS } from "@/lib/cached-data";
 
 // GET single warehouse with details
 export async function GET(
@@ -166,6 +168,9 @@ export async function PUT(
       { new: true, runValidators: true }
     ).populate("managers", "name email");
 
+    // Name may have changed — bust the dropdown name cache
+    revalidateTag(CACHE_TAGS.warehouseNames, {});
+
     return NextResponse.json(
       {
         success: true,
@@ -247,6 +252,9 @@ export async function DELETE(
 
     // Cascade: remove all manager permissions for this warehouse from PostgreSQL
     await revokeAllWarehousePermissions(id);
+
+    // Warehouse removed — bust the dropdown name cache
+    revalidateTag(CACHE_TAGS.warehouseNames, {});
 
     return NextResponse.json(
       {

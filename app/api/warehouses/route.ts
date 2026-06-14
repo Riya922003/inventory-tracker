@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { connectDB } from "@/lib/db";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
@@ -8,6 +9,7 @@ import { Product } from "@/models/Product";
 import { getCurrentUser } from "@/lib/auth";
 import { isSuperAdmin, forbiddenResponse } from "@/lib/permissions";
 import { getUserWarehouseIds } from "@/lib/pg-permissions";
+import { getCachedWarehouseNames, CACHE_TAGS } from "@/lib/cached-data";
 
 // GET all warehouses with metrics
 export async function GET(req: NextRequest) {
@@ -25,6 +27,14 @@ export async function GET(req: NextRequest) {
         { error: "Please complete onboarding first" },
         { status: 400 }
       );
+    }
+
+    // ?minimal=true — lightweight {_id, name}[] for dropdown menus.
+    // Served from cache (5 min TTL) — no metrics calculation, no stock joins.
+    const { searchParams } = new URL(req.url);
+    if (searchParams.get("minimal") === "true") {
+      const names = await getCachedWarehouseNames(user.companyId.toString());
+      return NextResponse.json({ success: true, warehouses: names }, { status: 200 });
     }
 
     // Fetch all company warehouses with manager info
@@ -276,6 +286,9 @@ export async function POST(req: NextRequest) {
       notes: notes || "",
       isActive: true,
     });
+
+    // New warehouse created — bust the dropdown name cache
+    revalidateTag(CACHE_TAGS.warehouseNames, {});
 
     return NextResponse.json(
       {

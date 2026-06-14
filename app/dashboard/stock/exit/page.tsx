@@ -115,7 +115,7 @@ export default function StockExitPage() {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await fetch("/api/warehouses", {
+      const response = await fetch("/api/warehouses?minimal=true", {
         credentials: "include",
       });
 

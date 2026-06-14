@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { revalidateTag } from "next/cache";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { SystemConfig } from "@/models/SystemConfig";
@@ -7,6 +8,7 @@ import { Warehouse } from "@/models/Warehouse";
 import { ProductCategory } from "@/models/ProductCategory";
 import { getCurrentUser, signToken } from "@/lib/auth";
 import bcrypt from "bcryptjs";
+import { CACHE_TAGS } from "@/lib/cached-data";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -203,6 +205,11 @@ export async function POST(req: NextRequest) {
 
       // Commit the transaction
       await session.commitTransaction();
+
+      // Categories and warehouses were just created — bust their caches
+      // so the first request after onboarding gets fresh data
+      revalidateTag(CACHE_TAGS.categories, {});
+      revalidateTag(CACHE_TAGS.warehouseNames, {});
 
       const payload = {
         success: true,

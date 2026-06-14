@@ -92,7 +92,7 @@ function StockTransferContent() {
   const fetchData = async () => {
     try {
       const [warehousesRes, stocksRes] = await Promise.all([
-        fetch("/api/warehouses", { credentials: "include" }),
+        fetch("/api/warehouses?minimal=true", { credentials: "include" }),
         sourceWarehouseId
           ? fetch(`/api/stock/entry?warehouseId=${sourceWarehouseId}`, {
             credentials: "include",

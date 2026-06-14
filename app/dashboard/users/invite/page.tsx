@@ -26,7 +26,7 @@ export default function InviteUserPage() {
     // Fetch warehouses for selection
     const fetchWarehouses = async () => {
       try {
-        const response = await fetch("/api/warehouses");
+        const response = await fetch("/api/warehouses?minimal=true");
         if (response.ok) {
           const data = await response.json();
           setWarehouses(data.warehouses || []);
