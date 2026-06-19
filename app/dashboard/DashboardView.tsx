@@ -63,32 +63,32 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
     return (
       <div className="p-8">
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+          <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-red-400 p-4 mb-6 rounded">
             <div className="flex items-center gap-2">
               <FaExclamationCircle className="text-red-600" />
-              <span className="text-sm font-medium text-red-800">{error}</span>
+              <span className="text-sm font-medium text-red-800 dark:text-red-300">{error}</span>
             </div>
           </div>
         )}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome to your inventory management system
           </p>
         </div>
-        <Card className="mb-8 border-2 border-dashed border-gray-300 bg-white">
+        <Card className="mb-8 border-2 border-dashed border-gray-300 dark:border-gray-700">
           <CardContent className="py-16 text-center">
             <div className="text-6xl mb-4">📦</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               Your Inventory Tracker is Ready!
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto mb-6">
+            <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-6">
               Start tracking by adding your first product. It takes just 2
               minutes.
             </p>
             <Button
               onClick={() => router.push("/dashboard/products/new")}
-              className="bg-indigo-600 hover:bg-indigo-700 px-8"
+              className="bg-indigo-600 hover:bg-indigo-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-gray-950 px-8"
             >
               + Add Your First Product
             </Button>
@@ -102,11 +102,11 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
   return (
     <div className="p-8">
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+        <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-red-400 p-4 mb-6 rounded">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <FaExclamationCircle className="text-red-600" />
-              <span className="text-sm font-medium text-red-800">{error}</span>
+              <span className="text-sm font-medium text-red-800 dark:text-red-300">{error}</span>
             </div>
             <button
               onClick={() => setError(null)}
@@ -119,7 +119,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
       )}
 
       {/* Health Score Banner */}
-      <div className="bg-gray-900 rounded-2xl p-8 mb-6 text-white">
+      <div className="bg-gray-900 dark:bg-gray-950 dark:border dark:border-cyan-500/10 rounded-2xl p-8 mb-6 text-white">
         <div className="flex items-center gap-12 flex-wrap">
           {/* Ring */}
           <div className="relative flex-shrink-0">
@@ -211,7 +211,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
           <CardContent>
             {actionItems.length === 0 ? (
               <div className="text-center py-10">
-                <p className="text-lg font-semibold text-green-600">
+                <p className="text-lg font-semibold text-green-600 dark:text-green-400">
                   All clear
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
@@ -219,28 +219,28 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
                 </p>
               </div>
             ) : (
-              <div className="divide-y">
+              <div className="divide-y dark:divide-white/5">
                 {actionItems.map((item: any) => (
                   <div
                     key={item._id}
                     className="flex items-center justify-between py-3"
                   >
                     <div className="min-w-0 flex-1 mr-3">
-                      <p className="font-medium text-gray-900 text-sm">
+                      <p className="font-medium text-gray-900 dark:text-white text-sm">
                         {item.productName}{" "}
                         <span className="text-gray-400 font-normal">
                           #{item.sku}
                         </span>
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {item.ageInDays} days in stock · {item.warehouse}
                       </p>
                     </div>
                     <span
                       className={`flex-shrink-0 px-2.5 py-1 rounded text-xs font-semibold ${
                         item.urgency === "urgent"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-orange-100 text-orange-700"
+                          ? "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400"
+                          : "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400"
                       }`}
                     >
                       {item.urgency === "urgent" ? "Urgent" : "Watch"}
@@ -261,7 +261,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
             </CardHeader>
             <CardContent>
               {warehouses.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                   No warehouses yet
                 </p>
               ) : (
@@ -275,21 +275,21 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
                       }
                     >
                       <div className="flex justify-between items-center mb-1.5">
-                        <span className="text-sm font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
+                        <span className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-cyan-400 transition-colors">
                           {wh.name}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
                           {wh.capacityUsed}%
                         </span>
                       </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div className="w-full bg-gray-100 dark:bg-white/10 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
                             wh.capacityUsed >= 90
                               ? "bg-red-500"
                               : wh.capacityUsed >= 70
                               ? "bg-orange-500"
-                              : "bg-blue-500"
+                              : "bg-blue-500 dark:bg-cyan-500"
                           }`}
                           style={{
                             width: `${Math.max(wh.capacityUsed, 3)}%`,
@@ -321,15 +321,15 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
             </CardHeader>
             <CardContent>
               {activities.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center py-4">
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                   No activity yet
                 </p>
               ) : (
-                <div className="divide-y">
+                <div className="divide-y dark:divide-white/5">
                   {activities.slice(0, 5).map((activity) => (
                     <p
                       key={activity._id}
-                      className="text-sm text-gray-700 py-2"
+                      className="text-sm text-gray-700 dark:text-gray-300 py-2"
                     >
                       {activity.description}
                       <span className="text-gray-400">
