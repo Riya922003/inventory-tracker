@@ -190,11 +190,11 @@ function AcceptInvitationContent() {
                   {invitation?.role === "super_admin" ? "Super Admin" : "Warehouse Manager"}
                 </span>
               </div>
-              {invitation?.assignedWarehouses?.length > 0 && (
+              {invitation?.warehouseNames?.length > 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">Warehouses:</span>
                   <span className="font-medium text-gray-900">
-                    {invitation.assignedWarehouses.join(", ")}
+                    {invitation.warehouseNames.join(", ")}
                   </span>
                 </div>
               )}

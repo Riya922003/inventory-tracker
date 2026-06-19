@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { Invitation } from "@/models/Invitation";
+import { Warehouse } from "@/models/Warehouse";
 import { AuditLog } from "@/models/AuditLog";
 import { sendEmail } from "@/lib/email";
 import { signToken } from "@/lib/auth";
@@ -50,17 +51,19 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get inviter details
+    // Get inviter details and warehouse names in parallel
     let inviterName = "Admin";
+    let warehouseNames: string[] = [];
 
-    try {
-      const inviter = await User.findById(invitation.invitedBy);
-      if (inviter) {
-        inviterName = inviter.name;
-      }
-    } catch (err) {
-      console.error("Error fetching inviter:", err);
-    }
+    const [inviter, warehouses] = await Promise.all([
+      User.findById(invitation.invitedBy).select("name").lean(),
+      invitation.assignedWarehouses?.length > 0
+        ? Warehouse.find({ _id: { $in: invitation.assignedWarehouses } }).select("name").lean()
+        : Promise.resolve([]),
+    ]);
+
+    if (inviter) inviterName = (inviter as any).name;
+    warehouseNames = (warehouses as any[]).map((w) => w.name);
 
     return NextResponse.json({
       success: true,
@@ -68,8 +71,9 @@ export async function GET(req: NextRequest) {
         email: invitation.email,
         role: invitation.role,
         assignedWarehouses: invitation.assignedWarehouses,
+        warehouseNames,
         personalMessage: invitation.personalMessage,
-        inviterName: inviterName,
+        inviterName,
         expiresAt: invitation.expiresAt,
       },
     });
