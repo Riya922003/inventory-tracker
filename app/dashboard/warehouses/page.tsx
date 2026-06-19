@@ -267,79 +267,53 @@ export default function WarehousesPage() {
                         </div>
                       </div>
 
-                      {/* Quick Actions */}
-                      <div>
-                        <p className="text-sm font-medium text-gray-700 mb-2">
-                          Quick Actions
-                        </p>
-                        <div className="space-y-2">
+                      {/* Actions */}
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => router.push(`/dashboard/warehouses/${warehouse._id}`)}
+                        >
+                          <FaChartBar className="mr-1.5" />
+                          Details
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => router.push(`/dashboard/warehouses/${warehouse._id}/edit`)}
+                        >
+                          <FaEdit className="mr-1.5" />
+                          Edit
+                        </Button>
+                        {warehouse.managers?.length > 0 ? (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="w-full justify-start"
-                            onClick={() =>
-                              router.push(`/dashboard/warehouses/${warehouse._id}`)
-                            }
+                            onClick={() => router.push(`/dashboard/stock/transfer?warehouseId=${warehouse._id}`)}
                           >
-                            <FaChartBar className="mr-2" />
-                            View Details
+                            <FaExchangeAlt className="mr-1.5" />
+                            Transfer
                           </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full justify-start"
-                            onClick={() =>
-                              router.push(`/dashboard/warehouses/${warehouse._id}/edit`)
-                            }
-                          >
-                            <FaEdit className="mr-2" />
-                            Edit
-                          </Button>
-                          {warehouse.managers?.length > 0 ? (
+                        ) : (
+                          <>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="w-full justify-start"
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/stock/transfer?warehouseId=${warehouse._id}`
-                                )
-                              }
+                              onClick={() => router.push(`/dashboard/warehouses/${warehouse._id}/edit`)}
                             >
-                              <FaExchangeAlt className="mr-2" />
-                              Transfer Stock
+                              <FaUserPlus className="mr-1.5" />
+                              Choose Manager
                             </Button>
-                          ) : (
-                            <>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full justify-start"
-                                onClick={() =>
-                                  router.push(
-                                    `/dashboard/warehouses/${warehouse._id}/edit`
-                                  )
-                                }
-                              >
-                                <FaUserPlus className="mr-2" />
-                                Choose Manager
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="w-full justify-start"
-                                onClick={() =>
-                                  router.push(
-                                    `/dashboard/users/invite?warehouseId=${warehouse._id}`
-                                  )
-                                }
-                              >
-                                <FaUserPlus className="mr-2" />
-                                Invite Manager
-                              </Button>
-                            </>
-                          )}
-                        </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => router.push(`/dashboard/users/invite?warehouseId=${warehouse._id}`)}
+                            >
+                              <FaUserPlus className="mr-1.5" />
+                              Invite Manager
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

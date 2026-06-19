@@ -212,35 +212,39 @@ export default function DashboardView({
             </CardContent>
           </Card>
 
-          <Card className="bg-white hover:shadow-lg transition-shadow">
+          <Card className={`hover:shadow-lg transition-shadow ${stats.deadStock.count > 0 ? "bg-red-50 border-red-200" : "bg-white"}`}>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-gray-600">Dead Stock</p>
-                <FaExclamationCircle className="text-red-600 text-xl" />
+                <p className={`text-sm ${stats.deadStock.count > 0 ? "text-red-700" : "text-gray-600"}`}>Dead Stock</p>
+                <FaExclamationCircle className={`text-xl ${stats.deadStock.count > 0 ? "text-red-600" : "text-gray-400"}`} />
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">
+              <p className={`text-3xl font-bold mb-1 ${stats.deadStock.count > 0 ? "text-red-900" : "text-gray-900"}`}>
                 {stats.deadStock.count}{" "}
                 <span className="text-base">
                   (₹{(stats.deadStock.value / 100000).toFixed(0)}L)
                 </span>
               </p>
-              <p className="text-xs text-red-600">🔴 Action needed</p>
+              <p className={`text-xs font-medium ${stats.deadStock.count > 0 ? "text-red-600" : "text-gray-400"}`}>
+                {stats.deadStock.count > 0 ? "Action needed" : "No dead stock"}
+              </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white hover:shadow-lg transition-shadow">
+          <Card className={`hover:shadow-lg transition-shadow ${stats.atRisk.count > 0 ? "bg-orange-50 border-orange-200" : "bg-white"}`}>
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-gray-600">At Risk</p>
-                <FaExclamationTriangle className="text-orange-600 text-xl" />
+                <p className={`text-sm ${stats.atRisk.count > 0 ? "text-orange-700" : "text-gray-600"}`}>At Risk</p>
+                <FaExclamationTriangle className={`text-xl ${stats.atRisk.count > 0 ? "text-orange-600" : "text-gray-400"}`} />
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">
+              <p className={`text-3xl font-bold mb-1 ${stats.atRisk.count > 0 ? "text-orange-900" : "text-gray-900"}`}>
                 {stats.atRisk.count}{" "}
                 <span className="text-base">
                   (₹{(stats.atRisk.value / 100000).toFixed(0)}L)
                 </span>
               </p>
-              <p className="text-xs text-orange-600">⚠️ Watch closely</p>
+              <p className={`text-xs font-medium ${stats.atRisk.count > 0 ? "text-orange-600" : "text-gray-400"}`}>
+                {stats.atRisk.count > 0 ? "Watch closely" : "All healthy"}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -278,7 +282,7 @@ export default function DashboardView({
                       <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
-                          style={{ width: `${warehouse.capacityUsed}%` }}
+                          style={{ width: `${Math.max(warehouse.capacityUsed, 3)}%` }}
                         />
                       </div>
                       <span className="text-sm font-medium">
@@ -326,9 +330,8 @@ export default function DashboardView({
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <p className="font-semibold text-gray-900 mb-1 text-sm">
-                          {alert.severity === "critical" ? "🔴" : "⚠️"}{" "}
-                          {alert.type.replace("_", " ").toUpperCase()}
+                        <p className="font-semibold text-gray-900 mb-1 text-sm uppercase">
+                          {alert.type.replace("_", " ")}
                         </p>
                         <p className="text-sm font-medium text-gray-800">
                           {alert.productName} ({alert.productSku})

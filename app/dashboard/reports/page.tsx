@@ -22,7 +22,6 @@ const reportTypes = [
     title: "Aging Report",
     icon: FaChartBar,
     description: "See which products are aging and need action",
-    color: "from-purple-500 to-purple-600",
     route: "/dashboard/reports/aging",
   },
   {
@@ -30,7 +29,6 @@ const reportTypes = [
     title: "XYZ Analysis",
     icon: FaChartLine,
     description: "Identify fast vs slow-moving products",
-    color: "from-blue-500 to-blue-600",
     route: "/dashboard/reports/xyz",
   },
   {
@@ -38,7 +36,6 @@ const reportTypes = [
     title: "Warehouse Utilization",
     icon: FaWarehouse,
     description: "Check space usage across locations",
-    color: "from-green-500 to-green-600",
     route: "/dashboard/reports/warehouse",
   },
   {
@@ -46,7 +43,6 @@ const reportTypes = [
     title: "Movement History",
     icon: FaExchangeAlt,
     description: "Track all stock ins, outs, and transfers",
-    color: "from-orange-500 to-orange-600",
     route: "/dashboard/reports/movement",
   },
   {
@@ -54,7 +50,6 @@ const reportTypes = [
     title: "Valuation Report",
     icon: FaDollarSign,
     description: "Total inventory value over time",
-    color: "from-indigo-500 to-indigo-600",
     route: "/dashboard/reports/valuation",
   },
   {
@@ -62,7 +57,6 @@ const reportTypes = [
     title: "Damage Report",
     icon: FaExclamationTriangle,
     description: "Track damaged goods & losses",
-    color: "from-red-500 to-red-600",
     route: "/dashboard/reports/damage",
   },
 ];
@@ -104,27 +98,22 @@ export default function ReportsPage() {
             return (
               <Card
                 key={report.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer"
+                className="hover:shadow-lg transition-shadow cursor-pointer group"
                 onClick={() => router.push(report.route)}
               >
                 <CardContent className="p-6">
-                  <div
-                    className={`w-12 h-12 rounded-lg bg-gradient-to-br ${report.color} flex items-center justify-center mb-4`}
-                  >
-                    <Icon className="text-2xl text-white" />
+                  <div className="w-12 h-12 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors flex items-center justify-center mb-4">
+                    <Icon className="text-xl text-gray-600" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {report.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-500 mb-4">
                     {report.description}
                   </p>
-                  <Button
-                    size="sm"
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    Generate →
-                  </Button>
+                  <p className="text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
+                    Generate report →
+                  </p>
                 </CardContent>
               </Card>
             );

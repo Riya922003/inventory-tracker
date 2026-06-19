@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { HiLightBulb } from "react-icons/hi";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaInfoCircle } from "react-icons/fa";
 import { useUpload } from "@/hooks/useUpload";
 
 // Schema for Step 1 - Basic Product Info
@@ -227,7 +226,7 @@ export default function AddFirstProduct() {
           <p className="text-sm text-red-500">{step1Form.formState.errors.sku.message}</p>
         )}
         <div className="flex items-start gap-2 mt-1">
-          <HiLightBulb className="text-lg text-yellow-500 flex-shrink-0 mt-0.5" />
+          <FaInfoCircle className="text-sm text-gray-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-gray-500">
             A unique code to identify this product
           </p>
@@ -272,7 +271,7 @@ export default function AddFirstProduct() {
           <p className="text-sm text-red-500">{step1Form.formState.errors.unitPrice.message}</p>
         )}
         <div className="flex items-start gap-2 mt-1">
-          <HiLightBulb className="text-lg text-yellow-500 flex-shrink-0 mt-0.5" />
+          <FaInfoCircle className="text-sm text-gray-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-gray-500">
             Price per unit for tracking value
           </p>
@@ -296,57 +295,41 @@ export default function AddFirstProduct() {
       </div>
 
       {/* Is Fragile */}
-      <div className="space-y-2">
-        <Label>Is this product fragile? (Requires photo verification)</Label>
-        <div className="flex gap-4 mt-2">
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="radio"
-              value="true"
-              checked={step1Form.watch("isFragile") === true}
-              onChange={() => step1Form.setValue("isFragile", true)}
-              className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-            />
-            <span className="text-sm">Yes</span>
-          </label>
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="radio"
-              value="false"
-              checked={step1Form.watch("isFragile") === false}
-              onChange={() => step1Form.setValue("isFragile", false)}
-              className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-            />
-            <span className="text-sm">No</span>
-          </label>
+      <div className="flex items-center justify-between py-2">
+        <div>
+          <Label className="text-sm font-medium text-gray-900">Fragile product</Label>
+          <p className="text-xs text-gray-500 mt-0.5">Requires photo verification on entry</p>
         </div>
+        <button
+          type="button"
+          onClick={() => step1Form.setValue("isFragile", !step1Form.watch("isFragile"))}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+            step1Form.watch("isFragile") ? "bg-indigo-600" : "bg-gray-200"
+          }`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+            step1Form.watch("isFragile") ? "translate-x-6" : "translate-x-1"
+          }`} />
+        </button>
       </div>
 
       {/* Has Expiry Date */}
-      <div className="space-y-2">
-        <Label>Does this product have an expiry date?</Label>
-        <div className="flex gap-4 mt-2">
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="radio"
-              value="true"
-              checked={step1Form.watch("hasExpiryDate") === true}
-              onChange={() => step1Form.setValue("hasExpiryDate", true)}
-              className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-            />
-            <span className="text-sm">Yes</span>
-          </label>
-          <label className="flex items-center space-x-2 cursor-pointer">
-            <input
-              type="radio"
-              value="false"
-              checked={step1Form.watch("hasExpiryDate") === false}
-              onChange={() => step1Form.setValue("hasExpiryDate", false)}
-              className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-            />
-            <span className="text-sm">No</span>
-          </label>
+      <div className="flex items-center justify-between py-2">
+        <div>
+          <Label className="text-sm font-medium text-gray-900">Has expiry date</Label>
+          <p className="text-xs text-gray-500 mt-0.5">Track shelf life and expiry alerts</p>
         </div>
+        <button
+          type="button"
+          onClick={() => step1Form.setValue("hasExpiryDate", !step1Form.watch("hasExpiryDate"))}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+            step1Form.watch("hasExpiryDate") ? "bg-indigo-600" : "bg-gray-200"
+          }`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+            step1Form.watch("hasExpiryDate") ? "translate-x-6" : "translate-x-1"
+          }`} />
+        </button>
       </div>
 
       {/* Action Buttons */}
@@ -380,33 +363,23 @@ export default function AddFirstProduct() {
       </div>
 
       {/* Has Stock Question */}
-      <Card className="border-2 border-purple-200 bg-purple-50">
-        <CardContent className="pt-6">
-          <Label className="text-base mb-4 block">
-            Do you have existing stock of this product?
-          </Label>
-          <div className="space-y-3">
-            <label className="flex items-center space-x-3 cursor-pointer">
-              <input
-                type="radio"
-                checked={hasStock === true}
-                onChange={() => step2Form.setValue("hasStock", true)}
-                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-              />
-              <span className="text-sm">Yes, I have stock to record</span>
-            </label>
-            <label className="flex items-center space-x-3 cursor-pointer">
-              <input
-                type="radio"
-                checked={hasStock === false}
-                onChange={() => step2Form.setValue("hasStock", false)}
-                className="w-4 h-4 text-purple-600 border-gray-300 focus:ring-purple-500"
-              />
-              <span className="text-sm">No, I'll add stock later</span>
-            </label>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+        <div>
+          <Label className="text-sm font-medium text-gray-900">Add initial stock now</Label>
+          <p className="text-xs text-gray-500 mt-0.5">You can always add stock later from the Stock page</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => step2Form.setValue("hasStock", !hasStock)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+            hasStock ? "bg-indigo-600" : "bg-gray-200"
+          }`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+            hasStock ? "translate-x-6" : "translate-x-1"
+          }`} />
+        </button>
+      </div>
 
       {/* Stock Details (shown if hasStock is true) */}
       {hasStock && (
@@ -463,7 +436,7 @@ export default function AddFirstProduct() {
               max={new Date().toISOString().split("T")[0]}
             />
             <div className="flex items-start gap-2 mt-1">
-              <HiLightBulb className="text-lg text-yellow-500 flex-shrink-0 mt-0.5" />
+              <FaInfoCircle className="text-sm text-gray-400 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-gray-500">
                 This helps calculate accurate aging
               </p>
@@ -539,9 +512,15 @@ export default function AddFirstProduct() {
                 {currentStep === 1 ? "Basic information" : "Add initial stock"}
               </p>
             </div>
-            <span className="text-sm font-medium text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
-              Step {currentStep}/2
-            </span>
+            <div className="flex items-center gap-2">
+              <div className={`flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${
+                currentStep >= 1 ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-500"
+              }`}>1</div>
+              <div className={`w-8 h-0.5 ${currentStep >= 2 ? "bg-indigo-600" : "bg-gray-200"}`} />
+              <div className={`flex items-center justify-center w-7 h-7 rounded-full text-sm font-semibold ${
+                currentStep >= 2 ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-500"
+              }`}>2</div>
+            </div>
           </div>
         </CardHeader>
 

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
-import { FaHome, FaBox, FaWarehouse, FaBell, FaChartBar, FaPlus, FaFileImport, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaBox, FaWarehouse, FaBell, FaChartBar, FaSignOutAlt } from "react-icons/fa";
 import { MdInventory } from "react-icons/md";
 
 interface SidebarUser {
@@ -32,20 +32,6 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
 
   // User is passed from the server — always available, never null
   const menuItems = allMenuItems.filter(item => item.roles.includes(user.role));
-
-  const canInviteUsers = user.role === "super_admin";
-
-  const quickActions = [
-    { name: "Add Product", icon: FaPlus,       action: "add-product", show: true },
-    { name: "Import CSV",  icon: FaFileImport, action: "import",      show: true },
-    { name: "Invite Team", icon: FaUsers,      action: "invite",      show: canInviteUsers },
-  ].filter(a => a.show);
-
-  const handleQuickAction = (action: string) => {
-    if (action === "add-product") router.push("/dashboard/products/new");
-    else if (action === "invite")  router.push("/dashboard/users/invite");
-    else if (action === "import")  console.log("Import CSV");
-  };
 
   const getRoleDisplayName = (role: string) =>
     role === "super_admin" ? "Super Admin" : "Warehouse Manager";
@@ -85,34 +71,10 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
           })}
         </nav>
 
-        {/* Quick Actions */}
-        {quickActions.length > 0 && (
-          <div className="px-3 py-4 border-t border-indigo-700">
-            <p className="text-xs uppercase tracking-wider text-indigo-300 px-4 mb-3 font-semibold">
-              Quick Actions
-            </p>
-            <div className="space-y-1">
-              {quickActions.map((action) => {
-                const Icon = action.icon;
-                return (
-                  <button
-                    key={action.action}
-                    onClick={() => handleQuickAction(action.action)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-200 hover:bg-indigo-800 hover:text-white transition-all text-sm"
-                  >
-                    <Icon className="text-base flex-shrink-0" />
-                    <span>{action.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {/* User Section */}
         <div className="px-3 py-4 border-t border-indigo-700">
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-indigo-800">
-            <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0">
+            <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0">
               {getUserInitials(user.name)}
             </div>
             <div className="flex-1 min-w-0">
