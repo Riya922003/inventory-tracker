@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FaArrowLeft, FaEnvelope, FaUser, FaPhone, FaWarehouse } from "react-icons/fa";
 
 export default function InviteUserPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const preselectedWarehouseId = searchParams.get("warehouseId");
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -18,12 +21,11 @@ export default function InviteUserPage() {
     name: "",
     phone: "",
     role: "warehouse_manager",
-    assignedWarehouses: [] as string[],
+    assignedWarehouses: preselectedWarehouseId ? [preselectedWarehouseId] : [] as string[],
     message: "",
   });
 
   useEffect(() => {
-    // Fetch warehouses for selection
     const fetchWarehouses = async () => {
       try {
         const response = await fetch("/api/warehouses?minimal=true");

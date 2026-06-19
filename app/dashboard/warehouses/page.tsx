@@ -310,19 +310,34 @@ export default function WarehousesPage() {
                               Transfer Stock
                             </Button>
                           ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full justify-start"
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/warehouses/${warehouse._id}/edit`
-                                )
-                              }
-                            >
-                              <FaUserPlus className="mr-2" />
-                              Assign Manager
-                            </Button>
+                            <>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full justify-start"
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/warehouses/${warehouse._id}/edit`
+                                  )
+                                }
+                              >
+                                <FaUserPlus className="mr-2" />
+                                Choose Manager
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full justify-start"
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/users/invite?warehouseId=${warehouse._id}`
+                                  )
+                                }
+                              >
+                                <FaUserPlus className="mr-2" />
+                                Invite Manager
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>
