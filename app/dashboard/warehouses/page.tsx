@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import {FaWarehouse,FaPlus,FaEdit,FaExchangeAlt,FaChartBar,FaExclamationTriangle,FaCheckCircle,} from "react-icons/fa";
+import {FaWarehouse,FaPlus,FaEdit,FaExchangeAlt,FaChartBar,FaExclamationTriangle,FaCheckCircle,FaUserPlus,} from "react-icons/fa";
 
 interface Warehouse {
   _id: string;
@@ -295,19 +295,35 @@ export default function WarehousesPage() {
                             <FaEdit className="mr-2" />
                             Edit
                           </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full justify-start"
-                            onClick={() =>
-                              router.push(
-                                `/dashboard/stock/transfer?warehouseId=${warehouse._id}`
-                              )
-                            }
-                          >
-                            <FaExchangeAlt className="mr-2" />
-                            {warehouse.managers?.length > 0 ? "Transfer Stock" : "Assign Manager"}
-                          </Button>
+                          {warehouse.managers?.length > 0 ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/stock/transfer?warehouseId=${warehouse._id}`
+                                )
+                              }
+                            >
+                              <FaExchangeAlt className="mr-2" />
+                              Transfer Stock
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/warehouses/${warehouse._id}/edit`
+                                )
+                              }
+                            >
+                              <FaUserPlus className="mr-2" />
+                              Assign Manager
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
