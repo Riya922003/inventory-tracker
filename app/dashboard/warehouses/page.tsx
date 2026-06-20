@@ -110,9 +110,9 @@ export default function WarehousesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex justify-between items-start mb-6 md:mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Warehouses</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your storage locations</p>

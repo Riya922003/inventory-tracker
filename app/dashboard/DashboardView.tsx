@@ -61,7 +61,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
   // ── Empty state ─────────────────────────────────────────────────────────────
   if (stats.totalProducts === 0) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         {error && (
           <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-red-400 p-4 mb-6 rounded">
             <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
 
   // ── Full dashboard ──────────────────────────────────────────────────────────
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {error && (
         <div className="bg-red-50 dark:bg-red-950/30 border-l-4 border-red-400 p-4 mb-6 rounded">
           <div className="flex items-center justify-between">
@@ -119,8 +119,8 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
       )}
 
       {/* Health Score Banner */}
-      <div className="bg-gray-900 dark:bg-gray-950 dark:border dark:border-cyan-500/10 rounded-2xl p-8 mb-6 text-white">
-        <div className="flex items-center gap-12 flex-wrap">
+      <div className="bg-gray-900 dark:bg-gray-950 dark:border dark:border-cyan-500/10 rounded-2xl p-5 md:p-8 mb-6 text-white">
+        <div className="flex items-center gap-6 md:gap-12 flex-wrap">
           {/* Ring */}
           <div className="relative flex-shrink-0">
             <svg width="120" height="120" viewBox="0 0 120 120">
@@ -155,7 +155,7 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
           </div>
 
           {/* Stats */}
-          <div className="flex gap-10 flex-wrap">
+          <div className="flex gap-6 md:gap-10 flex-wrap">
             <div>
               <p
                 className="text-3xl font-bold"

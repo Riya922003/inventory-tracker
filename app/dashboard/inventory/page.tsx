@@ -177,12 +177,12 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Inventory</h1>
-          <p className="text-gray-600 mt-1">Manage your products</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Inventory</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your products</p>
         </div>
         <Button
           onClick={() => router.push("/dashboard/products/new")}

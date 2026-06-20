@@ -154,9 +154,9 @@ export default function AlertsPage() {
   const selectClass = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground";
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Alerts & Notifications</h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor and manage inventory alerts</p>
       </div>
