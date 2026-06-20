@@ -126,4 +126,8 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Dark mode: style native select option list where browser allows */
+  .dark select {
+    color-scheme: dark;
+  }
 }

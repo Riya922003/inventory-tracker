@@ -88,21 +88,21 @@ export default function ReportsPage() {
                 {recentReports.map((report) => (
                   <div
                     key={report.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
-                      <FaFileAlt className="text-2xl text-indigo-600 dark:text-cyan-400" />
-                      <div>
-                        <p className="font-semibold text-gray-900 dark:text-white">{report.title}</p>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FaFileAlt className="text-xl text-indigo-600 dark:text-cyan-400 flex-shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-900 dark:text-white truncate">{report.title}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
                           Generated on {report.generatedOn} by {report.generatedBy}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline"><FaEye className="mr-2" />View</Button>
-                      <Button size="sm" variant="outline"><FaDownload className="mr-2" />PDF</Button>
-                      <Button size="sm" variant="outline"><FaDownload className="mr-2" />Excel</Button>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <Button size="sm" variant="outline"><FaEye className="mr-1.5" />View</Button>
+                      <Button size="sm" variant="outline"><FaDownload className="mr-1.5" />PDF</Button>
+                      <Button size="sm" variant="outline"><FaDownload className="mr-1.5" />Excel</Button>
                     </div>
                   </div>
                 ))}
