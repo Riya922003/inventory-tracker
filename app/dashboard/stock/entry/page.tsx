@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -44,6 +44,9 @@ interface Warehouse {
 
 export default function StockEntryPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const prefilledProductId = searchParams.get("productId") ?? "";
+
   const [products, setProducts] = useState<Product[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -56,6 +59,7 @@ export default function StockEntryPage() {
     resolver: zodResolver(stockEntrySchema),
     defaultValues: {
       entryDate: new Date().toISOString().split("T")[0],
+      productId: prefilledProductId,
     },
   });
 
@@ -66,6 +70,12 @@ export default function StockEntryPage() {
     fetchProducts();
     fetchWarehouses();
   }, []);
+
+  useEffect(() => {
+    if (prefilledProductId && products.length > 0) {
+      form.setValue("productId", prefilledProductId);
+    }
+  }, [prefilledProductId, products]);
 
   const fetchProducts = async () => {
     try {
@@ -215,9 +225,8 @@ export default function StockEntryPage() {
               <select
                 id="productId"
                 {...form.register("productId")}
-                disabled={loadingProducts}
-                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.productId ? "border-red-500" : ""
-                  }`}
+                disabled={loadingProducts || !!prefilledProductId}
+                className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ${form.formState.errors.productId ? "border-red-500" : ""} ${prefilledProductId ? "opacity-70 cursor-not-allowed" : ""}`}
               >
                 <option value="">
                   {loadingProducts ? "Loading products..." : "Select a product"}

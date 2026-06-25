@@ -194,6 +194,29 @@ export default function DashboardView({ data, initialError }: DashboardViewProps
         </div>
       </div>
 
+      {/* Quick actions */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <Button
+          onClick={() => router.push("/dashboard/stock/entry")}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:from-cyan-500 dark:to-cyan-500 dark:hover:from-cyan-400 dark:hover:to-cyan-400 dark:text-gray-950"
+        >
+          + Record Stock Entry
+        </Button>
+        <Button
+          onClick={() => router.push("/dashboard/stock/exit")}
+          variant="outline"
+          className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-500/40 dark:text-red-400 dark:hover:bg-red-500/10"
+        >
+          − Record Stock Exit
+        </Button>
+        <Button
+          onClick={() => router.push("/dashboard/inventory")}
+          variant="outline"
+        >
+          View All Products
+        </Button>
+      </div>
+
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Action required */}

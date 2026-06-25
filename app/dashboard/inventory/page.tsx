@@ -181,8 +181,8 @@ export default function InventoryPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Inventory</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your products</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Products</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Your product catalog — click any row to view stock details</p>
         </div>
         <Button
           onClick={() => router.push("/dashboard/products/new")}
@@ -341,7 +341,11 @@ export default function InventoryPage() {
                 </thead>
                 <tbody>
                   {products.map((product) => (
-                    <tr key={product._id} className="border-b hover:bg-gray-50 dark:hover:bg-white/5">
+                    <tr
+                      key={product._id}
+                      className="border-b hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer"
+                      onClick={() => router.push(`/dashboard/inventory/${product._id}`)}
+                    >
                       <td className="py-3 px-4">
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">
@@ -382,7 +386,7 @@ export default function InventoryPage() {
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-2">
                           <Button
                             variant="ghost"

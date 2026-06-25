@@ -7,7 +7,6 @@ import {
   FaHome, FaBox, FaWarehouse, FaBell, FaChartBar,
   FaSignOutAlt, FaSun, FaMoon, FaBars, FaTimes,
 } from "react-icons/fa";
-import { MdInventory } from "react-icons/md";
 import { useTheme } from "@/components/ThemeProvider";
 
 interface SidebarUser {
@@ -24,8 +23,7 @@ interface SidebarLayoutProps {
 
 const allMenuItems = [
   { name: "Dashboard",  icon: FaHome,      path: "/dashboard",            roles: ["super_admin", "warehouse_manager"] },
-  { name: "Inventory",  icon: MdInventory, path: "/dashboard/inventory",  roles: ["super_admin", "warehouse_manager"] },
-  { name: "Stock",      icon: FaBox,       path: "/dashboard/stock",      roles: ["super_admin", "warehouse_manager"] },
+  { name: "Products",   icon: FaBox,       path: "/dashboard/inventory",  roles: ["super_admin", "warehouse_manager"] },
   { name: "Warehouses", icon: FaWarehouse, path: "/dashboard/warehouses", roles: ["super_admin"] },
   { name: "Alerts",     icon: FaBell,      path: "/dashboard/alerts",     roles: ["super_admin", "warehouse_manager"] },
   { name: "Reports",    icon: FaChartBar,  path: "/dashboard/reports",    roles: ["super_admin", "warehouse_manager"] },
@@ -76,7 +74,9 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
       <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.path;
+          const isActive = item.path === "/dashboard"
+            ? pathname === "/dashboard"
+            : pathname.startsWith(item.path);
           return (
             <button
               key={item.path}
