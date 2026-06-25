@@ -255,7 +255,7 @@ export default function StockEntryPage() {
                 </option>
                 {warehouses.map((warehouse) => (
                   <option key={warehouse._id} value={warehouse._id}>
-                    {warehouse.name} - {warehouse.address.city}
+                    {warehouse.name}{warehouse.address?.city ? ` — ${warehouse.address.city}` : ""}
                   </option>
                 ))}
               </select>
