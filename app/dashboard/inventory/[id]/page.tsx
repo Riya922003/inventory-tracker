@@ -112,7 +112,7 @@ export default function ProductDetailPage() {
           }
           summaryMap[wid].totalReceived += b.quantityReceived;
           summaryMap[wid].totalAvailable += b.quantityAvailable;
-          summaryMap[wid].totalDispatched += (b.quantityReceived - b.quantityAvailable);
+          summaryMap[wid].totalDispatched += Math.max(0, b.quantityReceived - b.quantityAvailable);
         }
         setWarehouseSummaries(Object.values(summaryMap));
 
