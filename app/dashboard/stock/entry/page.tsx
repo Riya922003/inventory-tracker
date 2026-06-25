@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { FaArrowLeft, FaCamera, FaCheck, FaBox } from "react-icons/fa";
-import { HiLightBulb } from "react-icons/hi";
+import { FaArrowLeft, FaCamera, FaCheck, FaBox, FaInfoCircle } from "react-icons/fa";
 import { useUpload } from "@/hooks/useUpload";
 
 const stockEntrySchema = z.object({
@@ -168,7 +167,7 @@ export default function StockEntryPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
       <div className="mb-8">
         <Button
@@ -179,20 +178,20 @@ export default function StockEntryPage() {
           <FaArrowLeft className="mr-2" />
           Back to Stock
         </Button>
-        <h1 className="text-2xl font-bold text-gray-900">Record Stock Entry</h1>
-        <p className="text-gray-600 mt-1">Add new stock to your inventory</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Record Stock Entry</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">Add new stock to your inventory</p>
       </div>
 
       {/* Info Card */}
-      <Card className="mb-6 border-blue-200 bg-blue-50">
+      <Card className="mb-6 border-blue-200 bg-blue-50 dark:border-cyan-500/20 dark:bg-cyan-500/10">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <HiLightBulb className="text-2xl text-blue-600 flex-shrink-0 mt-0.5" />
+            <FaInfoCircle className="text-xl text-blue-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm text-gray-700 font-medium mb-1">
+              <p className="text-sm text-gray-700 dark:text-gray-200 font-medium mb-1">
                 Stock Entry Best Practices
               </p>
-              <ul className="text-sm text-gray-600 space-y-1">
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                 <li>• Upload a clear photo of the received stock for verification</li>
                 <li>• Record the entry date accurately for aging tracking</li>
                 <li>• Add expiry date for perishable items</li>
@@ -235,7 +234,7 @@ export default function StockEntryPage() {
                 </p>
               )}
               {selectedProduct && (
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Unit Type: <span className="font-medium capitalize">{selectedProduct.unitType}</span>
                 </p>
               )}
@@ -282,7 +281,7 @@ export default function StockEntryPage() {
                     }`}
                 />
                 {selectedProduct && (
-                  <span className="text-sm text-gray-500 capitalize">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
                     {selectedProduct.unitType}s
                   </span>
                 )}
@@ -320,7 +319,7 @@ export default function StockEntryPage() {
                   {...form.register("expiryDate")}
                   className={form.formState.errors.expiryDate ? "border-red-500" : ""}
                 />
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   This product requires an expiry date
                 </p>
               </div>
@@ -329,7 +328,7 @@ export default function StockEntryPage() {
             {/* Photo Upload */}
             <div className="space-y-2">
               <Label htmlFor="photo">Entry Photo (Recommended)</Label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-gray-300 dark:border-white/20 rounded-lg p-6 text-center">
                 {photoPreview ? (
                   <div className="space-y-4">
                     <img
@@ -352,7 +351,7 @@ export default function StockEntryPage() {
                 ) : (
                   <div>
                     <FaCamera className="text-4xl text-gray-400 mx-auto mb-3" />
-                    <p className="text-sm text-gray-600 mb-3">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                       Upload a photo of the received stock
                     </p>
                     <label htmlFor="photo">
@@ -372,7 +371,7 @@ export default function StockEntryPage() {
                       onChange={handlePhotoUpload}
                       className="hidden"
                     />
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                       Max size: 5MB. Formats: JPG, PNG
                     </p>
                   </div>
@@ -382,7 +381,7 @@ export default function StockEntryPage() {
 
             {/* Optional Fields */}
             <div className="border-t pt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Additional Information (Optional)
               </h3>
 
@@ -425,7 +424,7 @@ export default function StockEntryPage() {
               <Button
                 type="submit"
                 disabled={submitting || loadingProducts || loadingWarehouses}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:from-cyan-500 dark:to-cyan-500 dark:hover:from-cyan-400 dark:hover:to-cyan-400 dark:text-gray-950"
               >
                 <FaCheck className="mr-2" />
                 {submitting ? "Recording..." : "Record Stock Entry"}

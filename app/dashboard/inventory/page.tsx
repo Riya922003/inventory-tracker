@@ -297,12 +297,12 @@ export default function InventoryPage() {
         <CardContent>
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-gray-600">Loading products...</p>
+              <p className="text-gray-600 dark:text-gray-400">Loading products...</p>
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-12">
               <FaBox className="text-6xl text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No products found</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">No products found</p>
               <Button
                 onClick={() => router.push("/dashboard/products/new")}
                 className="bg-gradient-to-r from-purple-600 to-blue-600"
@@ -316,68 +316,68 @@ export default function InventoryPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Product
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       SKU
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Category
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Price
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Unit Type
                     </th>
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Status
                     </th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map((product) => (
-                    <tr key={product._id} className="border-b hover:bg-gray-50">
+                    <tr key={product._id} className="border-b hover:bg-gray-50 dark:hover:bg-white/5">
                       <td className="py-3 px-4">
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-gray-900 dark:text-white">
                             {product.name}
                           </p>
                           <div className="flex gap-2 mt-1">
                             {product.isFragile && (
-                              <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded">
+                              <span className="text-xs bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400 px-2 py-0.5 rounded">
                                 Fragile
                               </span>
                             )}
                             {product.hasExpiryDate && (
-                              <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
+                              <span className="text-xs bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 px-2 py-0.5 rounded">
                                 Expiry
                               </span>
                             )}
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-gray-600">{product.sku}</td>
-                      <td className="py-3 px-4 text-gray-600">
+                      <td className="py-3 px-4 text-gray-600 dark:text-gray-400">{product.sku}</td>
+                      <td className="py-3 px-4 text-gray-600 dark:text-gray-400">
                         {product.category.name}
                       </td>
-                      <td className="py-3 px-4 text-gray-900 font-medium">
+                      <td className="py-3 px-4 text-gray-900 dark:text-white font-medium">
                         ₹{product.unitPrice.toLocaleString()}
                       </td>
-                      <td className="py-3 px-4 text-gray-600 capitalize">
+                      <td className="py-3 px-4 text-gray-600 dark:text-gray-400 capitalize">
                         {product.unitType}
                       </td>
                       <td className="py-3 px-4">
                         {product.isActive ? (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                          <span className="text-xs bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 px-2 py-1 rounded">
                             Active
                           </span>
                         ) : (
-                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                          <span className="text-xs bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300 px-2 py-1 rounded">
                             Archived
                           </span>
                         )}
@@ -427,7 +427,7 @@ export default function InventoryPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
                 Are you sure you want to archive <strong>{productToDelete.name}</strong>?
                 This will hide it from active inventory but preserve all data.
               </p>

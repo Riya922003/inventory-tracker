@@ -10,8 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { FaArrowLeft, FaCamera, FaCheck, FaExclamationTriangle } from "react-icons/fa";
-import { HiLightBulb } from "react-icons/hi";
+import { FaArrowLeft, FaCamera, FaCheck, FaExclamationTriangle, FaInfoCircle } from "react-icons/fa";
 import { useUpload } from "@/hooks/useUpload";
 
 const stockExitSchema = z.object({
@@ -228,7 +227,7 @@ export default function StockExitPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
       <div className="mb-8">
         <Button
@@ -239,20 +238,20 @@ export default function StockExitPage() {
           <FaArrowLeft className="mr-2" />
           Back to Stock
         </Button>
-        <h1 className="text-2xl font-bold text-gray-900">Record Stock Exit</h1>
-        <p className="text-gray-600 mt-1">Record sales, dispatch, or stock removal</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Record Stock Exit</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-1">Record sales, dispatch, or stock removal</p>
       </div>
 
       {/* Info Card */}
-      <Card className="mb-6 border-blue-200 bg-blue-50">
+      <Card className="mb-6 border-blue-200 bg-blue-50 dark:border-cyan-500/20 dark:bg-cyan-500/10">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <HiLightBulb className="text-2xl text-blue-600 flex-shrink-0 mt-0.5" />
+            <FaInfoCircle className="text-xl text-blue-600 dark:text-cyan-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm text-gray-700 font-medium mb-1">
+              <p className="text-sm text-gray-700 dark:text-gray-200 font-medium mb-1">
                 Stock Exit Best Practices
               </p>
-              <ul className="text-sm text-gray-600 space-y-1">
+              <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                 <li>• Select the oldest batch first (FIFO - First In, First Out)</li>
                 <li>• Upload exit photo for verification and audit trail</li>
                 <li>• Add customer name for sales tracking</li>
@@ -364,7 +363,7 @@ export default function StockExitPage() {
                           : "text-green-600"
                     }
                   />
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 dark:text-gray-300">
                     Available: <strong>{selectedBatch.quantityAvailable}</strong>{" "}
                     {selectedProduct?.unitType}s | Age: {selectedBatch.ageInDays} days
                   </span>
@@ -388,7 +387,7 @@ export default function StockExitPage() {
                     }`}
                 />
                 {selectedProduct && (
-                  <span className="text-sm text-gray-500 capitalize">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">
                     {selectedProduct.unitType}s
                   </span>
                 )}
@@ -424,7 +423,7 @@ export default function StockExitPage() {
                 placeholder="Enter customer or recipient name"
                 {...form.register("customerName")}
               />
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 For sales tracking and customer history
               </p>
             </div>
@@ -442,7 +441,7 @@ export default function StockExitPage() {
             {/* Photo Upload */}
             <div className="space-y-2">
               <Label htmlFor="photo">Exit Photo (Recommended)</Label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <div className="border-2 border-dashed border-gray-300 dark:border-white/20 rounded-lg p-6 text-center">
                 {photoPreview ? (
                   <div className="space-y-4">
                     <img
@@ -465,7 +464,7 @@ export default function StockExitPage() {
                 ) : (
                   <div>
                     <FaCamera className="text-4xl text-gray-400 mx-auto mb-3" />
-                    <p className="text-sm text-gray-600 mb-3">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                       Upload a photo of the dispatched stock
                     </p>
                     <label htmlFor="photo">
@@ -485,7 +484,7 @@ export default function StockExitPage() {
                       onChange={handlePhotoUpload}
                       className="hidden"
                     />
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                       Max size: 5MB. Formats: JPG, PNG
                     </p>
                   </div>
@@ -513,7 +512,7 @@ export default function StockExitPage() {
                   loadingBatches ||
                   stockBatches.length === 0
                 }
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:from-cyan-500 dark:to-cyan-500 dark:hover:from-cyan-400 dark:hover:to-cyan-400 dark:text-gray-950"
               >
                 <FaCheck className="mr-2" />
                 {submitting ? "Recording..." : "Record Stock Exit"}

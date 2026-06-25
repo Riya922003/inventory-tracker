@@ -166,19 +166,19 @@ export default function StockPage() {
     switch (status) {
       case "healthy":
         return (
-          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+          <span className="text-xs bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 px-2 py-1 rounded">
             Healthy
           </span>
         );
       case "at_risk":
         return (
-          <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+          <span className="text-xs bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400 px-2 py-1 rounded">
             At Risk
           </span>
         );
       case "dead":
         return (
-          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">
+          <span className="text-xs bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 px-2 py-1 rounded">
             Dead Stock
           </span>
         );
@@ -201,20 +201,20 @@ export default function StockPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6 md:mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Stock Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Track and manage your inventory stock</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Each row is a received batch — track quantity, age, and health per shipment</p>
         </div>
         <div className="flex gap-3">
           <Button
             onClick={() => router.push("/dashboard/stock/exit")}
             variant="outline"
-            className="border-red-300 text-red-700 hover:bg-red-50"
+            className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-500/40 dark:text-red-400 dark:hover:bg-red-500/10"
           >
             <FaPlus className="mr-2" />
             Record Exit
           </Button>
           <Button
             onClick={() => router.push("/dashboard/stock/entry")}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 dark:from-cyan-500 dark:to-cyan-500 dark:hover:from-cyan-400 dark:hover:to-cyan-400 dark:text-gray-950"
           >
             <FaPlus className="mr-2" />
             Record Entry
@@ -277,17 +277,19 @@ export default function StockPage() {
       {/* Stock Entries */}
       <Card>
         <CardHeader>
-          <CardTitle>Stock Entries ({stocks.length})</CardTitle>
+          <CardTitle>
+            Received Batches ({stocks.length})
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-gray-600">Loading stock entries...</p>
+              <p className="text-gray-600 dark:text-gray-400">Loading stock entries...</p>
             </div>
           ) : stocks.length === 0 ? (
             <div className="text-center py-12">
               <FaBox className="text-6xl text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No stock entries found</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">No stock entries yet — record your first incoming shipment</p>
               <Button
                 onClick={() => router.push("/dashboard/stock/entry")}
                 className="bg-gradient-to-r from-purple-600 to-blue-600"
@@ -304,28 +306,28 @@ export default function StockPage() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       {/* Product Info */}
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Product</p>
-                        <p className="font-semibold text-gray-900">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Product</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">
                           {stock.productId.name}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           SKU: {stock.productId.sku}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
                           Batch: {stock.batchId}
                         </p>
                       </div>
 
                       {/* Warehouse & Quantity */}
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Location & Quantity</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Location & Quantity</p>
                         <div className="flex items-center gap-2 mb-2">
-                          <FaWarehouse className="text-purple-600" />
-                          <p className="text-sm font-medium">
+                          <FaWarehouse className="text-purple-600 dark:text-cyan-400" />
+                          <p className="text-sm font-medium dark:text-white">
                             {stock.warehouseId.name}
                           </p>
                         </div>
-                        <p className="text-sm text-gray-700">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
                           Available:{" "}
                           <span className="font-semibold">
                             {stock.quantityAvailable}
@@ -334,7 +336,7 @@ export default function StockPage() {
                           <span className="capitalize">{stock.productId.unitType}s</span>
                         </p>
                         {stock.quantityDamaged > 0 && (
-                          <p className="text-sm text-red-600">
+                          <p className="text-sm text-red-600 dark:text-red-400">
                             Damaged: {stock.quantityDamaged}
                           </p>
                         )}
@@ -342,17 +344,17 @@ export default function StockPage() {
 
                       {/* Dates & Status */}
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Dates & Status</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Dates & Status</p>
                         <div className="space-y-1">
-                          <p className="text-sm text-gray-700">
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
                             Entry: {formatDate(stock.entryDate)}
                           </p>
                           {stock.expiryDate && (
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-gray-700 dark:text-gray-300">
                               Expiry: {formatDate(stock.expiryDate)}
                             </p>
                           )}
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             Age: {stock.ageInDays} days
                           </p>
                           <div className="mt-2">{getStatusBadge(stock.status)}</div>
@@ -361,7 +363,7 @@ export default function StockPage() {
 
                       {/* Photo & Actions */}
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Entry Photo</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Entry Photo</p>
                         {stock.entryPhotos.length > 0 ? (
                           <button
                             onClick={() => {
@@ -373,18 +375,18 @@ export default function StockPage() {
                             <img
                               src={stock.entryPhotos[0].url}
                               alt="Entry"
-                              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 group-hover:border-purple-500 transition-colors"
+                              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200 dark:border-white/20 group-hover:border-purple-500 dark:group-hover:border-cyan-400 transition-colors"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg transition-all flex items-center justify-center">
                               <FaImage className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                           </button>
                         ) : (
-                          <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <FaImage className="text-gray-400" />
+                          <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-lg flex items-center justify-center">
+                            <FaImage className="text-gray-400 dark:text-gray-500" />
                           </div>
                         )}
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                           By: {stock.createdBy.name}
                         </p>
                       </div>
