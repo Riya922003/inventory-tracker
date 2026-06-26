@@ -106,91 +106,186 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Everything you need to track inventory
+              See exactly what's inside
             </h2>
-            <p className="text-xl text-gray-600">
-              Built for small teams who are tired of losing track of stock.
+            <p className="text-xl text-gray-500">
+              Every screen built to give you the answer before you even ask the question.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-emerald-100 flex items-center justify-center mb-6">
-                <FaWarehouse className="text-2xl text-emerald-600" />
+          <div className="space-y-32">
+
+            {/* Feature 1 — Multi-warehouse */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+                  <FaWarehouse className="text-emerald-600 text-sm" />
+                  <span className="text-emerald-700 text-sm font-medium">Multi-warehouse support</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  All your locations,<br />one screen
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Before: a separate spreadsheet per location, emailing staff to check counts.
+                  <br /><br />
+                  After: every warehouse listed with live capacity bars — green, orange, or red — so you know instantly which one needs attention.
+                </p>
+                <ul className="space-y-3">
+                  {["Capacity fill % at a glance", "Per-warehouse product counts", "Overcapacity flagged automatically"].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-gray-700">
+                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Multi-warehouse support
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Manage multiple warehouses from a single dashboard. Move stock between locations easily.
-              </p>
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+                <img
+                  src="/images/feature-warehouse.png"
+                  alt="Multi-warehouse management screen"
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center mb-6">
-                <FaBell className="text-2xl text-blue-600" />
+            {/* Feature 2 — Low stock alerts */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 lg:order-first order-last">
+                <img
+                  src="/images/feature-alerts.png"
+                  alt="Low stock and warehouse alerts screen"
+                  className="w-full h-auto"
+                />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Low stock alerts
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Get notified before you run out. Set thresholds per product and never miss a reorder.
-              </p>
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200">
+                  <FaBell className="text-blue-600 text-sm" />
+                  <span className="text-blue-700 text-sm font-medium">Smart alerts</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  Caught before<br />you run out
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Before: you find out stock is gone only when a customer asks.
+                  <br /><br />
+                  After: the system flags it days early — low stock warnings, warehouse overcapacity, and expiry notices all in one panel.
+                </p>
+                <ul className="space-y-3">
+                  {["Critical, warning, and info severity levels", "Per-product reorder thresholds", "Acknowledge or dismiss with one click"].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-gray-700">
+                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-orange-100 flex items-center justify-center mb-6">
-                <FaChartLine className="text-2xl text-orange-600" />
+            {/* Feature 3 — Fast product search */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200">
+                  <FaCheckCircle className="text-teal-600 text-sm" />
+                  <span className="text-teal-700 text-sm font-medium">Fast product search</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  Find anything<br />in 2 seconds
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Before: Ctrl+F on a 400-row spreadsheet, sorting columns manually.
+                  <br /><br />
+                  After: type a name, pick a filter, see results instantly — filtered by category, status, or stock level across all your warehouses.
+                </p>
+                <ul className="space-y-3">
+                  {["Live search as you type", "Filter by category, status, warehouse", "Low stock items highlighted in red"].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-gray-700">
+                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Stock history
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                See every change in inventory over time. Know who updated what and when.
-              </p>
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+                <img
+                  src="/images/feature-search.png"
+                  alt="Product search and filter screen"
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-teal-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-teal-100 flex items-center justify-center mb-6">
-                <FaCheckCircle className="text-2xl text-teal-600" />
+            {/* Feature 4 — Clean dashboard */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 lg:order-first order-last">
+                <img
+                  src="/images/feature-dashboard.png"
+                  alt="Inventory dashboard overview"
+                  className="w-full h-auto"
+                />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Fast product search
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                Search across all your warehouses instantly. Filter by category, status, or stock level.
-              </p>
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200">
+                  <FaBox className="text-purple-600 text-sm" />
+                  <span className="text-purple-700 text-sm font-medium">Dashboard overview</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  The numbers that matter,<br />above the fold
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Before: open 3 tabs, cross-reference two files, do the math yourself.
+                  <br /><br />
+                  After: total products, total value, dead stock, at-risk items — all computed for you the moment you log in.
+                </p>
+                <ul className="space-y-3">
+                  {["Total value calculated automatically", "Dead stock and at-risk counts", "Warehouse capacity snapshot"].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-gray-700">
+                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center mb-6">
-                <FaBox className="text-2xl text-purple-600" />
+            {/* Feature 5 — Free to get started */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-50 border border-yellow-200">
+                  <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-yellow-700 text-sm font-medium">Free to get started</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                  No credit card.<br />No trial timer.
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Before: 14-day trial, credit card upfront, onboarding call required.
+                  <br /><br />
+                  After: enter your company name and email — you're inside in under 2 minutes.
+                </p>
+                <ul className="space-y-3">
+                  {["4-step setup, no technical knowledge needed", "No payment info ever required", "Start adding inventory immediately"].map((point) => (
+                    <li key={point} className="flex items-center gap-3 text-gray-700">
+                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Clean dashboard
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                All your key numbers at a glance — total items, low stock counts, warehouse breakdowns.
-              </p>
+              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+                <img
+                  src="/images/feature-signup.png"
+                  alt="Free signup screen"
+                  className="w-full h-auto"
+                />
+              </div>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-gray-200 hover:border-yellow-300 hover:shadow-lg transition-all">
-              <div className="w-14 h-14 rounded-xl bg-yellow-100 flex items-center justify-center mb-6">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Free to get started
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                No credit card, no trial timer. Sign up and start adding your inventory right away.
-              </p>
-            </div>
           </div>
         </div>
       </section>
