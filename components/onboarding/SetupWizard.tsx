@@ -648,8 +648,8 @@ export default function SetupWizard() {
             </div>
 
             {/* Quick Start Option */}
-            <Card 
-              className={`cursor-pointer transition-all hover:shadow-md ${
+            <Card
+              className={`cursor-pointer transition-all hover:shadow-md bg-white ${
                 setupMode === "quick" ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-gray-200"
               }`}
               onClick={() => setSetupMode("quick")}
@@ -700,8 +700,8 @@ export default function SetupWizard() {
             </Card>
 
             {/* Custom Setup Option */}
-            <Card 
-              className={`cursor-pointer transition-all hover:shadow-md ${
+            <Card
+              className={`cursor-pointer transition-all hover:shadow-md bg-white ${
                 setupMode === "custom" ? "border-2 border-purple-500 bg-purple-50" : "border-2 border-gray-200"
               }`}
               onClick={() => setSetupMode("custom")}
@@ -980,6 +980,14 @@ export default function SetupWizard() {
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+            <span className="text-lg font-semibold text-gray-900">Inventory Tracker</span>
+          </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Inventory Tracker</h1>
           <p className="text-gray-600">Let's set up your inventory management system</p>
           <p className="text-sm text-gray-500 mt-3">
@@ -1013,13 +1021,16 @@ export default function SetupWizard() {
         </div>
 
         {/* Main Card */}
-        <Card className="shadow-lg">
+        <Card className="shadow-lg bg-white border-gray-200">
           <CardHeader>
-            <CardTitle>{STEPS[currentStep - 1].title}</CardTitle>
-            <CardDescription>{STEPS[currentStep - 1].description}</CardDescription>
+            <CardTitle className="text-gray-900">{STEPS[currentStep - 1].title}</CardTitle>
+            <CardDescription className="text-gray-500">{STEPS[currentStep - 1].description}</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="[&_input]:bg-white [&_input]:text-gray-900 [&_input]:border-gray-300 [&_input]:placeholder:text-gray-400 [&_select]:bg-white [&_select]:text-gray-900 [&_select]:border-gray-300 [&_label]:text-gray-700 [&_span]:text-gray-700"
+            >
               {renderStepContent()}
 
               {/* Navigation Buttons */}
