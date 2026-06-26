@@ -48,30 +48,31 @@ export async function GET(req: NextRequest) {
       query.warehouseId = warehouseId;
     }
 
-    const alerts = await Alert.find(query)
+    const rawAlerts = await Alert.find(query)
       .populate("productId", "name sku")
       .populate("warehouseId", "name")
       .populate("acknowledgedBy", "name")
       .populate("resolvedBy", "name")
-      .sort({ severity: 1, createdAt: -1 }); // Critical first, then by date
+      .sort({ createdAt: -1 })
+      .lean();
 
-    // Group by severity for better UX
-    const grouped = {
-      critical: alerts.filter((a) => a.severity === "critical"),
-      warning: alerts.filter((a) => a.severity === "warning"),
-      info: alerts.filter((a) => a.severity === "info"),
+    // Sort critical → warning → info, then newest first within each severity
+    const severityRank: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+    const alerts = rawAlerts.sort(
+      (a, b) => (severityRank[a.severity] ?? 3) - (severityRank[b.severity] ?? 3)
+    );
+
+    const counts = {
+      critical: alerts.filter((a) => a.severity === "critical").length,
+      warning:  alerts.filter((a) => a.severity === "warning").length,
+      info:     alerts.filter((a) => a.severity === "info").length,
     };
 
     return NextResponse.json({
       success: true,
       alerts,
-      grouped,
       total: alerts.length,
-      counts: {
-        critical: grouped.critical.length,
-        warning: grouped.warning.length,
-        info: grouped.info.length,
-      },
+      counts,
     });
   } catch (error) {
     console.error("Error fetching alerts:", error);
