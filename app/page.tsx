@@ -48,7 +48,7 @@ export default function LandingPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
                 <span className="text-emerald-600 text-sm font-medium">
-                  Free to use — no credit card needed
+                  Free to use, no credit card needed
                 </span>
               </div>
 
@@ -132,7 +132,7 @@ export default function LandingPage() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Before: a separate spreadsheet per location, emailing staff to check counts.
                   <br /><br />
-                  After: every warehouse listed with live capacity bars — green, orange, or red — so you know instantly which one needs attention.
+                  After: every warehouse listed with live capacity bars (green, orange, or red) so you know instantly which one needs attention.
                 </p>
                 <ul className="space-y-3">
                   {["Capacity fill % at a glance", "Per-warehouse product counts", "Overcapacity flagged automatically"].map((point) => (
@@ -172,7 +172,7 @@ export default function LandingPage() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Before: you find out stock is gone only when a customer asks.
                   <br /><br />
-                  After: the system flags it days early — low stock warnings, warehouse overcapacity, and expiry notices all in one panel.
+                  After: the system flags it days early. Low stock warnings, warehouse overcapacity, and expiry notices all in one panel.
                 </p>
                 <ul className="space-y-3">
                   {["Critical, warning, and info severity levels", "Per-product reorder thresholds", "Acknowledge or dismiss with one click"].map((point) => (
@@ -198,7 +198,7 @@ export default function LandingPage() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Before: Ctrl+F on a 400-row spreadsheet, sorting columns manually.
                   <br /><br />
-                  After: type a name, pick a filter, see results instantly — filtered by category, status, or stock level across all your warehouses.
+                  After: type a name, pick a filter, see results instantly. Filtered by category, status, or stock level across all your warehouses.
                 </p>
                 <ul className="space-y-3">
                   {["Live search as you type", "Filter by category, status, warehouse", "Low stock items highlighted in red"].map((point) => (
@@ -238,7 +238,7 @@ export default function LandingPage() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Before: open 3 tabs, cross-reference two files, do the math yourself.
                   <br /><br />
-                  After: total products, total value, dead stock, at-risk items — all computed for you the moment you log in.
+                  After: total products, total value, dead stock, at-risk items. All computed for you the moment you log in.
                 </p>
                 <ul className="space-y-3">
                   {["Total value calculated automatically", "Dead stock and at-risk counts", "Warehouse capacity snapshot"].map((point) => (
@@ -266,7 +266,7 @@ export default function LandingPage() {
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Before: 14-day trial, credit card upfront, onboarding call required.
                   <br /><br />
-                  After: enter your company name and email — you're inside in under 2 minutes.
+                  After: enter your company name and email. You're inside in under 2 minutes.
                 </p>
                 <ul className="space-y-3">
                   {["4-step setup, no technical knowledge needed", "No payment info ever required", "Start adding inventory immediately"].map((point) => (
@@ -291,50 +291,62 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+      <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Up and running in minutes
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-500">
               No onboarding calls. No setup fees. Just sign up and go.
             </p>
           </div>
 
+          {/* Tutorial Video */}
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 mb-16">
+            <video
+              src="/Video Project 5.mp4"
+              controls
+              playsInline
+              className="w-full h-auto"
+              preload="metadata"
+            />
+          </div>
+
+          {/* Steps */}
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-gray-300 text-gray-900 font-bold text-2xl mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
                 1
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Create your account
               </h3>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-500">
                 Sign up free. No credit card needed.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-gray-300 text-gray-900 font-bold text-2xl mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
                 2
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Add your warehouse
               </h3>
-              <p className="text-gray-600 text-lg">
-                Set up locations and add your products in bulk.
+              <p className="text-gray-500">
+                Set up locations and add your products in under 5 minutes.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-gray-300 text-gray-900 font-bold text-2xl mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
                 3
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-3">
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 Track in real time
               </h3>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-500">
                 Monitor stock levels and get alerted when things run low.
               </p>
             </div>
