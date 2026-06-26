@@ -2,10 +2,10 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IAlert extends Document {
   companyId: mongoose.Types.ObjectId;
-  stockId: mongoose.Types.ObjectId;
-  productId: mongoose.Types.ObjectId;
+  stockId?: mongoose.Types.ObjectId;
+  productId?: mongoose.Types.ObjectId;
   warehouseId: mongoose.Types.ObjectId;
-  type: "dead_inventory" | "aging" | "low_stock" | "expiry_warning";
+  type: "dead_inventory" | "aging" | "low_stock" | "expiry_warning" | "warehouse_full";
   severity: "critical" | "warning" | "info";
   title: string;
   message: string;
@@ -36,12 +36,10 @@ const AlertSchema = new Schema<IAlert>(
     stockId: {
       type: Schema.Types.ObjectId,
       ref: "Stock",
-      required: true,
     },
     productId: {
       type: Schema.Types.ObjectId,
       ref: "Product",
-      required: true,
     },
     warehouseId: {
       type: Schema.Types.ObjectId,
@@ -50,7 +48,7 @@ const AlertSchema = new Schema<IAlert>(
     },
     type: {
       type: String,
-      enum: ["dead_inventory", "aging", "low_stock", "expiry_warning"],
+      enum: ["dead_inventory", "aging", "low_stock", "expiry_warning", "warehouse_full"],
       required: true,
     },
     severity: {
@@ -97,6 +95,7 @@ const AlertSchema = new Schema<IAlert>(
       quantity: { type: Number },
       value: { type: Number },
       expiryDate: { type: Date },
+      capacityPercent: { type: Number },
     },
   },
   { timestamps: true }

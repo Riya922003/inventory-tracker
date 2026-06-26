@@ -8,6 +8,7 @@ import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
 import { forbiddenResponse } from "@/lib/permissions";
 import { hasWarehouseAccess, getUserWarehouseIds } from "@/lib/pg-permissions";
+import { checkWarehouseCapacityAlert } from "@/lib/alert-generator";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -131,6 +132,10 @@ export async function POST(req: NextRequest) {
 
       // Commit transaction
       await session.commitTransaction();
+
+      // Fire warehouse capacity check after commit — non-blocking, never fails the request
+      checkWarehouseCapacityAlert(user.companyId, warehouse._id)
+        .catch((e) => console.error("Warehouse capacity alert check failed:", e));
 
       return NextResponse.json(
         {

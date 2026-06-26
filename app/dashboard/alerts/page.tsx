@@ -26,7 +26,7 @@ interface Alert {
   status: "open" | "acknowledged" | "resolved" | "dismissed";
   productId: { _id: string; name: string; sku: string };
   warehouseId: { _id: string; name: string };
-  metadata: { ageInDays?: number; quantity?: number; value?: number };
+  metadata: { ageInDays?: number; quantity?: number; value?: number; capacityPercent?: number };
   acknowledgedBy?: { name: string };
   acknowledgedAt?: string;
   resolvedBy?: { name: string };
@@ -222,6 +222,7 @@ export default function AlertsPage() {
                 <option value="aging">Aging Stock</option>
                 <option value="low_stock">Low Stock</option>
                 <option value="expiry_warning">Expiry Warning</option>
+                <option value="warehouse_full">Warehouse Capacity</option>
               </select>
             </div>
             <div>
@@ -292,9 +293,10 @@ export default function AlertsPage() {
                           </div>
                           <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{alert.message}</p>
                           <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                            <span>📦 {alert.productId.name}</span>
-                            <span>🏢 {alert.warehouseId.name}</span>
+                            {alert.productId && <span>📦 {alert.productId.name}</span>}
+                            <span>🏢 {alert.warehouseId?.name}</span>
                             {alert.metadata.ageInDays && <span>📅 {alert.metadata.ageInDays} days old</span>}
+                            {alert.metadata.capacityPercent && <span>📊 {alert.metadata.capacityPercent}% full</span>}
                           </div>
                         </div>
                       </div>
@@ -352,14 +354,16 @@ export default function AlertsPage() {
                   <p className="text-blue-800 dark:text-cyan-400/80">{selectedAlert.recommendation}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Product</p>
-                    <p className="font-medium dark:text-white">{selectedAlert.productId.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">SKU: {selectedAlert.productId.sku}</p>
-                  </div>
+                  {selectedAlert.productId && (
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Product</p>
+                      <p className="font-medium dark:text-white">{selectedAlert.productId.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">SKU: {selectedAlert.productId.sku}</p>
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Warehouse</p>
-                    <p className="font-medium dark:text-white">{selectedAlert.warehouseId.name}</p>
+                    <p className="font-medium dark:text-white">{selectedAlert.warehouseId?.name}</p>
                   </div>
                 </div>
                 {selectedAlert.metadata && (
@@ -370,16 +374,22 @@ export default function AlertsPage() {
                         <p className="font-medium dark:text-white">{selectedAlert.metadata.ageInDays} days</p>
                       </div>
                     )}
-                    {selectedAlert.metadata.quantity && (
+                    {selectedAlert.metadata.quantity !== undefined && (
                       <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Quantity</p>
                         <p className="font-medium dark:text-white">{selectedAlert.metadata.quantity} units</p>
                       </div>
                     )}
-                    {selectedAlert.metadata.value && (
+                    {selectedAlert.metadata.value !== undefined && (
                       <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Value</p>
                         <p className="font-medium dark:text-white">₹{selectedAlert.metadata.value.toLocaleString()}</p>
+                      </div>
+                    )}
+                    {selectedAlert.metadata.capacityPercent !== undefined && (
+                      <div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Capacity Used</p>
+                        <p className="font-medium dark:text-white">{selectedAlert.metadata.capacityPercent}%</p>
                       </div>
                     )}
                   </div>

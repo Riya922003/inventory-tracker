@@ -9,6 +9,7 @@ import { User } from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
 import { forbiddenResponse } from "@/lib/permissions";
 import { hasWarehouseAccess, getUserWarehouseIds } from "@/lib/pg-permissions";
+import { checkLowStockAlert } from "@/lib/alert-generator";
 
 export async function POST(req: NextRequest) {
   let session: mongoose.ClientSession | null = null;
@@ -139,6 +140,10 @@ export async function POST(req: NextRequest) {
 
       // Commit transaction
       await session.commitTransaction();
+
+      // Fire low-stock check after commit — non-blocking, never fails the request
+      checkLowStockAlert(user.companyId, stock.productId, stock.warehouseId)
+        .catch((e) => console.error("Low stock alert check failed:", e));
 
       // Populate product and warehouse for response
       const product = await Product.findById(stock.productId).select("name sku");
