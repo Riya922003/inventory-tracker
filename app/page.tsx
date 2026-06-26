@@ -305,7 +305,7 @@ export default function LandingPage() {
           {/* Tutorial Video */}
           <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 mb-16">
             <video
-              src="/Video%20Project%205.mp4"
+              src="/tutorial.mp4"
               controls
               playsInline
               className="w-full h-auto"
