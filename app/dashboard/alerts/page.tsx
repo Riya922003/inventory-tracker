@@ -72,14 +72,17 @@ export default function AlertsPage() {
 
       const response = await fetch(`/api/alerts?${params.toString()}`, { credentials: "include" });
       if (response.status === 401) { window.location.href = "/"; return; }
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
         setAlerts(data.alerts || []);
         setCounts(data.counts || { critical: 0, warning: 0, info: 0 });
+      } else {
+        toast.error(`Failed to load alerts: ${data.error || data.details || response.status}`);
+        console.error("Alerts API error:", data);
       }
     } catch (error) {
       console.error("Error fetching alerts:", error);
-      toast.error("Failed to load alerts");
+      toast.error("Failed to load alerts — check console for details");
     } finally {
       setLoading(false);
     }
