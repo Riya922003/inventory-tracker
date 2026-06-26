@@ -48,24 +48,84 @@ export async function GET(req: NextRequest) {
       query.warehouseId = warehouseId;
     }
 
-    const rawAlerts = await Alert.find(query)
-      .populate("productId", "name sku")
-      .populate("warehouseId", "name")
-      .populate("acknowledgedBy", "name")
-      .populate("resolvedBy", "name")
-      .sort({ createdAt: -1 })
-      .lean();
-
-    // Sort critical → warning → info, then newest first within each severity
     const severityRank: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+
+    const rawAlerts = await Alert.aggregate([
+      { $match: query },
+      { $sort: { createdAt: -1 } },
+      // Lookup product — preserveNullAndEmptyArrays so warehouse_full alerts survive
+      {
+        $lookup: {
+          from: "products",
+          localField: "productId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1, sku: 1 } }],
+          as: "_product",
+        },
+      },
+      {
+        $addFields: {
+          productId: { $ifNull: [{ $arrayElemAt: ["$_product", 0] }, null] },
+        },
+      },
+      // Lookup warehouse
+      {
+        $lookup: {
+          from: "warehouses",
+          localField: "warehouseId",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "_warehouse",
+        },
+      },
+      {
+        $addFields: {
+          warehouseId: { $ifNull: [{ $arrayElemAt: ["$_warehouse", 0] }, null] },
+        },
+      },
+      // Lookup acknowledgedBy
+      {
+        $lookup: {
+          from: "users",
+          localField: "acknowledgedBy",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "_ackBy",
+        },
+      },
+      {
+        $addFields: {
+          acknowledgedBy: { $ifNull: [{ $arrayElemAt: ["$_ackBy", 0] }, null] },
+        },
+      },
+      // Lookup resolvedBy
+      {
+        $lookup: {
+          from: "users",
+          localField: "resolvedBy",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "_resolvedBy",
+        },
+      },
+      {
+        $addFields: {
+          resolvedBy: { $ifNull: [{ $arrayElemAt: ["$_resolvedBy", 0] }, null] },
+        },
+      },
+      // Strip temp fields
+      { $project: { _product: 0, _warehouse: 0, _ackBy: 0, _resolvedBy: 0 } },
+    ]);
+
+    // Sort critical → warning → info
     const alerts = rawAlerts.sort(
-      (a, b) => (severityRank[a.severity] ?? 3) - (severityRank[b.severity] ?? 3)
+      (a: any, b: any) => (severityRank[a.severity] ?? 3) - (severityRank[b.severity] ?? 3)
     );
 
     const counts = {
-      critical: alerts.filter((a) => a.severity === "critical").length,
-      warning:  alerts.filter((a) => a.severity === "warning").length,
-      info:     alerts.filter((a) => a.severity === "info").length,
+      critical: alerts.filter((a: any) => a.severity === "critical").length,
+      warning:  alerts.filter((a: any) => a.severity === "warning").length,
+      info:     alerts.filter((a: any) => a.severity === "info").length,
     };
 
     return NextResponse.json({
