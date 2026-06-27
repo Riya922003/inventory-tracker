@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { FaLightbulb, FaRocket, FaCog, FaCheckCircle } from "react-icons/fa";
+import { FaLightbulb, FaRocket, FaCog, FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
 
 // Zod Schema Definitions - Step 1: Admin info (for new accounts)
@@ -98,6 +98,7 @@ export default function SetupWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [setupMode, setSetupMode] = useState<"quick" | "custom" | null>("quick");
+  const [showPassword, setShowPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [onboardingData, setOnboardingData] = useState<{
     companyName: string;
@@ -463,13 +464,22 @@ export default function SetupWizard() {
 
             <div className="space-y-2">
               <Label htmlFor="adminPassword">Password *</Label>
-              <Input
-                id="adminPassword"
-                type="password"
-                placeholder="Create a password (min 6 characters)"
-                {...register("adminPassword")}
-                className={errors.adminPassword ? "border-red-500" : ""}
-              />
+              <div className="relative">
+                <Input
+                  id="adminPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a password (min 6 characters)"
+                  {...register("adminPassword")}
+                  className={`pr-10 ${errors.adminPassword ? "border-red-500" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
               {errors.adminPassword && (
                 <p className="text-sm text-red-500">{errors.adminPassword.message}</p>
               )}
