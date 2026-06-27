@@ -1,0 +1,52 @@
+[
+  {
+    "id": "TC001",
+    "title": "postapiauthloginwithvalidcredentials",
+    "description": "Verify that POST /api/auth/login with valid email and password returns 200 with user data and JWT token cookie/session."
+  },
+  {
+    "id": "TC002",
+    "title": "postapiauthloginwithinvalidcredentials",
+    "description": "Verify that POST /api/auth/login with invalid credentials returns 401 Unauthorized."
+  },
+  {
+    "id": "TC003",
+    "title": "postapionboardingwithvaliddata",
+    "description": "Verify that POST /api/onboarding with valid companyName, adminEmail, adminPassword, warehouseName, and categories creates company, user, and warehouse and returns 200."
+  },
+  {
+    "id": "TC004",
+    "title": "postapionboardingwithmissingfields",
+    "description": "Verify that POST /api/onboarding with missing or invalid required fields returns 400 Validation error."
+  },
+  {
+    "id": "TC005",
+    "title": "postapiusersinvitebysuperadmin",
+    "description": "Verify that POST /api/users/invite with authenticated super_admin credentials sends invitation and returns 200 with invitation record."
+  },
+  {
+    "id": "TC006",
+    "title": "postapiusersinvitebynonsuperadmin",
+    "description": "Verify that POST /api/users/invite with authenticated non-super_admin user returns 403 Forbidden."
+  },
+  {
+    "id": "TC007",
+    "title": "postapiusersinviteacceptwithvalidtoken",
+    "description": "Verify that POST /api/users/invite/accept with valid token and password creates user account and returns 200."
+  },
+  {
+    "id": "TC008",
+    "title": "postapiusersinviteacceptwithinvalidtoken",
+    "description": "Verify that POST /api/users/invite/accept with invalid token returns 400 Invalid token."
+  },
+  {
+    "id": "TC009",
+    "title": "getapiuserswithsuperadmin",
+    "description": "Verify that GET /api/users with authenticated super_admin returns 200 with company user list."
+  },
+  {
+    "id": "TC010",
+    "title": "postapiproductscreatewithstock",
+    "description": "Verify that POST /api/products/create-with-stock with product data and opening stock details creates product and stock in one operation and returns 200."
+  }
+]

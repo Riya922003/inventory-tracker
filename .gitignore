@@ -42,3 +42,5 @@ next-env.d.ts
 
 # local scripts — never commit these
 /scripts
+
+testsprite_tests\tmp\config.json

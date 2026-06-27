@@ -1,0 +1,20 @@
+{
+  "status": "commited",
+  "type": "backend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "backendAuthType": "basic token",
+  "backendUsername": "test12@gmail.com",
+  "backendPassword": "test12@2003",
+  "executionArgs": {
+    "projectName": "my-app",
+    "projectPath": "C:\\Users\\beeso\\my-app",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-Vw54aawGuHUg2HSqLj5XOmWxuASTVIB23wo-RtnANajqNu-_KwBtqtv6VGBWPesjTnCOrDbpgYLnizpkn1hqDcl948r-4sWIJbfTGA6gaYBlx5m7GiME_M4yXMHYAUr6u9Y"
+    }
+  },
+  "serverPort": 50414
+}

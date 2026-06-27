@@ -1,0 +1,1897 @@
+[
+  {
+    "id": "TC001",
+    "title": "Complete company onboarding and reach the dashboard",
+    "description": "This verifies that a new company admin can create the tenant, first warehouse, and baseline categories during onboarding and land on the dashboard afterward.",
+    "category": "Company Onboarding",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the onboarding link"
+      },
+      {
+        "type": "action",
+        "description": "Complete the company setup form with valid company, admin, warehouse, and category details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the initial company setup data is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Complete company setup and enter the dashboard",
+    "description": "This verifies that a new company admin can finish onboarding and reach a fully initialized dashboard with the first warehouse and baseline categories created.",
+    "category": "Company Onboarding",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /onboarding"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the company name field with a unique company name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with a unique email address"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the warehouse name field with a unique warehouse name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the categories field with several valid baseline categories"
+      },
+      {
+        "type": "action",
+        "description": "Submit the onboarding form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed with initialized tenant data"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Log in and confirm the authenticated session is active",
+    "description": "This verifies that a returning user can log in and the app recognizes the authenticated session before showing the main experience.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user session is active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Log in and view the current session",
+    "description": "This verifies that a user can sign in successfully and the app recognizes the active authenticated session.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated dashboard is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current user session is available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Move stock between warehouses successfully",
+    "description": "This verifies that a user can record a stock transfer and see the source and target stock updated afterward.",
+    "category": "Stock Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow with opening stock"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, unit type, warehouse, batch, and opening quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the stock transfer flow"
+      },
+      {
+        "type": "action",
+        "description": "Select the created stock and a different warehouse"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid transfer quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the transfer form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the source and target stock records are updated"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the stock movement is shown in history"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Log out and end the session",
+    "description": "This verifies that an authenticated user can log out and lose access to the active session.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the account or session menu"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign out action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is signed out"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the login page is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Log out successfully from an authenticated session",
+    "description": "This verifies that a logged-in user can end their session and return to the unauthenticated state.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the account menu"
+      },
+      {
+        "type": "action",
+        "description": "Click the log out action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the login screen is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is no longer signed in"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Record a stock entry for an existing product",
+    "description": "This verifies that a user can add stock to an existing product in a warehouse and see the inventory quantity increase.",
+    "category": "Stock Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, and unit type"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the stock entry flow"
+      },
+      {
+        "type": "action",
+        "description": "Select the created product and a warehouse"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid quantity and batch identifier"
+      },
+      {
+        "type": "action",
+        "description": "Submit the stock entry form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the inventory quantity is increased"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the stock entry appears in movement history"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Record a stock exit for an available stock batch",
+    "description": "This verifies that a user can remove stock from inventory and create a movement record for the exit.",
+    "category": "Stock Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow with opening stock"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, unit type, warehouse, batch, and opening quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the stock exit flow"
+      },
+      {
+        "type": "action",
+        "description": "Select the created stock batch"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid exit quantity and reason"
+      },
+      {
+        "type": "action",
+        "description": "Submit the stock exit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the inventory quantity is decreased"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the exit movement is shown in history"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Create a product with opening stock",
+    "description": "This verifies that an authenticated user can create a product and its initial stock in one flow and see it in inventory afterward.",
+    "category": "Product Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow with opening stock"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, unit type, warehouse, batch, and opening quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the created product appears in the catalog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the opening stock appears in inventory"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Show an error for invalid login credentials",
+    "description": "This verifies that incorrect credentials are rejected and the user remains unable to access the app.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a valid but unregistered email address"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an incorrect password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated dashboard is not displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Invite a warehouse manager from the users area",
+    "description": "This verifies that a super admin can invite a new team member and create an invitation record from the user management flow.",
+    "category": "User Invitation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the user invitation page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the invitee email field with a unique email address"
+      },
+      {
+        "type": "action",
+        "description": "Select the warehouse manager role"
+      },
+      {
+        "type": "action",
+        "description": "Select one or more assigned warehouses"
+      },
+      {
+        "type": "action",
+        "description": "Submit the invitation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the invitation is created"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the invited user is shown in the user management area"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Create a product and view its details before editing it",
+    "description": "This verifies that an authenticated user can create a product, open its detail view, and save an update to its catalog information.",
+    "category": "Product Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, and unit type"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the created product details"
+      },
+      {
+        "type": "action",
+        "description": "Update the product with valid changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated product details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product remains available in the catalog"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Create a warehouse and update its capacity",
+    "description": "This verifies that an authorized user can create a warehouse and later update its location or capacity details.",
+    "category": "Warehouse Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the warehouse creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid warehouse details including name, code, address, and capacity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the warehouse creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the created warehouse details"
+      },
+      {
+        "type": "action",
+        "description": "Update the warehouse capacity with a valid value"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated warehouse details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the warehouse appears in the warehouse list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Upload a valid product image",
+    "description": "This verifies that an authenticated user can upload a valid image and receive a usable hosted URL.",
+    "category": "Image Upload",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/upload"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the authenticated user credentials for the upload request"
+      },
+      {
+        "type": "action",
+        "description": "Attach a valid image file"
+      },
+      {
+        "type": "action",
+        "description": "Submit the upload request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an uploaded image URL is returned"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the upload result is usable for product records"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Accept an invitation and create an account",
+    "description": "This verifies that an invited user can accept a valid invitation token and complete account creation.",
+    "category": "User Invitation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the invitation acceptance page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the invitation token field with a valid token"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the invitation acceptance form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new account is created"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user can access the app with the accepted invitation"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "Delete a warehouse as a super admin",
+    "description": "This verifies that a super admin can remove an existing warehouse from the system.",
+    "category": "Warehouse Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the warehouse creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid warehouse details including name, code, address, and capacity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the warehouse creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the created warehouse details"
+      },
+      {
+        "type": "action",
+        "description": "Delete the warehouse"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the warehouse is removed from the warehouse list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the warehouse detail view is no longer available"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC018",
+    "title": "Delete a product from the catalog",
+    "description": "This verifies that a user with delete access can remove an existing product from the catalog.",
+    "category": "Product Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, and unit type"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the created product details"
+      },
+      {
+        "type": "action",
+        "description": "Delete the product"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product is removed from the catalog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty or deleted state is shown for the product"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC019",
+    "title": "Review dashboard KPIs and aging report",
+    "description": "This verifies that a user can open the dashboard and review operational metrics along with aging data.",
+    "category": "Operational Monitoring",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Open the aging report view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard KPI data is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify aging report data is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "View dashboard KPI summary",
+    "description": "This verifies that an authenticated user can open the dashboard and see inventory KPI summaries.",
+    "category": "Reports and Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify dashboard KPIs are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Review alerts and notifications and mark them as read",
+    "description": "This verifies that a user can open alerts and notifications, then acknowledge or mark items as read from the UI.",
+    "category": "Operational Monitoring",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open alerts and notifications"
+      },
+      {
+        "type": "action",
+        "description": "Mark a notification as read"
+      },
+      {
+        "type": "action",
+        "description": "Acknowledge an alert"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notifications are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify alert status is updated"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Create a product category",
+    "description": "This verifies that an authenticated user can create a category with aging settings and see it appear in the category list.",
+    "category": "Categories",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the categories page"
+      },
+      {
+        "type": "action",
+        "description": "Start creating a new category"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a unique category name"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid aging concern"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid aging duration"
+      },
+      {
+        "type": "action",
+        "description": "Set the category fragility option"
+      },
+      {
+        "type": "action",
+        "description": "Submit the category form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new category appears in the category list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Reject invalid product input",
+    "description": "This verifies that product creation is blocked when required fields or values are invalid and validation feedback is shown.",
+    "category": "Product Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form without entering required details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product is not created"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Reset a forgotten password and sign in with the new password",
+    "description": "This verifies that a user can request a password reset, set a new password, and then access the app with the updated credentials.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /forgot-password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with a registered email address"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password reset request"
+      },
+      {
+        "type": "action",
+        "description": "Open the reset password page using the provided reset token"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the new password field with a valid new password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password reset form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password reset confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user can later access the app with the new password"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC025",
+    "title": "Review aging report insights",
+    "description": "This verifies that an authenticated user can open the aging report and see aging analysis with classification data.",
+    "category": "Reports and Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the aging report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify aging report data is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC026",
+    "title": "Reject warehouse creation for a non-super admin user",
+    "description": "This verifies that a non-super admin user is blocked from creating a warehouse and sees restricted access feedback.",
+    "category": "Warehouse Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the warehouse creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to submit valid warehouse details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify restricted access feedback is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the warehouse is not created"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Review alerts after signing in",
+    "description": "This verifies that an authenticated user can open the alerts view and see their current alerts.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the alerts page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify alerts are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC028",
+    "title": "Review analytics trends",
+    "description": "This verifies that an authenticated user can open analytics and see trend data for operational review.",
+    "category": "Reports and Analytics",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the analytics page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify analytics trend data is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC029",
+    "title": "Acknowledge an alert",
+    "description": "This verifies that a user can acknowledge an alert and see its status update in the alerts view.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the alerts page"
+      },
+      {
+        "type": "action",
+        "description": "Select an alert to acknowledge"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the alert status is updated"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC030",
+    "title": "Create a product with missing required fields",
+    "description": "This verifies that product creation shows validation feedback when required information is omitted.",
+    "category": "Product Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow"
+      },
+      {
+        "type": "action",
+        "description": "Fill in only part of the required product details"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product is not saved"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC031",
+    "title": "Review notifications after signing in",
+    "description": "This verifies that an authenticated user can open their notification feed and see notifications.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the notifications page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notifications are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC032",
+    "title": "Resolve an alert",
+    "description": "This verifies that a user can resolve an alert and see it removed from the active alert state.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the alerts page"
+      },
+      {
+        "type": "action",
+        "description": "Select an alert to resolve"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the alert is no longer active"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC033",
+    "title": "Block non-super admins from inviting users",
+    "description": "This verifies that users without the required role cannot access the invitation flow successfully.",
+    "category": "User Invitation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the user invitation page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the invitee email field with a unique email address"
+      },
+      {
+        "type": "action",
+        "description": "Select a role that requires super admin access"
+      },
+      {
+        "type": "action",
+        "description": "Submit the invitation form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authorization error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no invitation is created"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC034",
+    "title": "Mark all notifications as read",
+    "description": "This verifies that a user can mark all notifications as read and see the unread state cleared.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the notifications page"
+      },
+      {
+        "type": "action",
+        "description": "Mark all notifications as read"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify unread notifications are cleared"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC035",
+    "title": "Reject an invalid stock entry quantity",
+    "description": "This verifies that the stock entry form blocks invalid quantities and shows validation feedback.",
+    "category": "Stock Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the stock entry flow"
+      },
+      {
+        "type": "action",
+        "description": "Select a product and warehouse"
+      },
+      {
+        "type": "action",
+        "description": "Fill in an invalid quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the stock entry form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify stock entry validation errors are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no stock movement is created"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC036",
+    "title": "Reject cron access without authentication",
+    "description": "This verifies that cron jobs are protected and unauthenticated access is denied.",
+    "category": "Cron Jobs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/cron/update-aging"
+      },
+      {
+        "type": "action",
+        "description": "Submit the cron request without authentication"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an unauthorized access response is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC037",
+    "title": "View product categories",
+    "description": "This verifies that an authenticated user can open the categories view and see the current category list.",
+    "category": "Categories",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the categories page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify categories are displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC038",
+    "title": "Reject alert generation without authentication",
+    "description": "This verifies that alert generation cannot run without valid cron authentication.",
+    "category": "Cron Jobs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/cron/generate-alerts"
+      },
+      {
+        "type": "action",
+        "description": "Submit the cron request without authentication"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authorization failure response is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC039",
+    "title": "Reject a stock exit that exceeds available quantity",
+    "description": "This verifies that a user cannot remove more stock than is available and the inventory remains unchanged.",
+    "category": "Stock Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the product creation flow with opening stock"
+      },
+      {
+        "type": "action",
+        "description": "Fill in valid product details including name, SKU, category, pricing, unit type, warehouse, batch, and opening quantity"
+      },
+      {
+        "type": "action",
+        "description": "Submit the product creation form"
+      },
+      {
+        "type": "action",
+        "description": "Open the stock exit flow"
+      },
+      {
+        "type": "action",
+        "description": "Select the created stock batch"
+      },
+      {
+        "type": "action",
+        "description": "Fill in an exit quantity greater than the available stock"
+      },
+      {
+        "type": "action",
+        "description": "Submit the stock exit form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an insufficient stock error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the stock quantity does not change"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC040",
+    "title": "Reject image upload without authentication",
+    "description": "This verifies that unauthenticated upload attempts are blocked.",
+    "category": "Image Upload",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/upload"
+      },
+      {
+        "type": "action",
+        "description": "Attach a valid image file"
+      },
+      {
+        "type": "action",
+        "description": "Submit the upload request without authentication"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authorization failure response is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC041",
+    "title": "Reject onboarding with missing required details",
+    "description": "This verifies that onboarding validation prevents creating a company when required setup fields are incomplete.",
+    "category": "Company Onboarding",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /onboarding"
+      },
+      {
+        "type": "action",
+        "description": "Leave one or more required onboarding fields empty"
+      },
+      {
+        "type": "action",
+        "description": "Submit the onboarding form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify onboarding validation errors are visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is not displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC042",
+    "title": "Reject invalid category input",
+    "description": "This verifies that invalid category values are blocked and a validation error is shown without creating the category.",
+    "category": "Categories",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the categories page"
+      },
+      {
+        "type": "action",
+        "description": "Start creating a new category"
+      },
+      {
+        "type": "action",
+        "description": "Submit the category form with missing or invalid values"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a category validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC043",
+    "title": "Recalculate stock aging for authenticated cron access",
+    "description": "This verifies that an authenticated cron request recalculates stock aging successfully and returns a completed result.",
+    "category": "Cron Jobs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/cron/update-aging"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the authenticated bearer token for the cron job"
+      },
+      {
+        "type": "action",
+        "description": "Submit the cron request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the aging recalculation completes successfully"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updated stock aging data is available"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC044",
+    "title": "Reject image upload with an invalid file",
+    "description": "This verifies that the upload flow blocks unsupported file input and does not produce a hosted image URL.",
+    "category": "Image Upload",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/upload"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the authenticated user credentials for the upload request"
+      },
+      {
+        "type": "action",
+        "description": "Attach an unsupported file type"
+      },
+      {
+        "type": "action",
+        "description": "Submit the upload request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a file validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no uploaded image URL is returned"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC045",
+    "title": "Reject an invalid or expired reset token",
+    "description": "This verifies that a password reset cannot be completed with a token that is no longer valid.",
+    "category": "Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a reset password page using an invalid or expired token"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the new password field with a valid new password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the reset password form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a reset token validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the password is not reset"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC046",
+    "title": "Handle an empty notification inbox",
+    "description": "This verifies that a user with no unread notifications sees an empty or cleared notification state after marking all as read.",
+    "category": "Alerts and Notifications",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the username field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the notifications page"
+      },
+      {
+        "type": "action",
+        "description": "Mark all notifications as read"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty notification state is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC047",
+    "title": "Generate inventory alerts from authenticated cron access",
+    "description": "This verifies that an authenticated cron request generates inventory alerts successfully.",
+    "category": "Cron Jobs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /api/cron/generate-alerts"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the authenticated bearer token for the cron job"
+      },
+      {
+        "type": "action",
+        "description": "Submit the cron request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify alert generation completes successfully"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify generated alerts are available"
+      }
+    ],
+    "priority": "Low"
+  }
+]

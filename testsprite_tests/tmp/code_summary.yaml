@@ -1,0 +1,458 @@
+version: "2"
+type: frontend
+tech_stack:
+  - Next.js 16.1.1 (App Router)
+  - React 19.2.3
+  - TypeScript
+  - MongoDB / Mongoose 9.0.2
+  - Tailwind CSS 4
+  - Radix UI
+  - React Hook Form / Zod
+  - JWT (jsonwebtoken, jose)
+  - bcryptjs
+  - Cloudinary
+  - Nodemailer / Resend
+  - Vercel Analytics
+features:
+  - name: Authentication
+    description: JWT-based login, logout, password reset, and cookie session management
+    files:
+      - app/login/page.tsx
+      - app/forgot-password/page.tsx
+      - app/reset-password/[token]/page.tsx
+      - app/api/auth/login/route.ts
+      - app/api/auth/logout/route.ts
+      - app/api/auth/me/route.ts
+      - app/api/auth/forgot-password/route.ts
+      - app/api/auth/reset-password/route.ts
+      - middleware.ts
+      - lib/auth.ts
+    endpoints:
+      - method: POST
+        path: /api/auth/login
+        description: Authenticate user and set JWT cookie
+        auth_required: false
+        request_schema:
+          body:
+            email: string
+            password: string
+        response_schema:
+          "200": "{user: User, token: string}"
+          "401": Unauthorized
+      - method: POST
+        path: /api/auth/logout
+        description: Clear auth cookie
+        auth_required: true
+        response_schema:
+          "200": OK
+      - method: GET
+        path: /api/auth/me
+        description: Get current authenticated user profile
+        auth_required: true
+        response_schema:
+          "200": User
+      - method: POST
+        path: /api/auth/forgot-password
+        description: Send password reset email
+        auth_required: false
+        request_schema:
+          body:
+            email: string
+        response_schema:
+          "200": OK
+      - method: POST
+        path: /api/auth/reset-password
+        description: Reset password using token
+        auth_required: false
+        request_schema:
+          body:
+            token: string
+            password: string
+        response_schema:
+          "200": OK
+          "400": Invalid or expired token
+    depends_on: []
+
+  - name: Company Onboarding
+    description: Multi-step onboarding to create company, initial warehouse, and product categories
+    files:
+      - app/onboarding/page.tsx
+      - app/api/onboarding/route.ts
+      - models/SystemConfig.ts
+    endpoints:
+      - method: POST
+        path: /api/onboarding
+        description: Create company, admin user, warehouse, and initial categories in one transaction
+        auth_required: false
+        request_schema:
+          body:
+            companyName: string
+            adminEmail: string
+            adminPassword: string
+            warehouseName: string
+            categories: "string[]"
+        response_schema:
+          "200": "{company, user, warehouse}"
+          "400": Validation error
+    depends_on: []
+
+  - name: User Invitation
+    description: Invite team members via email with role assignment
+    files:
+      - app/dashboard/users/invite/page.tsx
+      - app/invite/accept/page.tsx
+      - app/api/users/invite/route.ts
+      - app/api/users/invite/accept/route.ts
+      - models/Invitation.ts
+      - models/User.ts
+    endpoints:
+      - method: POST
+        path: /api/users/invite
+        description: Send invitation email to new user (super_admin only)
+        auth_required: true
+        request_schema:
+          body:
+            email: string
+            role: "super_admin | warehouse_manager"
+            assignedWarehouses: "string[]"
+        response_schema:
+          "200": Invitation
+          "403": Forbidden
+      - method: POST
+        path: /api/users/invite/accept
+        description: Accept invitation and create account
+        auth_required: false
+        request_schema:
+          body:
+            token: string
+            password: string
+        response_schema:
+          "200": User
+          "400": Invalid token
+      - method: GET
+        path: /api/users
+        description: List all users in the company
+        auth_required: true
+        response_schema:
+          "200": "User[]"
+    depends_on:
+      - Authentication
+
+  - name: Product Management
+    description: CRUD operations for product catalog with SKU, category, pricing, and image support
+    files:
+      - app/dashboard/products/new/page.tsx
+      - app/dashboard/products/success/page.tsx
+      - app/api/products/route.ts
+      - app/api/products/[id]/route.ts
+      - app/api/products/[id]/details/route.ts
+      - app/api/products/create-with-stock/route.ts
+      - models/Product.ts
+    endpoints:
+      - method: GET
+        path: /api/products
+        description: List products with pagination and search
+        auth_required: true
+        response_schema:
+          "200": "Product[]"
+      - method: POST
+        path: /api/products
+        description: Create a new product
+        auth_required: true
+        request_schema:
+          body:
+            name: string
+            sku: string
+            category: string
+            unitPrice: number
+            unitType: "piece | kilogram | liter | box | meter"
+        response_schema:
+          "200": Product
+          "400": Validation error
+      - method: GET
+        path: /api/products/[id]
+        description: Get product details
+        auth_required: true
+        response_schema:
+          "200": Product
+      - method: PUT
+        path: /api/products/[id]
+        description: Update product
+        auth_required: true
+        response_schema:
+          "200": Product
+      - method: DELETE
+        path: /api/products/[id]
+        description: Soft-delete product
+        auth_required: true
+        response_schema:
+          "200": OK
+      - method: POST
+        path: /api/products/create-with-stock
+        description: Create product and add initial stock batch in one operation
+        auth_required: true
+        response_schema:
+          "200": "{product, stock}"
+    depends_on:
+      - Authentication
+
+  - name: Stock Management
+    description: Record stock entries, exits, damage, and inter-warehouse transfers with batch tracking
+    files:
+      - app/dashboard/stock/page.tsx
+      - app/dashboard/stock/entry/page.tsx
+      - app/dashboard/stock/exit/page.tsx
+      - app/dashboard/stock/transfer/page.tsx
+      - app/dashboard/inventory/page.tsx
+      - app/dashboard/inventory/[id]/page.tsx
+      - app/dashboard/inventory/[id]/edit/page.tsx
+      - app/api/stock/entry/route.ts
+      - app/api/stock/exit/route.ts
+      - app/api/stock/transfer/route.ts
+      - models/Stock.ts
+      - models/StockMovement.ts
+    endpoints:
+      - method: POST
+        path: /api/stock/entry
+        description: Record stock entry with batch/expiry/photo details
+        auth_required: true
+        request_schema:
+          body:
+            productId: string
+            warehouseId: string
+            quantity: number
+            batchId: string
+            expiryDate: "string (optional)"
+        response_schema:
+          "200": Stock
+          "400": Validation error
+      - method: POST
+        path: /api/stock/exit
+        description: Record stock exit or damage
+        auth_required: true
+        request_schema:
+          body:
+            stockId: string
+            quantity: number
+            reason: string
+            movementType: "out | damage"
+        response_schema:
+          "200": StockMovement
+      - method: POST
+        path: /api/stock/transfer
+        description: Transfer stock between warehouses
+        auth_required: true
+        request_schema:
+          body:
+            stockId: string
+            targetWarehouseId: string
+            quantity: number
+        response_schema:
+          "200": "{sourceStock, targetStock}"
+    depends_on:
+      - Authentication
+      - Product Management
+      - Warehouse Management
+
+  - name: Warehouse Management
+    description: Create and manage warehouse locations with capacity tracking and manager assignment
+    files:
+      - app/dashboard/warehouses/page.tsx
+      - app/dashboard/warehouses/new/page.tsx
+      - app/dashboard/warehouses/[id]/page.tsx
+      - app/dashboard/warehouses/[id]/edit/page.tsx
+      - app/api/warehouses/route.ts
+      - app/api/warehouses/[id]/route.ts
+      - models/Warehouse.ts
+    endpoints:
+      - method: GET
+        path: /api/warehouses
+        description: List all warehouses for the company
+        auth_required: true
+        response_schema:
+          "200": "Warehouse[]"
+      - method: POST
+        path: /api/warehouses
+        description: Create new warehouse
+        auth_required: true
+        request_schema:
+          body:
+            name: string
+            warehouseCode: string
+            address: string
+            capacity: number
+        response_schema:
+          "200": Warehouse
+      - method: GET
+        path: /api/warehouses/[id]
+        description: Get warehouse details with stock summary
+        auth_required: true
+        response_schema:
+          "200": Warehouse
+      - method: PUT
+        path: /api/warehouses/[id]
+        description: Update warehouse
+        auth_required: true
+        response_schema:
+          "200": Warehouse
+      - method: DELETE
+        path: /api/warehouses/[id]
+        description: Delete warehouse
+        auth_required: true
+        response_schema:
+          "200": OK
+    depends_on:
+      - Authentication
+
+  - name: Alerts and Notifications
+    description: Automated alerts for dead stock, aging, low stock, and expiry with notification feed
+    files:
+      - app/dashboard/alerts/page.tsx
+      - app/api/alerts/route.ts
+      - app/api/alerts/[id]/route.ts
+      - app/api/notifications/route.ts
+      - app/api/notifications/[id]/route.ts
+      - app/api/notifications/mark-all-read/route.ts
+      - lib/alert-generator.ts
+      - models/Alert.ts
+      - models/Notification.ts
+    endpoints:
+      - method: GET
+        path: /api/alerts
+        description: List alerts with status/type filters
+        auth_required: true
+        response_schema:
+          "200": "Alert[]"
+      - method: PUT
+        path: /api/alerts/[id]
+        description: Acknowledge or resolve an alert
+        auth_required: true
+        response_schema:
+          "200": Alert
+      - method: GET
+        path: /api/notifications
+        description: List user notifications
+        auth_required: true
+        response_schema:
+          "200": "Notification[]"
+      - method: POST
+        path: /api/notifications/mark-all-read
+        description: Mark all notifications as read
+        auth_required: true
+        response_schema:
+          "200": OK
+    depends_on:
+      - Authentication
+
+  - name: Reports and Analytics
+    description: Aging analysis, ABC/XYZ classification, and dashboard KPIs for inventory insights
+    files:
+      - app/dashboard/reports/page.tsx
+      - app/analytics/page.tsx
+      - app/api/reports/aging/route.ts
+      - app/api/analytics/route.ts
+      - app/api/dashboard/route.ts
+      - lib/dashboard-data.ts
+    endpoints:
+      - method: GET
+        path: /api/reports/aging
+        description: Aging stock report with ABC/XYZ classification
+        auth_required: true
+        response_schema:
+          "200": "AgingReport[]"
+      - method: GET
+        path: /api/analytics
+        description: Dashboard analytics with trend data
+        auth_required: true
+        response_schema:
+          "200": AnalyticsData
+      - method: GET
+        path: /api/dashboard
+        description: Dashboard KPIs including total inventory value and dead stock count
+        auth_required: true
+        response_schema:
+          "200": DashboardKPIs
+    depends_on:
+      - Authentication
+
+  - name: Categories
+    description: Manage product categories with aging rules and fragility settings
+    files:
+      - app/api/categories/route.ts
+      - models/ProductCategory.ts
+    endpoints:
+      - method: GET
+        path: /api/categories
+        description: List product categories for the company
+        auth_required: true
+        response_schema:
+          "200": "ProductCategory[]"
+      - method: POST
+        path: /api/categories
+        description: Create a new product category
+        auth_required: true
+        request_schema:
+          body:
+            name: string
+            agingConcern: "slow | moderate | fast | expiry"
+            agingDays: number
+            isFragile: boolean
+        response_schema:
+          "200": ProductCategory
+    depends_on:
+      - Authentication
+
+  - name: Cron Jobs
+    description: Scheduled jobs for aging recalculation and alert generation (Bearer token authenticated)
+    files:
+      - app/api/cron/update-aging/route.ts
+      - app/api/cron/generate-alerts/route.ts
+    endpoints:
+      - method: GET
+        path: /api/cron/update-aging
+        description: Recalculate ageInDays and status for all stock batches
+        auth_required: true
+        response_schema:
+          "200": OK
+          "401": Unauthorized
+      - method: GET
+        path: /api/cron/generate-alerts
+        description: Generate alerts for dead/aging/low-stock/expiry conditions
+        auth_required: true
+        response_schema:
+          "200": OK
+    depends_on:
+      - Stock Management
+      - Alerts and Notifications
+
+  - name: Image Upload
+    description: Upload product and stock photos to Cloudinary
+    files:
+      - app/api/upload/route.ts
+      - lib/cloudinary.ts
+    endpoints:
+      - method: POST
+        path: /api/upload
+        description: Upload image file to Cloudinary and return URL
+        auth_required: true
+        response_schema:
+          "200": "{url: string}"
+    depends_on:
+      - Authentication
+
+known_limitations:
+  - issue: No per-warehouse permission granularity for warehouse managers
+    location: middleware.ts
+    impact: Warehouse managers can see all warehouses in their company
+  - issue: Invitation tokens stored as plain text in DB
+    location: models/Invitation.ts
+    impact: Security risk if database is compromised
+  - issue: No API rate limiting
+    location: app/api
+    impact: APIs are vulnerable to abuse/brute force
+  - issue: Email sending is synchronous via Nodemailer
+    location: lib/email.ts
+    impact: Slow response times on invite/reset flows
+  - issue: Cron jobs require external trigger (no built-in scheduler)
+    location: app/api/cron
+    impact: Aging and alert updates depend on external cron service
