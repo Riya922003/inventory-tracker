@@ -155,31 +155,3 @@ async function generateAlert(
   }
 }
 
-// GET endpoint for manual trigger (development/testing)
-export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  const cronSecret = process.env.CRON_SECRET;
-  
-  if (!cronSecret) {
-    return NextResponse.json(
-      { error: "Cron job not configured" },
-      { status: 500 }
-    );
-  }
-
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json(
-      { error: "Unauthorized - Use POST with Bearer token" },
-      { status: 401 }
-    );
-  }
-
-  return NextResponse.json({
-    message: "Use POST method to trigger aging update",
-    endpoint: "/api/cron/update-aging",
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${cronSecret}`,
-    },
-  });
-}

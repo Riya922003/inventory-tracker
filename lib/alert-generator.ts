@@ -85,7 +85,7 @@ export async function generateCronAlerts(companyId: mongoose.Types.ObjectId) {
   const in30days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
   // ── Dead stock ───────────────────────────────────────────────────────────────
-  const deadBatches: any[] = await Stock.find({ companyId, ageInDays: { $gte: 180 }, quantityAvailable: { $gt: 0 } })
+  const deadBatches: any[] = await Stock.find({ companyId, ageInDays: { $gte: 90 }, quantityAvailable: { $gt: 0 } })
     .populate("productId", "name sku unitPrice")
     .populate("warehouseId", "name")
     .lean();
@@ -105,8 +105,8 @@ export async function generateCronAlerts(companyId: mongoose.Types.ObjectId) {
     });
   }
 
-  // ── Aging stock (120–179 days) ───────────────────────────────────────────────
-  const agingBatches: any[] = await Stock.find({ companyId, ageInDays: { $gte: 120, $lt: 180 }, quantityAvailable: { $gt: 0 } })
+  // ── Aging stock (60–89 days) ─────────────────────────────────────────────────
+  const agingBatches: any[] = await Stock.find({ companyId, ageInDays: { $gte: 60, $lt: 90 }, quantityAvailable: { $gt: 0 } })
     .populate("productId", "name sku")
     .populate("warehouseId", "name")
     .lean();
@@ -120,7 +120,7 @@ export async function generateCronAlerts(companyId: mongoose.Types.ObjectId) {
       productId: p._id, warehouseId: w._id,
       title: `Aging Stock: ${p.name}`,
       message: `${batch.quantityAvailable} units of ${p.name} (${p.sku}) in ${w.name} have been in stock for ${batch.ageInDays} days.`,
-      recommendation: `Monitor this batch closely. If there is no movement in the next ${180 - batch.ageInDays} days it will be classified as dead stock.`,
+      recommendation: `Monitor this batch closely. If there is no movement in the next ${90 - batch.ageInDays} days it will be classified as dead stock.`,
       metadata: { ageInDays: batch.ageInDays, quantity: batch.quantityAvailable },
     });
   }
