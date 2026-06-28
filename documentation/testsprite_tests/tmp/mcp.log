@@ -420,3 +420,4 @@
 {"timestamp":"2026-06-27T14:36:29.630Z","level":"info","message":"Tool invocation completed","correlationId":"06fa40fb-f339-4f86-8286-54ec7e9c0216","tool":"testsprite_open_test_result_dashboard"}
 {"timestamp":"2026-06-27T15:40:09.230Z","level":"info","message":"Auto-cleaning stale test summary cache for: C:\\Users\\beeso\\my-app"}
 {"timestamp":"2026-06-27T18:25:07.028Z","level":"info","message":"Auto-cleaning stale test summary cache for: C:\\Users\\beeso\\my-app"}
+{"timestamp":"2026-06-27T19:50:07.164Z","level":"info","message":"Auto-cleaning stale test summary cache for: C:\\Users\\beeso\\my-app"}
