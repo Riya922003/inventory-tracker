@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { generateCronAlerts } from "@/lib/alert-generator";
+import { supabaseAdmin } from "@/lib/supabase";
 import mongoose from "mongoose";
 
 export const runtime = "nodejs";
@@ -34,6 +35,9 @@ export async function GET(req: NextRequest) {
         errors.push(`${companyId}: ${err instanceof Error ? err.message : "unknown error"}`);
       }
     }
+
+    // Keep Supabase project active (prevents free-tier auto-pause after 7 days inactivity)
+    await supabaseAdmin.from("user_warehouse_permissions").select("id").limit(1);
 
     return NextResponse.json({
       success: true,
