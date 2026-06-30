@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FaArrowLeft, FaCamera, FaCheck, FaExclamationTriangle, FaInfoCircle } from "react-icons/fa";
 import { useUpload } from "@/hooks/useUpload";
+import posthog from "posthog-js";
 
 const stockExitSchema = z.object({
   productId: z.string().min(1, "Please select a product"),
@@ -222,6 +223,11 @@ export default function StockExitPage() {
 
       if (response.ok) {
         toast.success("Stock exit recorded successfully! 🎉");
+        posthog.capture("stock_exit_recorded", {
+          product_id: data.productId,
+          warehouse_id: data.warehouseId,
+          quantity: data.quantity,
+        });
         setTimeout(() => {
           router.push("/dashboard/stock");
         }, 1500);

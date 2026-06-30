@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
+import posthog from "posthog-js";
 import {
   FaHome, FaBox, FaWarehouse, FaBell, FaChartBar,
   FaSignOutAlt, FaSun, FaMoon, FaBars, FaTimes,
@@ -34,6 +35,14 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
   const router = useRouter();
   const { theme, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    posthog.identify(user.email, {
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+  }, [user.email, user.name, user.role]);
 
   const menuItems = allMenuItems.filter(item => item.roles.includes(user.role));
 

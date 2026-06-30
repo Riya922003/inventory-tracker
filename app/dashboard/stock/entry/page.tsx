@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FaArrowLeft, FaCamera, FaCheck, FaBox, FaInfoCircle } from "react-icons/fa";
 import { useUpload } from "@/hooks/useUpload";
+import posthog from "posthog-js";
 
 const stockEntrySchema = z.object({
   productId: z.string().min(1, "Please select a product"),
@@ -162,6 +163,11 @@ export default function StockEntryPage() {
 
       if (response.ok) {
         toast.success("Stock entry recorded successfully! 🎉");
+        posthog.capture("stock_entry_created", {
+          product_id: data.productId,
+          warehouse_id: data.warehouseId,
+          quantity: data.quantity,
+        });
         setTimeout(() => {
           router.push("/dashboard/stock");
         }, 1500);
