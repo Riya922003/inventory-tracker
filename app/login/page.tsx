@@ -22,8 +22,8 @@ const DEMO_ACCOUNTS = [
     label: "Warehouse Manager",
     description: "Scoped access — assigned warehouses only",
     icon: FaWarehouse,
-    email: "riya98012.workx@gmail.com",
-    password: "",          // update once password is reset
+    email: "beesoul98012@gmail.com",
+    password: "Warehouse@123",
     color: "blue",
   },
 ];
