@@ -199,80 +199,86 @@ export default function DashboardView({ data, initialError, userName, companyNam
         </div>
       </div>
 
-      {/* Health Score Banner */}
-      <div className="bg-gray-900 dark:bg-gray-950 dark:border dark:border-cyan-500/10 rounded-2xl p-5 md:p-8 mb-6 text-white">
-        <div className="flex items-center gap-6 md:gap-12 flex-wrap">
-          {/* Ring */}
-          <div className="relative flex-shrink-0">
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <circle
-                cx="60"
-                cy="60"
-                r={radius}
-                fill="none"
-                stroke="#374151"
-                strokeWidth="10"
-              />
-              <circle
-                cx="60"
-                cy="60"
-                r={radius}
-                fill="none"
-                stroke={scoreColor}
-                strokeWidth="10"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-                transform="rotate(-90 60 60)"
-                style={{ transition: "stroke-dashoffset 0.6s ease" }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold">{healthScore}</span>
-              <span className="text-xs text-gray-400 uppercase tracking-widest">
-                health
-              </span>
+      {/* Health analytics — one metric per card */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+        {/* Health score */}
+        <Card>
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="relative flex-shrink-0">
+              <svg width="64" height="64" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="10" className="text-gray-100 dark:text-white/10" />
+                <circle
+                  cx="60"
+                  cy="60"
+                  r={radius}
+                  fill="none"
+                  stroke={scoreColor}
+                  strokeWidth="10"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  strokeLinecap="round"
+                  transform="rotate(-90 60 60)"
+                  style={{ transition: "stroke-dashoffset 0.6s ease" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-lg font-bold text-gray-900 dark:text-white">{healthScore}</span>
+              </div>
             </div>
-          </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest">Health</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-0.5">
+                {healthScore >= 80 ? "Good" : healthScore >= 60 ? "Fair" : "Needs attention"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Stats */}
-          <div className="flex gap-6 md:gap-10 flex-wrap">
-            <div>
-              <p
-                className="text-3xl font-bold"
-                style={{
-                  color: stats.atRisk.count > 0 ? "#fb923c" : "#6b7280",
-                }}
-              >
-                {stats.atRisk.count}
-              </p>
-              <p className="text-sm text-gray-400 mt-1">At risk</p>
-            </div>
-            <div>
-              <p
-                className="text-3xl font-bold"
-                style={{
-                  color: stats.deadStock.count > 0 ? "#f87171" : "#6b7280",
-                }}
-              >
-                {stats.deadStock.count}
-              </p>
-              <p className="text-sm text-gray-400 mt-1">Dead stock</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">
-                {stats.totalProducts}
-              </p>
-              <p className="text-sm text-gray-400 mt-1">Total SKUs</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-green-400">
-                {formatValue(stats.totalValue)}
-              </p>
-              <p className="text-sm text-gray-400 mt-1">Total value</p>
-            </div>
-          </div>
-        </div>
+        {/* At risk */}
+        <Card>
+          <CardContent className="py-5">
+            <p
+              className="text-3xl font-bold"
+              style={{ color: stats.atRisk.count > 0 ? "#f97316" : undefined }}
+            >
+              {stats.atRisk.count}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">At risk</p>
+          </CardContent>
+        </Card>
+
+        {/* Dead stock */}
+        <Card>
+          <CardContent className="py-5">
+            <p
+              className="text-3xl font-bold"
+              style={{ color: stats.deadStock.count > 0 ? "#ef4444" : undefined }}
+            >
+              {stats.deadStock.count}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Dead stock</p>
+          </CardContent>
+        </Card>
+
+        {/* Total SKUs */}
+        <Card>
+          <CardContent className="py-5">
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">
+              {stats.totalProducts}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Total SKUs</p>
+          </CardContent>
+        </Card>
+
+        {/* Total value */}
+        <Card>
+          <CardContent className="py-5">
+            <p className="text-3xl font-bold text-green-600 dark:text-green-400">
+              {formatValue(stats.totalValue)}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Total value</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Two-column layout */}
