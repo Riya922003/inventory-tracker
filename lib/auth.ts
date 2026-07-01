@@ -62,7 +62,13 @@ export async function getAuthToken(): Promise<string | null> {
 
 export async function removeAuthCookie() {
   const cookieStore = await cookies();
-  cookieStore.delete("auth-token");
+  cookieStore.set("auth-token", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+    path: "/",
+  });
 }
 
 export async function getCurrentUser(): Promise<JWTPayload | null> {
