@@ -3,7 +3,14 @@ import jwt from "jsonwebtoken";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production";
+// No hardcoded fallback — a well-known default secret would let anyone
+// forge a valid token for any user/company if this env var were ever
+// missing in a deployment. Fail loudly instead of failing open.
+const JWT_SECRET: string = (() => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("JWT_SECRET environment variable is not set");
+  return secret;
+})();
 
 export interface JWTPayload {
   userId: string;

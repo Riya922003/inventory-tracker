@@ -12,14 +12,15 @@ const rolePermissions = {
     "/warehouses",
     "/alerts",
     "/reports",
-    "/api/auth/me",
     "/api/dashboard",
     "/api/products",
+    "/api/categories",
     "/api/stock",
     "/api/warehouses",
     "/api/alerts",
     "/api/reports",
     "/api/notifications",
+    "/api/upload",
   ],
 };
 
@@ -103,8 +104,15 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
+    // Auth lifecycle endpoints (logout, me, etc.) are account actions, not
+    // role-gated features — any authenticated user must be able to reach
+    // them. Without this, adding a new /api/auth/* route and forgetting to
+    // list it in rolePermissions silently 403s warehouse managers (this is
+    // exactly what broke logout).
+    const isAuthLifecycleRoute = pathname.startsWith("/api/auth/");
+
     // Check role-based access for protected routes
-    if (!isPublicRoute) {
+    if (!isPublicRoute && !isAuthLifecycleRoute) {
       // Get user role from token - default to warehouse_manager if not present
       const userRole = (payload as any).role || "warehouse_manager";
 

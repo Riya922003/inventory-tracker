@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { sendEmail } from "@/lib/email";
+import { hashResetToken } from "@/lib/reset-token";
 import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
@@ -28,12 +29,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate reset token
+    // Generate reset token — the plaintext value is only ever emailed to the
+    // user; the database stores just its hash (see hashResetToken).
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
 
-    // Save reset token to user
-    user.resetToken = resetToken;
+    user.resetToken = hashResetToken(resetToken);
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
+import { hashResetToken } from "@/lib/reset-token";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: NextRequest) {
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     // Find user by reset token
     const user = await User.findOne({
-      resetToken: token,
+      resetToken: hashResetToken(token),
       resetTokenExpiry: { $gt: new Date() }, // Token must not be expired
     });
 
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
 
     // Find user by reset token
     const user = await User.findOne({
-      resetToken: token,
+      resetToken: hashResetToken(token),
       resetTokenExpiry: { $gt: new Date() }, // Token must not be expired
     });
 
