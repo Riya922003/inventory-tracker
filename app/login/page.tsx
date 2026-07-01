@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FaBox, FaEye, FaEyeSlash, FaUserShield, FaWarehouse } from "react-icons/fa";
+import { toast } from "sonner";
 
 const DEMO_ACCOUNTS = [
   {
@@ -180,6 +181,11 @@ export default function LoginPage() {
                         setLoginEmail(account.email);
                         setLoginPassword(account.password);
                         setError("");
+                        if (!account.password) {
+                          toast.info("Email pre-filled. Use Forgot Password to set a password first.");
+                        } else {
+                          toast.success(`${account.label} credentials filled — press Login`);
+                        }
                       }}
                       className={`relative flex flex-col items-start gap-1.5 p-3 rounded-xl border text-left transition-all group
                         ${isPurple
