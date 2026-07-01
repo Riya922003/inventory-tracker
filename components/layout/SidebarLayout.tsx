@@ -122,7 +122,7 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
         <button
           onClick={async () => {
             try { await fetch("/api/auth/logout", { method: "POST" }); } catch {}
-            router.push("/");
+            window.location.href = "/login";
           }}
           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-200 hover:bg-indigo-800 hover:text-white dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white transition-all text-sm mt-2"
         >
