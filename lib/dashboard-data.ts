@@ -13,6 +13,7 @@ import { Product } from "@/models/Product";
 import { Stock } from "@/models/Stock";
 import { Warehouse } from "@/models/Warehouse";
 import { User } from "@/models/User";
+import { Alert } from "@/models/Alert";
 
 // ── Exported types ──────────────────────────────────────────────────────────
 
@@ -37,12 +38,12 @@ export interface WarehouseStat {
 
 export interface DashboardAlert {
   _id: string;
-  type: "dead_inventory" | "low_stock" | "aging";
-  productName: string;
-  productSku: string;
-  details: string;
+  type: "dead_inventory" | "aging" | "low_stock" | "expiry_warning" | "warehouse_full";
+  severity: "critical" | "warning" | "info";
+  title: string;
+  message: string;
   recommendation: string;
-  severity: "critical" | "warning";
+  createdAt: string;
 }
 
 export interface DashboardActivity {
@@ -68,8 +69,8 @@ export async function getDashboardData(
   userRole: string,
   assignedWarehouses: string[]
 ): Promise<DashboardData> {
-  // ── Round trips 1, 2, 3 — all in parallel ──────────────────────────────
-  const [products, allStocks, warehouses] = await Promise.all([
+  // ── Round trips 1, 2, 3, 4 — all in parallel ─────────────────────────────
+  const [products, allStocks, warehouses, openAlerts] = await Promise.all([
     Product.find({ companyId, isActive: true })
       .select("_id name sku unitPrice unitType createdAt")
       .lean(),
@@ -81,6 +82,10 @@ export async function getDashboardData(
     Warehouse.find({ companyId, isActive: true })
       .select("_id name capacity")
       .lean(),
+
+    Alert.find({ companyId, status: { $in: ["open", "acknowledged"] } })
+      .select("type severity title message recommendation warehouseId createdAt")
+      .lean(),
   ]);
 
   // ── Build O(1) lookup maps — replaces the 3 populate() round trips ──────
@@ -91,7 +96,7 @@ export async function getDashboardData(
     (warehouses as any[]).map((w) => [w._id.toString(), w])
   );
 
-  // ── Round trip 4 — fetch only the unique user IDs referenced in stocks ──
+  // ── Round trip 5 — fetch only the unique user IDs referenced in stocks ──
   const uniqueCreatorIds = [
     ...new Set(
       (allStocks as any[])
@@ -213,27 +218,30 @@ export async function getDashboardData(
     };
   });
 
-  // ── Alerts ───────────────────────────────────────────────────────────────
-  const alerts: DashboardAlert[] = [
-    ...deadStockProducts.slice(0, 3).map((item) => ({
-      _id: item._id,
-      type: "dead_inventory" as const,
-      productName: item.productName,
-      productSku: item.sku,
-      details: `${item.quantity} units have been in stock for ${item.ageInDays} days`,
-      recommendation: "Consider discount sale or liquidation",
-      severity: "critical" as const,
-    })),
-    ...atRiskProducts.slice(0, 2).map((item) => ({
-      _id: item._id,
-      type: "aging" as const,
-      productName: item.productName,
-      productSku: item.sku,
-      details: `${item.quantity} units aging for ${item.ageInDays} days`,
-      recommendation: "Promote or bundle with fast-moving items",
-      severity: "warning" as const,
-    })),
-  ];
+  // ── Action-required alerts — real Alert docs, so recommendations reflect
+  // low stock, aging, dead stock, expiry and warehouse-capacity signals ────
+  const severityRank: Record<string, number> = { critical: 0, warning: 1, info: 2 };
+  const visibleAlerts =
+    userRole === "warehouse_manager" && assignedWarehouses.length > 0
+      ? (openAlerts as any[]).filter((a) => assignedSet.has(a.warehouseId?.toString()))
+      : (openAlerts as any[]);
+
+  const alerts: DashboardAlert[] = visibleAlerts
+    .sort(
+      (a, b) =>
+        (severityRank[a.severity] ?? 3) - (severityRank[b.severity] ?? 3) ||
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 8)
+    .map((a) => ({
+      _id: a._id.toString(),
+      type: a.type,
+      severity: a.severity,
+      title: a.title,
+      message: a.message,
+      recommendation: a.recommendation,
+      createdAt: new Date(a.createdAt).toISOString(),
+    }));
 
   // ── Recent activity feed ─────────────────────────────────────────────────
   const activities: DashboardActivity[] = [...filteredStocks]

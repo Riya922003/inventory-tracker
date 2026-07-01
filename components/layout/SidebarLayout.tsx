@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 import posthog from "posthog-js";
 import {
-  FaHome, FaBox, FaWarehouse, FaBell, FaChartBar,
+  FaHome, FaBox, FaWarehouse, FaBell, FaChartBar, FaInbox,
   FaSignOutAlt, FaSun, FaMoon, FaBars, FaTimes,
 } from "react-icons/fa";
 import { useTheme } from "@/components/ThemeProvider";
@@ -15,6 +15,7 @@ interface SidebarUser {
   email: string;
   role: "super_admin" | "warehouse_manager";
   assignedWarehousesCount: number;
+  companyName?: string;
 }
 
 interface SidebarLayoutProps {
@@ -23,11 +24,12 @@ interface SidebarLayoutProps {
 }
 
 const allMenuItems = [
-  { name: "Dashboard",  icon: FaHome,      path: "/dashboard",            roles: ["super_admin", "warehouse_manager"] },
-  { name: "Products",   icon: FaBox,       path: "/dashboard/inventory",  roles: ["super_admin", "warehouse_manager"] },
-  { name: "Warehouses", icon: FaWarehouse, path: "/dashboard/warehouses", roles: ["super_admin"] },
-  { name: "Alerts",     icon: FaBell,      path: "/dashboard/alerts",     roles: ["super_admin", "warehouse_manager"] },
-  { name: "Reports",    icon: FaChartBar,  path: "/dashboard/reports",    roles: ["super_admin", "warehouse_manager"] },
+  { name: "Dashboard",      icon: FaHome,      path: "/dashboard",              roles: ["super_admin", "warehouse_manager"] },
+  { name: "Products",       icon: FaBox,       path: "/dashboard/inventory",    roles: ["super_admin", "warehouse_manager"] },
+  { name: "Warehouses",     icon: FaWarehouse, path: "/dashboard/warehouses",   roles: ["super_admin"] },
+  { name: "Alerts",         icon: FaBell,      path: "/dashboard/alerts",       roles: ["super_admin", "warehouse_manager"] },
+  { name: "Reports",        icon: FaChartBar,  path: "/dashboard/reports",      roles: ["super_admin", "warehouse_manager"] },
+  { name: "Notifications",  icon: FaInbox,     path: "/dashboard/notifications", roles: ["super_admin", "warehouse_manager"] },
 ];
 
 export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
@@ -35,6 +37,7 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
   const router = useRouter();
   const { theme, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     posthog.identify(user.email, {
@@ -43,6 +46,13 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
       role: user.role,
     });
   }, [user.email, user.name, user.role]);
+
+  useEffect(() => {
+    fetch("/api/notifications?limit=1", { credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => data && setUnreadCount(data.unreadCount ?? 0))
+      .catch(() => {});
+  }, [pathname]);
 
   const menuItems = allMenuItems.filter(item => item.roles.includes(user.role));
 
@@ -61,8 +71,15 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
     <>
       {/* Logo + controls */}
       <div className="p-5 border-b border-indigo-700 dark:border-cyan-500/10 flex items-center justify-between flex-shrink-0">
-        <h1 className="text-lg font-bold tracking-wide">Inventory Tracker</h1>
-        <div className="flex items-center gap-1">
+        <div className="min-w-0">
+          <h1 className="text-lg font-bold tracking-wide truncate">Inventory Tracker</h1>
+          {user.companyName && (
+            <p className="text-[11px] text-indigo-300 dark:text-cyan-500/70 truncate mt-0.5">
+              {user.companyName}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-1 flex-shrink-0">
           <button
             onClick={toggle}
             className="p-1.5 rounded-lg text-indigo-300 hover:text-white hover:bg-indigo-700 dark:text-gray-400 dark:hover:text-cyan-400 dark:hover:bg-cyan-500/10 transition-all"
@@ -90,14 +107,21 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive
                   ? "bg-indigo-700 text-white shadow-lg dark:bg-cyan-500/15 dark:text-cyan-400"
                   : "text-indigo-200 hover:bg-indigo-800 hover:text-white dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
               }`}
             >
-              <Icon className="text-lg flex-shrink-0" />
-              <span className="font-medium">{item.name}</span>
+              <span className="flex items-center gap-3 min-w-0">
+                <Icon className="text-lg flex-shrink-0" />
+                <span className="font-medium truncate">{item.name}</span>
+              </span>
+              {item.name === "Notifications" && unreadCount > 0 && (
+                <span className="flex-shrink-0 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </button>
           );
         })}
@@ -174,7 +198,14 @@ export default function SidebarLayout({ children, user }: SidebarLayoutProps) {
           >
             <FaBars className="text-lg" />
           </button>
-          <span className="font-bold flex-1">Inventory Tracker</span>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold leading-tight truncate">Inventory Tracker</p>
+            {user.companyName && (
+              <p className="text-[10px] text-indigo-300 dark:text-cyan-500/70 leading-tight truncate">
+                {user.companyName}
+              </p>
+            )}
+          </div>
           <button
             onClick={toggle}
             className="p-2 rounded-lg text-indigo-300 hover:text-white transition-all"

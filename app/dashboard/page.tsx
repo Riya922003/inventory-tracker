@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
+import { SystemConfig } from "@/models/SystemConfig";
 import { getDashboardData } from "@/lib/dashboard-data";
 import DashboardView from "./DashboardView";
 
@@ -47,12 +48,22 @@ export default async function DashboardPage({
       : null;
 
   // Fetch all dashboard data server-side — optimised, parallel queries
-  const data = await getDashboardData(
-    u.companyId.toString(),
-    u.role ?? "warehouse_manager",
-    (u.assignedWarehouses ?? []).map((id: any) => id.toString())
-  );
+  const [data, company] = await Promise.all([
+    getDashboardData(
+      u.companyId.toString(),
+      u.role ?? "warehouse_manager",
+      (u.assignedWarehouses ?? []).map((id: any) => id.toString())
+    ),
+    SystemConfig.findById(u.companyId).select("companyName").lean<{ companyName?: string }>(),
+  ]);
 
   // Pass pre-fetched data to the client component that handles interactions
-  return <DashboardView data={data} initialError={initialError} />;
+  return (
+    <DashboardView
+      data={data}
+      initialError={initialError}
+      userName={u.name ?? ""}
+      companyName={company?.companyName ?? ""}
+    />
+  );
 }
