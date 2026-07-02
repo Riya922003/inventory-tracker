@@ -9,29 +9,29 @@ export default function LandingPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-950">
       {/* Navigation */}
-      <nav className="border-b border-gray-700/50 backdrop-blur-sm bg-gray-900/95">
+      <nav className="border-b border-white/10 backdrop-blur-sm bg-gray-950/90">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_theme(colors.cyan.400)]"></div>
               <span className="text-xl font-semibold text-white">Inventory Tracker</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#features" className="text-gray-400 hover:text-white transition-colors">
                 Features
               </a>
-              <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors">
                 How it works
               </a>
-              <a href="#demo" className="text-gray-300 hover:text-white transition-colors">
+              <a href="#demo" className="text-gray-400 hover:text-white transition-colors">
                 Demo
               </a>
             </div>
             <Button
               onClick={() => router.push("/onboarding")}
-              className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
+              className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-medium border-0"
             >
               Get started free
             </Button>
@@ -40,29 +40,33 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen px-4 sm:px-6 lg:px-8 overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative min-h-screen px-4 sm:px-6 lg:px-8 overflow-hidden bg-gray-950">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px]"></div>
+        <div className="pointer-events-none absolute bottom-0 right-0 w-[28rem] h-[28rem] bg-blue-600/10 rounded-full blur-[120px]"></div>
+
+        <div className="relative max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
             {/* Left Side - Content */}
             <div className="space-y-8">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                <span className="text-emerald-600 text-sm font-medium">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30">
+                <span className="text-cyan-400 text-sm font-medium">
                   Free to use, no credit card needed
                 </span>
               </div>
 
               {/* Main Heading */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
                 Know what you have.
                 <br />
-                <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                   Know where it is.
                 </span>
               </h1>
 
               {/* Subheading */}
-              <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">
+              <p className="text-xl md:text-2xl text-gray-400 leading-relaxed">
                 Inventory Tracker helps you manage warehouses, track stock levels,
                 and stay on top of inventory  without the spreadsheet mess.
               </p>
@@ -71,20 +75,20 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row items-start gap-4">
                 <Button
                   onClick={() => router.push("/onboarding")}
-                  className="px-8 py-6 text-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+                  className="px-8 py-6 text-lg bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-semibold shadow-lg shadow-cyan-500/20 border-0"
                 >
                   Sign up free
                 </Button>
                 <Button
                   onClick={() => router.push("/login")}
-                  className="px-8 py-6 text-lg bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
+                  className="px-8 py-6 text-lg bg-white/5 hover:bg-white/10 text-white border border-white/15"
                 >
                   Try the demo
                 </Button>
               </div>
 
               {/* Small text */}
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-500 text-sm">
                 Takes 2 minutes to set up. No tutorial required.
               </p>
             </div>
@@ -92,13 +96,13 @@ export default function LandingPage() {
             {/* Right Side - Hero Image */}
             <div className="relative lg:block">
               <div className="relative">
+                {/* Subtle glow effect behind the image */}
+                <div className="absolute -inset-6 bg-gradient-to-tr from-cyan-500/10 via-transparent to-blue-500/10 rounded-3xl blur-3xl -z-10"></div>
                 <img
-                  src="/images/hero-1.png"
-                  alt="Inventory Tracker Dashboard"
-                  className="w-full h-auto rounded-2xl shadow-2xl"
+                  src="/images/HEOR.png"
+                  alt="Inventory Tracker dashboard, alerts, and reports screens"
+                  className="w-full h-auto rounded-2xl shadow-2xl shadow-black/60"
                 />
-                {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/10 to-blue-600/10 rounded-2xl blur-3xl -z-10"></div>
               </div>
             </div>
           </div>
@@ -106,13 +110,13 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               See exactly what's inside
             </h2>
-            <p className="text-xl text-gray-500">
+            <p className="text-xl text-gray-400">
               Every screen built to give you the answer before you even ask the question.
             </p>
           </div>
@@ -122,28 +126,28 @@ export default function LandingPage() {
             {/* Feature 1 — Multi-warehouse */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
-                  <FaWarehouse className="text-emerald-600 text-sm" />
-                  <span className="text-emerald-700 text-sm font-medium">Multi-warehouse support</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                  <FaWarehouse className="text-emerald-400 text-sm" />
+                  <span className="text-emerald-400 text-sm font-medium">Multi-warehouse support</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                   All your locations,<br />one screen
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-gray-400 leading-relaxed">
                   Before: a separate spreadsheet per location, emailing staff to check counts.
                   <br /><br />
                   After: every warehouse listed with live capacity bars (green, orange, or red) so you know instantly which one needs attention.
                 </p>
                 <ul className="space-y-3">
                   {["Capacity fill % at a glance", "Per-warehouse product counts", "Overcapacity flagged automatically"].map((point) => (
-                    <li key={point} className="flex items-center gap-3 text-gray-700">
-                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                    <li key={point} className="flex items-center gap-3 text-gray-300">
+                      <FaCheckCircle className="text-emerald-400 flex-shrink-0" />
                       {point}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 <img
                   src="/images/feature-warehouse.png"
                   alt="Multi-warehouse management screen"
@@ -154,7 +158,7 @@ export default function LandingPage() {
 
             {/* Feature 2 — Low stock alerts */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 lg:order-first order-last">
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10 lg:order-first order-last">
                 <img
                   src="/images/feature-alerts.png"
                   alt="Low stock and warehouse alerts screen"
@@ -162,22 +166,22 @@ export default function LandingPage() {
                 />
               </div>
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200">
-                  <FaBell className="text-blue-600 text-sm" />
-                  <span className="text-blue-700 text-sm font-medium">Smart alerts</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30">
+                  <FaBell className="text-orange-400 text-sm" />
+                  <span className="text-orange-400 text-sm font-medium">Smart alerts</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                   Caught before<br />you run out
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-gray-400 leading-relaxed">
                   Before: you find out stock is gone only when a customer asks.
                   <br /><br />
                   After: the system flags it days early. Low stock warnings, warehouse overcapacity, and expiry notices all in one panel.
                 </p>
                 <ul className="space-y-3">
                   {["Critical, warning, and info severity levels", "Per-product reorder thresholds", "Acknowledge or dismiss with one click"].map((point) => (
-                    <li key={point} className="flex items-center gap-3 text-gray-700">
-                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                    <li key={point} className="flex items-center gap-3 text-gray-300">
+                      <FaCheckCircle className="text-emerald-400 flex-shrink-0" />
                       {point}
                     </li>
                   ))}
@@ -188,28 +192,28 @@ export default function LandingPage() {
             {/* Feature 3 — Fast product search */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200">
-                  <FaCheckCircle className="text-teal-600 text-sm" />
-                  <span className="text-teal-700 text-sm font-medium">Fast product search</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30">
+                  <FaCheckCircle className="text-teal-400 text-sm" />
+                  <span className="text-teal-400 text-sm font-medium">Fast product search</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                   Find anything<br />in 2 seconds
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-gray-400 leading-relaxed">
                   Before: Ctrl+F on a 400-row spreadsheet, sorting columns manually.
                   <br /><br />
                   After: type a name, pick a filter, see results instantly. Filtered by category, status, or stock level across all your warehouses.
                 </p>
                 <ul className="space-y-3">
                   {["Live search as you type", "Filter by category, status, warehouse", "Low stock items highlighted in red"].map((point) => (
-                    <li key={point} className="flex items-center gap-3 text-gray-700">
-                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                    <li key={point} className="flex items-center gap-3 text-gray-300">
+                      <FaCheckCircle className="text-emerald-400 flex-shrink-0" />
                       {point}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 <img
                   src="/images/feature-search.png"
                   alt="Product search and filter screen"
@@ -220,7 +224,7 @@ export default function LandingPage() {
 
             {/* Feature 4 — Clean dashboard */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100 lg:order-first order-last">
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10 lg:order-first order-last">
                 <img
                   src="/images/feature-dashboard.png"
                   alt="Inventory dashboard overview"
@@ -228,22 +232,22 @@ export default function LandingPage() {
                 />
               </div>
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 border border-purple-200">
-                  <FaBox className="text-purple-600 text-sm" />
-                  <span className="text-purple-700 text-sm font-medium">Dashboard overview</span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30">
+                  <FaBox className="text-purple-400 text-sm" />
+                  <span className="text-purple-400 text-sm font-medium">Dashboard overview</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                   The numbers that matter,<br />above the fold
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-gray-400 leading-relaxed">
                   Before: open 3 tabs, cross-reference two files, do the math yourself.
                   <br /><br />
                   After: total products, total value, dead stock, at-risk items. All computed for you the moment you log in.
                 </p>
                 <ul className="space-y-3">
                   {["Total value calculated automatically", "Dead stock and at-risk counts", "Warehouse capacity snapshot"].map((point) => (
-                    <li key={point} className="flex items-center gap-3 text-gray-700">
-                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                    <li key={point} className="flex items-center gap-3 text-gray-300">
+                      <FaCheckCircle className="text-emerald-400 flex-shrink-0" />
                       {point}
                     </li>
                   ))}
@@ -254,30 +258,30 @@ export default function LandingPage() {
             {/* Feature 5 — Free to get started */}
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-50 border border-yellow-200">
-                  <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/30">
+                  <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-yellow-700 text-sm font-medium">Free to get started</span>
+                  <span className="text-yellow-400 text-sm font-medium">Free to get started</span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                   No credit card.<br />No trial timer.
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-lg text-gray-400 leading-relaxed">
                   Before: 14-day trial, credit card upfront, onboarding call required.
                   <br /><br />
                   After: enter your company name and email. You're inside in under 2 minutes.
                 </p>
                 <ul className="space-y-3">
                   {["4-step setup, no technical knowledge needed", "No payment info ever required", "Start adding inventory immediately"].map((point) => (
-                    <li key={point} className="flex items-center gap-3 text-gray-700">
-                      <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+                    <li key={point} className="flex items-center gap-3 text-gray-300">
+                      <FaCheckCircle className="text-emerald-400 flex-shrink-0" />
                       {point}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10">
                 <img
                   src="/images/feature-signup.png"
                   alt="Free signup screen"
@@ -291,19 +295,19 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-900/40 border-y border-white/5">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Up and running in minutes
             </h2>
-            <p className="text-xl text-gray-500">
+            <p className="text-xl text-gray-400">
               No onboarding calls. No setup fees. Just sign up and go.
             </p>
           </div>
 
           {/* Tutorial Video */}
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 mb-16">
+          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 border border-white/10 mb-16">
             <video
               src="https://res.cloudinary.com/dezgk6ekt/video/upload/v1782489847/tutorial_blqghl.mp4"
               controls
@@ -316,37 +320,37 @@ export default function LandingPage() {
           {/* Steps */}
           <div className="grid md:grid-cols-3 gap-8 md:gap-12">
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500 text-gray-950 font-bold text-2xl mb-6 shadow-lg shadow-cyan-500/30">
                 1
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Create your account
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-400">
                 Sign up free. No credit card needed.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500 text-gray-950 font-bold text-2xl mb-6 shadow-lg shadow-cyan-500/30">
                 2
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Add your warehouse
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-400">
                 Set up locations and add your products in under 5 minutes.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold text-2xl mb-6 shadow-lg">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500 text-gray-950 font-bold text-2xl mb-6 shadow-lg shadow-cyan-500/30">
                 3
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-white mb-2">
                 Track in real time
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-400">
                 Monitor stock levels and get alerted when things run low.
               </p>
             </div>
@@ -355,24 +359,25 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section id="demo" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section id="demo" className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gray-950 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-600/5"></div>
+        <div className="relative max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Start tracking your inventory today
           </h2>
-          <p className="text-xl text-gray-700 mb-10">
+          <p className="text-xl text-gray-400 mb-10">
             Free, no setup required. Try the demo or create your account.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               onClick={() => router.push("/login")}
-              className="px-10 py-6 text-lg bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
+              className="px-10 py-6 text-lg bg-white/5 hover:bg-white/10 text-white border border-white/15"
             >
               Try the demo
             </Button>
             <Button
               onClick={() => router.push("/onboarding")}
-              className="px-10 py-6 text-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg"
+              className="px-10 py-6 text-lg bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-semibold shadow-lg shadow-cyan-500/20 border-0"
             >
               Create free account
             </Button>
@@ -381,14 +386,14 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-12 px-4 sm:px-6 lg:px-8 bg-white">
+      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-              <span className="text-lg font-semibold text-gray-900">Inventory Tracker</span>
+              <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
+              <span className="text-lg font-semibold text-white">Inventory Tracker</span>
             </div>
-            <p className="text-gray-600 text-sm">
+            <p className="text-gray-500 text-sm">
               © 2025 Inventory Tracker. Smart inventory management for modern businesses.
             </p>
           </div>
